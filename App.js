@@ -1,24 +1,20 @@
 import React, { useState } from 'react';
 import LoginForm from './Components/LoginForm'; 
 import {StyleSheet, useColorScheme,} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const Stack = createNativeStackNavigator();
 
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
     <>
-      <LoginForm />
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{headerTitleAlign: 'center',}}>
+          <Stack.Screen name='Login' component={LoginForm}>
+          </Stack.Screen>
+        </Stack.Navigator>
+      </NavigationContainer>
     </>
   );
 };

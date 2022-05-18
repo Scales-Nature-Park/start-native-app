@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 
 const LoginForm = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     return (
         <View style={styles.container}>
@@ -38,11 +38,17 @@ const LoginForm = () => {
                 <Text style={styles.forgot_button}>Forgot Password?</Text>
             </TouchableOpacity>
         
-            <TouchableOpacity style={styles.loginBtn}>
+            <TouchableOpacity style={styles.loginBtn}
+            onPress = {() => AuthenticateCredentials(email, password)}>
                 <Text style={styles.loginText}>LOGIN</Text>
             </TouchableOpacity>
         </View>
     );   
+};
+
+function AuthenticateCredentials(email, password) {
+    console.log(email);
+    // if (email && password) navigation.navigate('Home');
 };
 
 const styles = StyleSheet.create({
@@ -63,7 +69,6 @@ const styles = StyleSheet.create({
       width: "70%",
       height: 45,
       marginBottom: 20,
-   
       alignItems: "center",
     },
    
