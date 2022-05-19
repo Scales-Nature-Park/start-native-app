@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
     ScrollView,
     SafeAreaView,
+    Button,
 } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 
@@ -20,16 +21,42 @@ const DataInput = () => {
     const months = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'Novemeber', 'December'];
     const [currDay, setDay] = useState(day);
     const [currMonth, setMonth] = useState(months[month]);
-    const [currYear, setYear] = useState(year);
-    const [species, setSpecies] = useState('');
-    
     const [open, setOpen] = useState(true);
     const [value, setValue] = useState('May');
-    
+    const [currYear, setYear] = useState(year);
 
+    const [species, setSpecies] = useState('');
+    const [category, setCategory] = useState('Turtle');
+    
     return (
         <SafeAreaView style={styles.safeArea}>
             <ScrollView>
+                <View style={styles.container1}>
+                    <TouchableOpacity style={(category == 'Turtle') ? styles.buttonView : styles.buttonView2}
+                    onPress= {() => {
+                        setCategory('Turtle');
+                        console.log(category);
+                    }}>
+                        <Text style={(category == 'Turtle') ? {color: '#fff'} : {color: '#089c2f'}}>TURTLE</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={(category == 'Snake') ? styles.buttonView : styles.buttonView2}
+                    onPress= {() => {
+                        setCategory('Snake');
+                        console.log(category);
+                    }}>
+                        <Text style={(category == 'Snake') ? {color: '#fff'} : {color: '#089c2f'}}>SNAKE</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style= {(category == 'Lizard') ? styles.buttonView : styles.buttonView2}
+                    onPress= {() => {
+                        setCategory('Lizard');
+                        console.log(category);
+                    }}>
+                        <Text style={(category == 'Lizard') ? {color: '#fff'} : {color: '#089c2f'}}>LIZARD</Text>
+                    </TouchableOpacity>
+                </ View>
+
                 <View style={styles.container1}>
                         <View style={styles.inputView}>
                             <TextInput
@@ -136,7 +163,29 @@ const styles = StyleSheet.create({
       marginBottom: 20,
       alignItems: 'center',
     },
+
+    buttonView: {
+        width: '28%',
+        borderRadius: 10,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 10,
+        backgroundColor: '#089c2f',
+    },
    
+    buttonView2: {
+        width: '28%',
+        borderRadius: 10,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 10,
+        backgroundColor: '#fff',
+        borderColor: '#089c2f',
+        borderWidth: 1.5,
+    },
+    
     TextInput: {
       height: 50,
       flex: 1,
