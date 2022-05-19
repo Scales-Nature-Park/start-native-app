@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-const LoginForm = () => {
+const LoginForm = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -19,7 +19,7 @@ const LoginForm = () => {
                 <TextInput
                 style={styles.TextInput}
                 placeholder="Email"
-                placeholderTextColor="#003f5c"
+                placeholderTextColor="#000000"
                 onChangeText={(email) => setEmail(email)}
                 />
             </View>
@@ -28,7 +28,7 @@ const LoginForm = () => {
                 <TextInput
                 style={styles.TextInput}
                 placeholder="Password"
-                placeholderTextColor="#003f5c"
+                placeholderTextColor="#000000"
                 secureTextEntry={true}
                 onChangeText={(password) => setPassword(password)}
                 />
@@ -39,16 +39,16 @@ const LoginForm = () => {
             </TouchableOpacity>
         
             <TouchableOpacity style={styles.loginBtn}
-            onPress = {() => AuthenticateCredentials(email, password)}>
+            onPress = {() => AuthenticateCredentials(email, password, navigation)}>
                 <Text style={styles.loginText}>LOGIN</Text>
             </TouchableOpacity>
         </View>
     );   
 };
 
-function AuthenticateCredentials(email, password) {
+function AuthenticateCredentials(email, password, navigation) {
     console.log(email);
-    // if (email && password) navigation.navigate('Home');
+    if (email && password) navigation.navigate('DataEntry');
 };
 
 const styles = StyleSheet.create({
@@ -77,11 +77,13 @@ const styles = StyleSheet.create({
       flex: 1,
       padding: 10,
       marginLeft: 20,
+      color:'#000000',
     },
    
     forgot_button: {
       height: 30,
       marginBottom: 30,
+      color: '#000000 ',
     },
    
     loginBtn: {
