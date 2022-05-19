@@ -14,7 +14,7 @@ const App = () => {
         <Stack.Screen name='Login' component={LoginForm}>
         </Stack.Screen>
 
-        <Stack.Screen name='DataEntry' component={DataInput}>
+        <Stack.Screen name='DataEntry' component={DataInput} options={{title: 'Data Entry'}}>
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

@@ -48,7 +48,7 @@ const LoginForm = ({ navigation }) => {
 
 function AuthenticateCredentials(email, password, navigation) {
     console.log(email);
-    if (email && password) navigation.navigate('DataEntry');
+     navigation.navigate('DataEntry');
 };
 
 const styles = StyleSheet.create({
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     forgot_button: {
       height: 30,
       marginBottom: 30,
-      color: '#000000 ',
+      color: '#000000',
     },
    
     loginBtn: {
@@ -95,6 +95,10 @@ const styles = StyleSheet.create({
       marginTop: 40,
       backgroundColor: "#089c2f",
     },
+
+    loginText: {
+      color: '#000000',
+    }
 });
 
 export default LoginForm;
