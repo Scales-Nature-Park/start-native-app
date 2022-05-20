@@ -10,13 +10,16 @@ import {
     SafeAreaView,
     Button,
 } from 'react-native';
+import Input from 'react-native-input-style';
 import ModalDropdown from 'react-native-modal-dropdown';
 
 const DataInput = () => {
     let dateObj = new Date(),
         day = dateObj.getDate(), 
         month = dateObj.getMonth(),
-        year = dateObj.getFullYear();
+        year = dateObj.getFullYear(),
+        currHours = dateObj.getHours(),
+        currMins = dateObj.getMinutes();
         
     const months = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'Novemeber', 'December'];
     const [currDay, setDay] = useState(day);
@@ -24,9 +27,12 @@ const DataInput = () => {
     const [open, setOpen] = useState(true);
     const [value, setValue] = useState('May');
     const [currYear, setYear] = useState(year);
+    const [hours, setHours] = useState(currHours);
+    const [mins, setMins] = useState(currMins);
 
     const [species, setSpecies] = useState('');
     const [category, setCategory] = useState('Turtle');
+    const [conditon, setCondition] = useState('Alive');
     
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -78,7 +84,7 @@ const DataInput = () => {
                             dropdownTextHighlightStyle={styles.dropText}
                             defaultValue={currMonth}
                             defaultIndex={month}
-                            onSelect={(selectedMonth) => setMonth(selectedMonth)}
+                            onSelect={(selectedMonth) => setMonth(months[selectedMonth])}
                             />
                         </View>
 
@@ -91,13 +97,54 @@ const DataInput = () => {
                             />
                         </View>
                 </ View>
+
+                <View style={styles.container1}>
+                    <Text style={styles.field}>Time: </Text>
+                    <View style={styles.inputView}>
+                        <TextInput
+                        style={styles.TextInput}
+                        placeholder={hours.toString()}
+                        placeholderTextColor='#000000'
+                        onChangeText={(currDay) => setDay(currDay)}
+                        />
+                    </View>
+
+                    <Text style={styles.field}>:</Text>
+
+                    <View style={styles.inputView}>
+                        <TextInput
+                        style={styles.TextInput}
+                        placeholder={mins.toString()}
+                        placeholderTextColor='#000000'
+                        onChangeText={(currYear) => setYear(currYear)}
+                        />
+                    </View>
+                </ View>
+                
+                <View style={styles.container1}>
+                    <Text style={styles.field}>Conditon:</Text>
+                    <View style={styles.fieldInput}>
+                            <ModalDropdown 
+                            options={['Alive', 'Injured', 'Dead']}
+                            showsVerticalScrollIndicator={true}
+                            textStyle={styles.dropText}
+                            style={styles.dropButton}
+                            dropdownTextStyle={styles.dropText}
+                            dropdownStyle={styles.dropDown}
+                            dropdownTextHighlightStyle={styles.dropText}
+                            defaultValue={conditon}
+                            defaultIndex={0}
+                            onSelect={(conditon) => setCondition(conditon)}
+                            />
+                        </View>
+                </ View>
             </ScrollView>
 
-                <View style={styles.container2}>
-                    <TouchableOpacity style={styles.submitBtn}>
-                        <Text style={styles.submitText}>SUBMIT</Text>
-                    </TouchableOpacity>
-                </View>
+            <View style={styles.container2}>
+                <TouchableOpacity style={styles.submitBtn}>
+                    <Text style={styles.submitText}>SUBMIT</Text>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     );
 };
@@ -126,7 +173,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         backgroundColor: '#79f79b', 
         textAlign: 'center',
-        width: '30%',
+        width: '35%',
     },
 
     dropText: {
@@ -191,6 +238,8 @@ const styles = StyleSheet.create({
       flex: 1,
       padding: 10,
       color:'#000000',
+      width: '100%',
+      textAlign: 'center',
     },
    
     forgot_button: {
@@ -212,6 +261,23 @@ const styles = StyleSheet.create({
     submitText: {
         color: '#000000',
     },
+
+    field: {
+        fontSize: 22,
+        color: '#000000',
+        marginBottom: 20,
+        textAlign: 'left',
+    },
+
+    fieldInput: {
+        alignItems: 'right',
+        width: '70%',
+        backgroundColor: '#79f79b',
+        borderRadius: 10,
+        height: '100%',
+        marginBottom: 20,
+        alignItems: 'center',
+    }
 });
 
 export default DataInput;

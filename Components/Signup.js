@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Input from 'react-native-input-style';
 import {
     StatusBar,
     StyleSheet,
@@ -8,10 +9,10 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-const LoginForm = ({ navigation }) => {
+const Signup = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    
     return (
         <View style={styles.container}>
             <StatusBar style="auto" />
@@ -33,28 +34,28 @@ const LoginForm = ({ navigation }) => {
                 onChangeText={(password) => setPassword(password)}
                 />
             </View>
-        
-            <TouchableOpacity>
-                <Text style={styles.forgot_button}>Forgot Password?</Text>
-            </TouchableOpacity>
+
+            <View style={styles.inputView}>
+                <TextInput
+                style={styles.TextInput}
+                placeholder="Verify Password"
+                placeholderTextColor="#000000"
+                secureTextEntry={true}
+                onChangeText={(password) => setPassword(password)}
+                />
+            </View>
         
             <TouchableOpacity style={styles.loginBtn}
-            onPress = {() => AuthenticateCredentials(email, password, navigation)}>
-                <Text style={styles.loginText}>LOGIN</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.signupBtn}
-            onPress = {() => navigation.navigate('SignUp')}>
-                <Text style={styles.loginText}>SIGNUP</Text>
+            onPress = {() => RegisterUser(email, password, navigation)}>
+                <Text style={styles.loginText}>REGISTER</Text>
             </TouchableOpacity>
         </View>
-    );   
-};
+    );
+}
 
-function AuthenticateCredentials(email, password, navigation) {
-    console.log(email);
-    navigation.navigate('DataEntry');
-};
+function RegisterUser(email, password, navigation) {
+    navigation.navigate('Login');
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -78,19 +79,14 @@ const styles = StyleSheet.create({
     },
    
     TextInput: {
-      height: 50,
+      height: '100%',
       flex: 1,
       padding: 10,
-      marginLeft: 20,
+      width: '100%',
+      textAlign: 'center',
       color:'#000000',
     },
-   
-    forgot_button: {
-      height: 30,
-      marginBottom: 30,
-      color: '#000000',
-    },
-   
+
     loginBtn: {
       width: "80%",
       borderRadius: 25,
@@ -118,4 +114,5 @@ const styles = StyleSheet.create({
     },
 });
 
-export default LoginForm;
+
+export default Signup;
