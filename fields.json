@@ -1,0 +1,66 @@
+[
+    {
+        "Category": "All",
+        "ConditionalFields": [
+            {
+                "name": "date"
+            },
+            {
+                "name": "time"
+            },
+            {
+                "name": "Latitude",
+                "dropDown": false,
+                "dataValidation":  {
+                    "arguments": "input",
+                    "body": "(input >= 41 &&  input <= 46) ? return false; : return true;"
+                }
+            }, 
+            {
+                "name": "Longitude",
+                "dropDown": false,
+                "dataValidation":  {
+                    "arguments": "input",
+                    "body": "(input >= -84 &&  input <= -75) ? return false; : return true;"
+                }
+            },
+            {
+                "name": "Behaviour",
+                "dropDown": true,
+                "values": ["", ""]
+            }
+        ]
+    },
+
+    {
+        "Category": "Turtle",
+        "ConditionalFields": [
+            {
+                "name": "Notch Codes",
+                "dropDown": false
+            }
+        ]
+    },
+
+    {
+        "Category": "Snake",
+        "ConditionalFields": [
+            {
+                "name": "Duplicate",
+                "dropDown": false,
+                "values": ["True", "False"]
+            }
+        ]
+    },
+
+    {
+        "Category": "Lizard",
+        "ConditionalFields": [
+            {
+                "name": "Duplicate",
+                "dropDown": false,
+                "values": ["True", "False"]
+            }
+        ]
+    }
+]

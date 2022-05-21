@@ -6,13 +6,20 @@ import {
     View,
     TextInput,
     TouchableOpacity,
+    ScrollViewBase,
+    ScrollView,
+    SafeAreaView,
 } from 'react-native';
+
+const scalesColors = require('../colors.json');
 
 const LoginForm = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     return (
+      <SafeAreaView style={styles.safeArea}>
+      <ScrollView>
         <View style={styles.container}>
             <StatusBar style="auto" />
             <View style={styles.inputView}>
@@ -48,6 +55,8 @@ const LoginForm = ({ navigation }) => {
                 <Text style={styles.loginText}>SIGNUP</Text>
             </TouchableOpacity>
         </View>
+      </ScrollView>
+      </SafeAreaView>
     );   
 };
 
@@ -57,11 +66,19 @@ function AuthenticateCredentials(email, password, navigation) {
 };
 
 const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      paddingTop: StatusBar.currentHeight * 70 / 100,
+      paddingBottom: StatusBar.currentHeight * 70 / 100,
+      backgroundColor: '#fff',    
+    },
+
     container: {
       flex: 1,
       backgroundColor: "#fff",
       alignItems: "center",
       justifyContent: "center",
+      marginTop: 100,
     },
    
     image: {
@@ -69,20 +86,20 @@ const styles = StyleSheet.create({
     },
    
     inputView: {
-      backgroundColor: "#79f79b",
+      backgroundColor: scalesColors.LightGreen,
       borderRadius: 30,
       width: "70%",
       height: 45,
       marginBottom: 20,
-      alignItems: "center",
+      alignItems: 'center',
     },
    
     TextInput: {
       height: 50,
       flex: 1,
       padding: 10,
-      marginLeft: 20,
       color:'#000000',
+      textAlign: 'center',
     },
    
     forgot_button: {
@@ -98,7 +115,7 @@ const styles = StyleSheet.create({
       alignItems: "center",
       justifyContent: "center",
       marginTop: 40,
-      backgroundColor: "#089c2f",
+      backgroundColor: scalesColors.DeepGreen,
     },
 
     loginText: {
@@ -113,7 +130,7 @@ const styles = StyleSheet.create({
       justifyContent: "center",
       marginTop: 40,
       backgroundColor: "#FFFFFF",
-      borderColor: '#089c2f',
+      borderColor: scalesColors.DeepGreen,
       borderWidth: 1.5,
     },
 });

@@ -10,8 +10,9 @@ import {
     SafeAreaView,
     Button,
 } from 'react-native';
-import Input from 'react-native-input-style';
 import ModalDropdown from 'react-native-modal-dropdown';
+
+const scalesColors = require('../colors.json');
 
 const DataInput = () => {
     let dateObj = new Date(),
@@ -43,7 +44,7 @@ const DataInput = () => {
                         setCategory('Turtle');
                         console.log(category);
                     }}>
-                        <Text style={(category == 'Turtle') ? {color: '#fff'} : {color: '#089c2f'}}>TURTLE</Text>
+                        <Text style={(category == 'Turtle') ? {color: '#000000'} : {color: scalesColors.BlueRacer}}>TURTLE</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={(category == 'Snake') ? styles.buttonView : styles.buttonView2}
@@ -51,7 +52,7 @@ const DataInput = () => {
                         setCategory('Snake');
                         console.log(category);
                     }}>
-                        <Text style={(category == 'Snake') ? {color: '#fff'} : {color: '#089c2f'}}>SNAKE</Text>
+                        <Text style={(category == 'Snake') ? {color: '#000000'} : {color: scalesColors.BlueRacer}}>SNAKE</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style= {(category == 'Lizard') ? styles.buttonView : styles.buttonView2}
@@ -59,7 +60,7 @@ const DataInput = () => {
                         setCategory('Lizard');
                         console.log(category);
                     }}>
-                        <Text style={(category == 'Lizard') ? {color: '#fff'} : {color: '#089c2f'}}>LIZARD</Text>
+                        <Text style={(category == 'Lizard') ? {color: '#000000'} : {color: scalesColors.BlueRacer}}>LIZARD</Text>
                     </TouchableOpacity>
                 </ View>
 
@@ -105,7 +106,7 @@ const DataInput = () => {
                         style={styles.TextInput}
                         placeholder={hours.toString()}
                         placeholderTextColor='#000000'
-                        onChangeText={(currDay) => setDay(currDay)}
+                        onChangeText={(inHours) => setHours(inHours)}
                         />
                     </View>
 
@@ -116,7 +117,7 @@ const DataInput = () => {
                         style={styles.TextInput}
                         placeholder={mins.toString()}
                         placeholderTextColor='#000000'
-                        onChangeText={(currYear) => setYear(currYear)}
+                        onChangeText={(inMins) => setMins(inMins)}
                         />
                     </View>
                 </ View>
@@ -169,9 +170,9 @@ const styles = StyleSheet.create({
     dropDown: {
         alignItems: 'center',
         justifyContent: 'center',
-        color: "#79f79b",
+        color: scalesColors.BlueRacer,
         borderRadius: 10,
-        backgroundColor: '#79f79b', 
+        backgroundColor: scalesColors.BlueRacer, 
         textAlign: 'center',
         width: '35%',
     },
@@ -179,15 +180,17 @@ const styles = StyleSheet.create({
     dropText: {
         alignContent: 'center',
         color: '#000',
-        backgroundColor: '#79f79b',
+        backgroundColor: scalesColors.BlueRacer,
+        fontSize: 15,
     },
 
     container1: {
       flex: 1,
       backgroundColor: '#fff',
       alignItems: 'center',
-      justifyContent: 'space-evenly',
+      justifyContent: 'space-evenly',   
       flexDirection:'row',
+      width: '100%'
     },
 
     container2: {
@@ -203,7 +206,7 @@ const styles = StyleSheet.create({
     },
    
     inputView: {
-      backgroundColor: '#79f79b',
+      backgroundColor: scalesColors.BlueRacer,
       borderRadius: 10,
       width: '28%',
       height: 45,
@@ -218,7 +221,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 10,
-        backgroundColor: '#089c2f',
+        backgroundColor: scalesColors.BlueRacer,
     },
    
     buttonView2: {
@@ -229,7 +232,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 10,
         backgroundColor: '#fff',
-        borderColor: '#089c2f',
+        borderColor: scalesColors.BlueRacer,
         borderWidth: 1.5,
     },
     
@@ -242,12 +245,6 @@ const styles = StyleSheet.create({
       textAlign: 'center',
     },
    
-    forgot_button: {
-      height: 30,
-      marginBottom: 30,
-      color: '#000000 ',
-    },
-   
     submitBtn: {
       width: '90%',
       borderRadius: 25,
@@ -255,7 +252,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       marginTop: 40,
-      backgroundColor: '#089c2f',
+      backgroundColor: scalesColors.DeepGreen,
     },
 
     submitText: {
@@ -272,7 +269,7 @@ const styles = StyleSheet.create({
     fieldInput: {
         alignItems: 'right',
         width: '70%',
-        backgroundColor: '#79f79b',
+        backgroundColor: scalesColors.BlueRacer,
         borderRadius: 10,
         height: '100%',
         marginBottom: 20,

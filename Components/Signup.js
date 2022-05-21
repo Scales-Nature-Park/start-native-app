@@ -7,13 +7,20 @@ import {
     View,
     TextInput,
     TouchableOpacity,
+    SafeAreaView,
+    ScrollView,
 } from 'react-native';
+
+const scalesColors = require('../colors.json');
 
 const Signup = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [password2, setPassword2] = useState('');
     
     return (
+      <SafeAreaView style={styles.safeArea}>
+      <ScrollView>
         <View style={styles.container}>
             <StatusBar style="auto" />
             <View style={styles.inputView}>
@@ -41,7 +48,7 @@ const Signup = ({ navigation }) => {
                 placeholder="Verify Password"
                 placeholderTextColor="#000000"
                 secureTextEntry={true}
-                onChangeText={(password) => setPassword(password)}
+                onChangeText = {() => RegisterUser(email, password, password2, navigation)}
                 />
             </View>
         
@@ -50,19 +57,33 @@ const Signup = ({ navigation }) => {
                 <Text style={styles.loginText}>REGISTER</Text>
             </TouchableOpacity>
         </View>
+      </ScrollView>
+      </SafeAreaView>
     );
 }
 
-function RegisterUser(email, password, navigation) {
+function RegisterUser(email, password, password2, navigation) {
+    if (password.toString() !== password2.toString()) {
+      alert("Entered password doesn't match verify password.");
+      return;
+    }
     navigation.navigate('Login');
 }
 
 const styles = StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      paddingTop: StatusBar.currentHeight * 70 / 100,
+      paddingBottom: StatusBar.currentHeight * 70 / 100,
+      backgroundColor: '#fff',    
+    },
+
     container: {
       flex: 1,
       backgroundColor: "#fff",
       alignItems: "center",
       justifyContent: "center",
+      marginTop: 100,
     },
    
     image: {
@@ -70,7 +91,7 @@ const styles = StyleSheet.create({
     },
    
     inputView: {
-      backgroundColor: "#79f79b",
+      backgroundColor: scalesColors.LightGreen,
       borderRadius: 30,
       width: "70%",
       height: 45,
@@ -85,6 +106,7 @@ const styles = StyleSheet.create({
       width: '100%',
       textAlign: 'center',
       color:'#000000',
+      textAlign: 'center',
     },
 
     loginBtn: {
@@ -94,7 +116,7 @@ const styles = StyleSheet.create({
       alignItems: "center",
       justifyContent: "center",
       marginTop: 40,
-      backgroundColor: "#089c2f",
+      backgroundColor: scalesColors.DeepGreen,
     },
 
     loginText: {
