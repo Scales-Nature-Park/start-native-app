@@ -25,6 +25,32 @@
                 }
             },
             {
+                "name": "Project",
+                "dropDown": true,
+                "values": ["Pembroke", "Pelee", "Long Point", "START/CARES", "OTHER"]
+            },
+            {
+                "name": "HotlineCall",
+                "dropDown": true,
+                "values": ["Yes", "No"],
+                "dataValidation": {
+                    "arguments": "input",
+                    "body": "(input == Yes) ? "
+                }
+            },
+            {
+                "name": "CallerName",
+                "dropDown": false 
+            },
+            {
+                "name": "CallerContact",
+                "dropDown": false,
+                "dataValidation": {
+                    "arguments": "input",
+                    "body": "(HotlineCall.values == Yes) ? "
+                }
+            },
+            {
                 "name": "Behaviour",
                 "dropDown": true,
                 "values": ["", ""]
@@ -47,7 +73,7 @@
         "ConditionalFields": [
             {
                 "name": "Duplicate",
-                "dropDown": false,
+                "dropDown": true,
                 "values": ["True", "False"]
             }
         ]
@@ -58,7 +84,7 @@
         "ConditionalFields": [
             {
                 "name": "Duplicate",
-                "dropDown": false,
+                "dropDown": true,
                 "values": ["True", "False"]
             }
         ]
