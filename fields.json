@@ -32,28 +32,44 @@
             {
                 "name": "HotlineCall",
                 "dropDown": true,
-                "values": ["Yes", "No"],
-                "dataValidation": {
-                    "arguments": "input",
-                    "body": "(input == Yes) ? "
-                }
-            },
-            {
-                "name": "CallerName",
-                "dropDown": false 
-            },
-            {
-                "name": "CallerContact",
-                "dropDown": false,
-                "dataValidation": {
-                    "arguments": "input",
-                    "body": "(HotlineCall.values == Yes) ? "
-                }
+                "values": ["No", "Yes"],
+                "condition": "Yes",
+                "conditionalFields": [
+                    {
+                        "name": "CallerName",
+                        "dropDown": false 
+                    },
+                    {
+                        "name": "CallerContact",
+                        "dropDown": false
+                    }
+                ]
             },
             {
                 "name": "Behaviour",
                 "dropDown": true,
-                "values": ["", ""]
+                "values": [
+                    "SWIM",
+                    "BASK",
+                    "AB",
+                    "FLEE",
+                    "MATE",
+                    "NSEA",
+                    "NDIG",
+                    "NLAY",
+                    "NCOV",
+                    "SLEEP",
+                    "MO",
+                    "EA",
+                    "COURT",
+                    "UC",
+                    "FI",
+                    "TRAP",
+                    "HCALL",
+                    "SCALL",
+                    "OTH: IN COMMENTS",
+                    "UNK: IN COMMENTS"
+                ]
             }
         ]
     },

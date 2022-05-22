@@ -13,8 +13,17 @@ import {
 import ModalDropdown from 'react-native-modal-dropdown';
 
 const scalesColors = require('../colors.json');
+const dataFields = require('../fields.json');
 
-const DataInput = () => {
+const displayConditionals = (jsObj, displayField, fields, state) => {
+    if (state.value == jsObj.condition) {
+        for (let field of jsObj.conditionalFields) {
+            displayField(field, fields);
+        }
+    }
+}
+
+const DataInput = ({ navigation }) => {
     let dateObj = new Date(),
         day = dateObj.getDate(), 
         month = dateObj.getMonth(),
@@ -25,15 +34,185 @@ const DataInput = () => {
     const months = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'Novemeber', 'December'];
     const [currDay, setDay] = useState(day);
     const [currMonth, setMonth] = useState(months[month]);
-    const [open, setOpen] = useState(true);
-    const [value, setValue] = useState('May');
     const [currYear, setYear] = useState(year);
     const [hours, setHours] = useState(currHours);
     const [mins, setMins] = useState(currMins);
 
-    const [species, setSpecies] = useState('');
     const [category, setCategory] = useState('Turtle');
-    const [conditon, setCondition] = useState('Alive');
+    const [states, setStates] = useState([]);
+
+    const displayField = (field, fields) => {
+        if (field.name == 'date') {
+            fields.push(
+                <View style={styles.container1}>
+                    <View style={styles.inputView}>
+                        <TextInput
+                        style={styles.TextInput}
+                        placeholder={day.toString()}
+                        placeholderTextColor='#000000'
+                        onChangeText={(currDay) => setDay(currDay)}
+                        />
+                    </View>
+    
+                    <View style={styles.inputView}>
+                        <ModalDropdown 
+                        options={months}
+                        showsVerticalScrollIndicator={true}
+                        textStyle={styles.dropText}
+                        style={styles.dropButton}
+                        dropdownTextStyle={styles.dropText}
+                        dropdownStyle={styles.dropDown}
+                        dropdownTextHighlightStyle={styles.dropText}
+                        defaultValue={currMonth}
+                        defaultIndex={month}
+                        onSelect={(selectedMonth) => setMonth(months[selectedMonth])}
+                        />
+                    </View>
+    
+                    <View style={styles.inputView}>
+                        <TextInput
+                        style={styles.TextInput}
+                        placeholder={year.toString()}
+                        placeholderTextColor='#000000'
+                        onChangeText={(currYear) => setYear(currYear)}
+                        />
+                    </View>
+                </ View>
+            );
+            return;
+        } else if (field.name == 'time') {
+            fields.push(
+                <View style={styles.container1}>
+                    <Text style={styles.timeField}>Time: </Text>
+                    <View style={styles.inputView}>
+                        <TextInput
+                        style={styles.TextInput}
+                        placeholder={currHours.toString()}
+                        placeholderTextColor='#000000'
+                        onChangeText={(inHours) => {
+                                if (inHours.trim() == '') setHours(currHours);
+                                else setHours(inHours);
+                            }
+                        }
+                        />
+                    </View>
+    
+                    <Text style={styles.timeField}>:</Text>
+    
+                    <View style={styles.inputView}>
+                        <TextInput
+                        style={styles.TextInput}
+                        placeholder={currMins.toString()}
+                        placeholderTextColor='#000000'
+                        onChangeText={(inMins) => {
+                                if (inMins.trim() == '') setMins(currMins);
+                                else setMins(inMins);
+                            }
+                        }
+                        />
+                    </View>
+                </ View>
+            );
+            return;
+        }
+        
+        if (field.dropDown) {
+            fields.push(
+                <View style={styles.container1}>
+                    <Text style={styles.field}>{field.name}:</Text>
+                    <View style={styles.fieldInput}>
+                            <ModalDropdown 
+                            options={field.values}
+                            showsVerticalScrollIndicator={true}
+                            textStyle={styles.dropText}
+                            style={styles.dropButton}
+                            dropdownTextStyle={styles.dropText}
+                            dropdownStyle={styles.dropDown}
+                            dropdownTextHighlightStyle={styles.dropText}
+                            defaultValue={field.values[0]}
+                            defaultIndex={0}
+                            onSelect={(myVal) => {
+                                let tempStates = states.slice();
+                                let tempIndex = -1;
+    
+                                tempStates.forEach((curr, index) => {
+                                    if (curr.name != field.name) return;
+                                    curr.value = field.values[myVal];
+                                    tempIndex = index;
+                                });
+                                
+                                console.log(tempStates);
+                                if(tempIndex == -1) tempStates.push({"name": field.name, "value": field.values[myVal]});
+                                setStates(tempStates);
+                            }}
+                            />
+                        </View>
+                </ View>
+            );
+        } else {
+            fields.push(
+                <View style={styles.container1}>
+                <Text style={styles.field}>{field.name}:</Text>
+                <View style={styles.fieldInput}>
+                    <TextInput
+                        style={styles.TextInput}
+                        placeholder={'Enter ' + field.name}
+                        placeholderTextColor='#000000'
+                        onChangeText={(value) => {
+                            let tempStates = states.slice();
+                            let tempIndex = -1;
+
+                            tempStates.forEach((curr, index) => {
+                                if (curr.name != field.name) return;
+                                curr.value = value;
+                                tempIndex = index;
+                            });
+                            
+                            if(tempIndex == -1) tempStates.push({"name": field.name, "value": value});
+                            setStates(tempStates);
+                        }}
+                    />
+                </View>
+                </View>
+            );
+        }
+    }
+    
+    let allIndex = -1, catIndex = -1;
+    dataFields.forEach((element, index) => {
+        if (element.Category == "All") {
+            allIndex = index;
+        } else if (element.Category == category) {
+            catIndex = index;
+        }
+    });
+
+    let modfDataFields = [];
+    if (allIndex == -1 && catIndex == -1) {
+        alert("Invalid fields specified.");
+        return (<View></View>);
+    } 
+    
+    if (allIndex != -1) modfDataFields.push(dataFields[allIndex]);
+    if (catIndex != -1) modfDataFields.push(dataFields[catIndex]);
+
+    let fields = [];
+    for (let i = 0; i < modfDataFields.length; i++) {
+        for (let field of modfDataFields[i].ConditionalFields) {
+            displayField(field, fields);
+            if (!field.conditionalFields) continue;
+            
+            let state = states.filter((element) => element.name == field.name)[0];
+
+            if (!state){
+                state = {"name": field.name, "value": ''};
+                if (field.dropDown) state.value = field.values[0];
+
+                setStates([...states, state]);
+            }
+            displayConditionals(field, displayField, fields, state);
+        }
+    }
     
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -62,90 +241,18 @@ const DataInput = () => {
                     }}>
                         <Text style={(category == 'Lizard') ? {color: '#000000'} : {color: scalesColors.BlueRacer}}>LIZARD</Text>
                     </TouchableOpacity>
+                    
                 </ View>
 
-                <View style={styles.container1}>
-                        <View style={styles.inputView}>
-                            <TextInput
-                            style={styles.TextInput}
-                            placeholder={currDay.toString()}
-                            placeholderTextColor='#000000'
-                            onChangeText={(currDay) => setDay(currDay)}
-                            />
-                        </View>
+                {fields}
 
-                        <View style={styles.inputView}>
-                            <ModalDropdown 
-                            options={months}
-                            showsVe rticalScrollIndicator={true}
-                            textStyle={styles.dropText}
-                            style={styles.dropButton}
-                            dropdownTextStyle={styles.dropText}
-                            dropdownStyle={styles.dropDown}
-                            dropdownTextHighlightStyle={styles.dropText}
-                            defaultValue={currMonth}
-                            defaultIndex={month}
-                            onSelect={(selectedMonth) => setMonth(months[selectedMonth])}
-                            />
-                        </View>
-
-                        <View style={styles.inputView}>
-                            <TextInput
-                            style={styles.TextInput}
-                            placeholder={currYear.toString()}
-                            placeholderTextColor='#000000'
-                            onChangeText={(currYear) => setYear(currYear)}
-                            />
-                        </View>
-                </ View>
-
-                <View style={styles.container1}>
-                    <Text style={styles.field}>Time: </Text>
-                    <View style={styles.inputView}>
-                        <TextInput
-                        style={styles.TextInput}
-                        placeholder={hours.toString()}
-                        placeholderTextColor='#000000'
-                        onChangeText={(inHours) => setHours(inHours)}
-                        />
-                    </View>
-
-                    <Text style={styles.field}>:</Text>
-
-                    <View style={styles.inputView}>
-                        <TextInput
-                        style={styles.TextInput}
-                        placeholder={mins.toString()}
-                        placeholderTextColor='#000000'
-                        onChangeText={(inMins) => setMins(inMins)}
-                        />
-                    </View>
-                </ View>
-                
-                <View style={styles.container1}>
-                    <Text style={styles.field}>Conditon:</Text>
-                    <View style={styles.fieldInput}>
-                            <ModalDropdown 
-                            options={['Alive', 'Injured', 'Dead']}
-                            showsVerticalScrollIndicator={true}
-                            textStyle={styles.dropText}
-                            style={styles.dropButton}
-                            dropdownTextStyle={styles.dropText}
-                            dropdownStyle={styles.dropDown}
-                            dropdownTextHighlightStyle={styles.dropText}
-                            defaultValue={conditon}
-                            defaultIndex={0}
-                            onSelect={(conditon) => setCondition(conditon)}
-                            />
-                        </View>
-                </ View>
+                <View style={styles.container2}>
+                    <TouchableOpacity style={styles.submitBtn}>
+                        <Text style={styles.submitText}>SUBMIT</Text>
+                    </TouchableOpacity>
+                </View>
             </ScrollView>
 
-            <View style={styles.container2}>
-                <TouchableOpacity style={styles.submitBtn}>
-                    <Text style={styles.submitText}>SUBMIT</Text>
-                </TouchableOpacity>
-            </View>
         </SafeAreaView>
     );
 };
@@ -190,7 +297,9 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'space-evenly',   
       flexDirection:'row',
-      width: '100%'
+      width: '100%',
+      height: 50,
+      marginTop: 20,
     },
 
     container2: {
@@ -259,16 +368,24 @@ const styles = StyleSheet.create({
         color: '#000000',
     },
 
-    field: {
-        fontSize: 22,
+    timeField: {
+        fontSize: 20,
         color: '#000000',
         marginBottom: 20,
         textAlign: 'left',
     },
 
+    field: {
+        fontSize: 16,
+        color: '#000000',
+        marginBottom: 20,
+        textAlign: 'left',
+        width: '30%',
+    },
+
     fieldInput: {
         alignItems: 'right',
-        width: '70%',
+        width: '60%',
         backgroundColor: scalesColors.BlueRacer,
         borderRadius: 10,
         height: '100%',

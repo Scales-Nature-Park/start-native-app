@@ -48,12 +48,12 @@ const Signup = ({ navigation }) => {
                 placeholder="Verify Password"
                 placeholderTextColor="#000000"
                 secureTextEntry={true}
-                onChangeText = {() => RegisterUser(email, password, password2, navigation)}
+                onChangeText = {(pass) => setPassword2(pass)}
                 />
             </View>
         
             <TouchableOpacity style={styles.loginBtn}
-            onPress = {() => RegisterUser(email, password, navigation)}>
+            onPress = {() => RegisterUser(email, password, password2, navigation)}>
                 <Text style={styles.loginText}>REGISTER</Text>
             </TouchableOpacity>
         </View>
