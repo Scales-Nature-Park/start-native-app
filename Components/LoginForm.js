@@ -62,7 +62,7 @@ const LoginForm = ({ navigation }) => {
 
 function AuthenticateCredentials(email, password, navigation) {
     console.log(email);
-    navigation.navigate('DataEntry');
+    navigation.navigate('Home');
 };
 
 const styles = StyleSheet.create({

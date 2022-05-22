@@ -8,17 +8,24 @@ import {
     TouchableOpacity,
     ScrollView,
     SafeAreaView,
-    Button,
 } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 
 const scalesColors = require('../colors.json');
 const dataFields = require('../fields.json');
 
-const displayConditionals = (jsObj, displayField, fields, state) => {
-    if (state.value == jsObj.condition) {
+// recursive function that display conditional fields of a field
+// and their conditionals
+const displayConditionals = (jsObj, displayField, fields, states) => {
+    let state = states.filter((element) => element.name == jsObj.name)[0];
+    if(!state) return;
+
+    if (jsObj.conditionalFields) {
         for (let field of jsObj.conditionalFields) {
+            if (state.value != field.condition) continue;
+
             displayField(field, fields);
+            displayConditionals(field, displayField, fields, states);
         }
     }
 }
@@ -140,8 +147,8 @@ const DataInput = ({ navigation }) => {
                                     curr.value = field.values[myVal];
                                     tempIndex = index;
                                 });
-                                
                                 console.log(tempStates);
+                                
                                 if(tempIndex == -1) tempStates.push({"name": field.name, "value": field.values[myVal]});
                                 setStates(tempStates);
                             }}
@@ -168,6 +175,7 @@ const DataInput = ({ navigation }) => {
                                 tempIndex = index;
                             });
                             
+                            console.log(tempStates);
                             if(tempIndex == -1) tempStates.push({"name": field.name, "value": value});
                             setStates(tempStates);
                         }}
@@ -179,6 +187,9 @@ const DataInput = ({ navigation }) => {
     }
     
     let allIndex = -1, catIndex = -1;
+
+    // get the indeces of the all category and the selected
+    // categpry objects in dataFields
     dataFields.forEach((element, index) => {
         if (element.Category == "All") {
             allIndex = index;
@@ -197,11 +208,14 @@ const DataInput = ({ navigation }) => {
     if (catIndex != -1) modfDataFields.push(dataFields[catIndex]);
 
     let fields = [];
+
+    // loop through all the fields in the fields.json file
+    // and display them with theire conditional fields
     for (let i = 0; i < modfDataFields.length; i++) {
         for (let field of modfDataFields[i].ConditionalFields) {
-            displayField(field, fields);
-            if (!field.conditionalFields) continue;
-            
+            displayField(field, fields);            
+
+            // set a state for the fields in the sates list
             let state = states.filter((element) => element.name == field.name)[0];
 
             if (!state){
@@ -210,7 +224,9 @@ const DataInput = ({ navigation }) => {
 
                 setStates([...states, state]);
             }
-            displayConditionals(field, displayField, fields, state);
+
+            if (!field.conditionalFields) continue;
+            displayConditionals(field, displayField, fields, states);
         }
     }
     
@@ -241,7 +257,6 @@ const DataInput = ({ navigation }) => {
                     }}>
                         <Text style={(category == 'Lizard') ? {color: '#000000'} : {color: scalesColors.BlueRacer}}>LIZARD</Text>
                     </TouchableOpacity>
-                    
                 </ View>
 
                 {fields}
@@ -252,7 +267,6 @@ const DataInput = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </ScrollView>
-
         </SafeAreaView>
     );
 };

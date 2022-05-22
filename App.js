@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import LoginForm from './Components/LoginForm'; 
 import DataInput from './Components/DataInput';
 import Signup from './Components/Signup'
+import Home from './Components/Home'
 import {StyleSheet, useColorScheme,} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -19,6 +20,9 @@ const App = () => {
         </Stack.Screen>
 
         <Stack.Screen name='SignUp' component={Signup} options={{title: 'Sign Up'}}>
+        </Stack.Screen>
+
+        <Stack.Screen name='Home' component={Home} options={{title: 'Home'}}>
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
