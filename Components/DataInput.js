@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
     ScrollView,
     SafeAreaView,
+    Dimensions,
 } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 
@@ -46,6 +47,7 @@ const DataInput = ({ navigation }) => {
     const [mins, setMins] = useState(currMins);
 
     const [category, setCategory] = useState('Turtle');
+    const [comment, setComment] = useState('');
     const [states, setStates] = useState([]);
 
     const displayField = (field, fields) => {
@@ -159,43 +161,51 @@ const DataInput = ({ navigation }) => {
         } else {
             fields.push(
                 <View style={styles.container1}>
-                <Text style={styles.field}>{field.name}:</Text>
-                <View style={styles.fieldInput}>
-                    <TextInput
-                        style={styles.TextInput}
-                        placeholder={'Enter ' + field.name}
-                        placeholderTextColor='#000000'
-                        onChangeText={(value) => {
-                            let tempStates = states.slice();
-                            let tempIndex = -1;
+                    <Text style={styles.field}>{field.name}:</Text>
+                    <View style={styles.fieldInput}>
+                        <TextInput
+                            style={styles.TextInput}
+                            placeholder={'Enter ' + field.name}
+                            placeholderTextColor='#000000'
+                            onChangeText={(value) => {
+                                let tempStates = states.slice();
+                                let tempIndex = -1;
 
-                            tempStates.forEach((curr, index) => {
-                                if (curr.name != field.name) return;
-                                curr.value = value;
-                                tempIndex = index;
-                            });
-                            
-                            console.log(tempStates);
-                            if(tempIndex == -1) tempStates.push({"name": field.name, "value": value});
-                            setStates(tempStates);
-                        }}
-                    />
-                </View>
+                                tempStates.forEach((curr, index) => {
+                                    if (curr.name != field.name) return;
+                                    curr.value = value;
+                                    tempIndex = index;
+                                });
+                                
+                                console.log(tempStates);
+                                if(tempIndex == -1) tempStates.push({"name": field.name, "value": value});
+                                setStates(tempStates);
+                            }}
+                        />
+                    </View>
                 </View>
             );
         }
     }
     
     let allIndex = -1, catIndex = -1;
+    let categoryButtons = [];
 
     // get the indeces of the all category and the selected
     // categpry objects in dataFields
     dataFields.forEach((element, index) => {
         if (element.Category == "All") {
             allIndex = index;
-        } else if (element.Category == category) {
-            catIndex = index;
-        }
+        } else {
+            if (element.Category == category) catIndex = index;
+            categoryButtons.push(
+                <TouchableOpacity style={(category == element.Category) ? styles.buttonView : styles.buttonView2}
+                onPress= {() => setCategory(element.Category)}>
+                    <Text style={(category == element.Category) ? {color: '#000000'} : {color: scalesColors.BlueRacer}}>{element.Category}</Text>
+                </TouchableOpacity>
+            );
+        } 
+
     });
 
     let modfDataFields = [];
@@ -233,33 +243,23 @@ const DataInput = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.safeArea}>
             <ScrollView>
-                <View style={styles.container1}>
-                    <TouchableOpacity style={(category == 'Turtle') ? styles.buttonView : styles.buttonView2}
-                    onPress= {() => {
-                        setCategory('Turtle');
-                        console.log(category);
-                    }}>
-                        <Text style={(category == 'Turtle') ? {color: '#000000'} : {color: scalesColors.BlueRacer}}>TURTLE</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={(category == 'Snake') ? styles.buttonView : styles.buttonView2}
-                    onPress= {() => {
-                        setCategory('Snake');
-                        console.log(category);
-                    }}>
-                        <Text style={(category == 'Snake') ? {color: '#000000'} : {color: scalesColors.BlueRacer}}>SNAKE</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style= {(category == 'Lizard') ? styles.buttonView : styles.buttonView2}
-                    onPress= {() => {
-                        setCategory('Lizard');
-                        console.log(category);
-                    }}>
-                        <Text style={(category == 'Lizard') ? {color: '#000000'} : {color: scalesColors.BlueRacer}}>LIZARD</Text>
-                    </TouchableOpacity>
-                </ View>
-
+                <ScrollView horizontal={true}>
+                        {categoryButtons}
+                </ScrollView>
+                
                 {fields}
+                
+                <View style={[styles.container1, {height: 150}]}>
+                    <View style={styles.commentInput}>
+                        <TextInput
+                            multiline={true}
+                            style={styles.commentBox}
+                            placeholder={'Add Comments...'}
+                            placeholderTextColor='#000000'
+                            onChangeText={(value) => setComment(value)}
+                        />
+                    </View>
+                </View>
 
                 <View style={styles.container2}>
                     <TouchableOpacity style={styles.submitBtn}>
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'space-evenly',   
       flexDirection:'row',
-      width: '100%',
+      width: Dimensions.get('window').width,
       height: 50,
       marginTop: 20,
     },
@@ -338,7 +338,9 @@ const styles = StyleSheet.create({
     },
 
     buttonView: {
-        width: '28%',
+        width: Dimensions.get('window').width * 0.28,
+        marginRight: Dimensions.get('window').width * 0.03,
+        marginLeft: Dimensions.get('window').width * 0.025,
         borderRadius: 10,
         height: 50,
         alignItems: 'center',
@@ -348,7 +350,9 @@ const styles = StyleSheet.create({
     },
    
     buttonView2: {
-        width: '28%',
+        width: Dimensions.get('window').width * 0.28,
+        marginRight: Dimensions.get('window').width * 0.025,
+        marginLeft: Dimensions.get('window').width * 0.025,
         borderRadius: 10,
         height: 50,
         alignItems: 'center',
@@ -366,6 +370,16 @@ const styles = StyleSheet.create({
       color:'#000000',
       width: '100%',
       textAlign: 'center',
+    },
+
+    commentBox: {
+        height: 150,
+        flex: 1,
+        padding: 10,
+        color:'#000000',
+        width: '100%',
+        height: '100%',
+        textAlign: 'left',
     },
    
     submitBtn: {
@@ -398,14 +412,21 @@ const styles = StyleSheet.create({
     },
 
     fieldInput: {
-        alignItems: 'right',
+        alignItems: 'center',
         width: '60%',
         backgroundColor: scalesColors.BlueRacer,
         borderRadius: 10,
         height: '100%',
         marginBottom: 20,
-        alignItems: 'center',
-    }
+    },
+
+    commentInput: {
+        width: '90%',
+        backgroundColor: scalesColors.BlueRacer,
+        borderRadius: 10,
+        height: '100%',
+        marginBottom: 20,
+    },
 });
 
 export default DataInput;
