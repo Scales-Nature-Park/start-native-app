@@ -10,8 +10,7 @@ import {
 } from 'react-native';
 
 const scalesColors = require('../colors.json');
-const dataImage = require('../assets/5710446.jpg');
-console.log(dataImage);
+
 
 const Home = ({ navigation }) => {
   return (
@@ -21,7 +20,7 @@ const Home = ({ navigation }) => {
         onPress= {() => {
             navigation.navigate('DataEntry');
         }}>
-            <ImageBackground source={dataImage}></ImageBackground>
+            
             <Text styles={styles.buttonText}>Data Entry</Text>
         </TouchableOpacity>
 
