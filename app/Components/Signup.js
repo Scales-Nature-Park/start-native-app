@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import {
     StatusBar,
     StyleSheet,
@@ -8,9 +9,11 @@ import {
     TouchableOpacity,
     SafeAreaView,
     ScrollView,
+    Alert,
 } from 'react-native';
 
 const scalesColors = require('../colors.json');
+const url = 'http://192.168.68.122:5000';
 
 const Signup = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -62,11 +65,35 @@ const Signup = ({ navigation }) => {
 }
 
 function RegisterUser(email, password, password2, navigation) {
-    if (password.toString() !== password2.toString()) {
-      alert("Entered password doesn't match verify password.");
+    if (!email.toString().includes('@') || !email.toString().includes('.')) {
+      Alert.alert('ERROR', "Email needs to be in this format: 'uername@domain.com'.");
       return;
     }
-    navigation.navigate('Login');
+
+    if (password.toString() !== password2.toString()) {
+      Alert.alert('ERROR', "Entered passwords don't match.");
+      return;
+    }
+
+    if (password.toString().length < 8) {
+      Alert.alert('ERROR', "Password needs to be at least 8 characters.");
+      return;
+    }
+  
+    axios({
+      method: 'post',
+      url: url + '/signup',
+      params: {
+        "email": email,
+        "password": password
+      }
+    }).then((response) => {
+      console.log(response.status);
+      navigation.navigate('Login');
+    }).catch(function (error) {
+      Alert.alert(error.message);
+      return;
+    });
 }
 
 const styles = StyleSheet.create({

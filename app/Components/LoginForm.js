@@ -10,6 +10,7 @@ import {
     ScrollViewBase,
     ScrollView,
     SafeAreaView,
+    Alert,
 } from 'react-native';
 
 const scalesColors = require('../colors.json');
@@ -65,19 +66,18 @@ const LoginForm = ({ navigation }) => {
 function AuthenticateCredentials(email, password, navigation) {
   axios({
     method: 'get',
-    url: url + '/account',
+    url: url + '/signin',
     params: {
       "email": email,
       "password": password
     }
   }).then((response) => {
     console.log(response);
+    navigation.navigate('Home');
   }).catch(function (error) {
-    console.log(error.message);
+    Alert.alert(error.message);
     return;
   });
-
-  navigation.navigate('Home');
 };
 
 const styles = StyleSheet.create({
