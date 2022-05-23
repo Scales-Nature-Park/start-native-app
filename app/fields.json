@@ -662,11 +662,156 @@
                     "UNK: IN COMMENTS"
                 ]
             },
-            
             {
                 "name": "New Capture",
                 "dropDown": true,
                 "values": ["Yes", "No"]
+            },
+            {
+                "name": "New Capture",
+                "dropDown": true,
+                "values": ["Observed", "RECAP", "NEW"]
+            },
+            {
+                "name": "Number of Individuals",
+                "dropDown": false,
+                "dataValidation":  {
+                    "arguments": "input",
+                    "body": "(input < 0) ? return false; : return true;"
+                }
+            },
+            {
+                "name": "Habitat",
+                "dropDown": true,
+                "values": [
+                    "Bog",
+                    "Fen", 
+                    "Marsh",
+                    "Swamp",
+                    "Pond",
+                    "Lake",
+                    "Ditch",
+                    "Floodplain",
+                    "Rock Barren",
+                    "Forest",
+                    "Stream",
+                    "Vernal Pool",
+                    "Residential",
+                    "Agricultural",
+                    "Grassland",
+                    "Savannah",
+                    "Beach",
+                    "Other Anthropogenic",
+                    "Other"
+                ]
+            },
+            {
+                "name": "Dominant Vegetation",
+                "dropDown": true,
+                "values": [
+                    "Herbs",
+                    "Mosses",
+                    "Lichen",
+                    "Shrubs-Tall",
+                    "Shrubs-Low",
+                    "Shrubs-Dead",
+                    "Emergent-Robust",
+                    "Emergent-NarrowLeaved",
+                    "Emergent-Broad Leaved",
+                    "Floating Plants-Rooted",
+                    "Floating PLants-Free Floating",
+                    "Plants-Submerged",
+                    "Algae",
+                    "Trees-Deciduous",
+                    "Trees-Coniferous",
+                    "Trees-Dead",
+                    "Grasses-Natural",
+                    "Anthro-Lawn",
+                    "Anthro-Garden",
+                    "Anthro-Other",
+                    "Unvegetated"
+                ]                
+            },
+            {
+                "name": "Secondary Vegetation",
+                "dropDown": true,
+                "values": [
+                    "Herbs",
+                    "Mosses",
+                    "Lichen",
+                    "Shrubs-Tall",
+                    "Shrubs-Low",
+                    "Shrubs-Dead",
+                    "Emergent-Robust",
+                    "Emergent-NarrowLeaved",
+                    "Emergent-Broad Leaved",
+                    "Floating Plants-Rooted",
+                    "Floating PLants-Free Floating",
+                    "Plants-Submerged",
+                    "Algae",
+                    "Trees-Deciduous",
+                    "Trees-Coniferous",
+                    "Trees-Dead",
+                    "Grasses-Natural",
+                    "Anthro-Lawn",
+                    "Anthro-Garden",
+                    "Anthro-Other",
+                    "Unvegetated"
+                ]                
+            },
+            {
+                "name": "Tertiary Vegetation",
+                "dropDown": true,
+                "values": [
+                    "Herbs",
+                    "Mosses",
+                    "Lichen",
+                    "Shrubs-Tall",
+                    "Shrubs-Low",
+                    "Shrubs-Dead",
+                    "Emergent-Robust",
+                    "Emergent-NarrowLeaved",
+                    "Emergent-Broad Leaved",
+                    "Floating Plants-Rooted",
+                    "Floating PLants-Free Floating",
+                    "Plants-Submerged",
+                    "Algae",
+                    "Trees-Deciduous",
+                    "Trees-Coniferous",
+                    "Trees-Dead",
+                    "Grasses-Natural",
+                    "Anthro-Lawn",
+                    "Anthro-Garden",
+                    "Anthro-Other",
+                    "Unvegetated"
+                ]                
+            },
+            {
+                "name": "Other Vegetation",
+                "dropDown": true,
+                "values": [
+                    "Herbs",
+                    "Mosses",
+                    "Lichen",
+                    "Shrubs-Tall",
+                    "Shrubs-Low",
+                    "Shrubs-Dead",
+                    "Emergent-Robust",
+                    "Emergent-NarrowLeaved",
+                    "Emergent-Broad Leaved",
+                    "Floating Plants-Rooted",
+                    "Floating PLants-Free Floating",
+                    "Plants-Submerged",
+                    "Algae",
+                    "Trees-Deciduous",
+                    "Trees-Coniferous",
+                    "Trees-Dead",
+                    "Grasses-Natural",
+                    "Anthro-Lawn",
+                    "Anthro-Garden",
+                    "Anthro-Other",
+                    "Unvegetated"
+                ]                
             }
         ]
     },
@@ -700,9 +845,8 @@
                         "dropdown": false
                     },
                     {
-                        "name": "Nest Only",
-                        "condition": "Nest Only",
-                        "dropdown": false,
+                        
+                        "name": "",
                         "conditionalFields": [
                             {
                                 "name": "Nest Info",
