@@ -19,6 +19,8 @@ const url = 'http://192.168.68.122:5000';
 const LoginForm = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [id, setID] = useState('');
+
 
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -49,7 +51,7 @@ const LoginForm = ({ navigation }) => {
             </TouchableOpacity>
         
             <TouchableOpacity style={styles.loginBtn}
-            onPress = {() => AuthenticateCredentials(email, password, navigation)}>
+            onPress = {() => AuthenticateCredentials(email, password, navigation, id, setID)}>
                 <Text style={styles.loginText}>LOGIN</Text>
             </TouchableOpacity>
 
@@ -63,7 +65,7 @@ const LoginForm = ({ navigation }) => {
     );   
 };
 
-function AuthenticateCredentials(email, password, navigation) {
+function AuthenticateCredentials(email, password, navigation, id, setID) {
   axios({
     method: 'get',
     url: url + '/signin',
@@ -72,10 +74,12 @@ function AuthenticateCredentials(email, password, navigation) {
       "password": password
     }
   }).then((response) => {
-    console.log(response);
-    navigation.navigate('Home');
+    setID(response.data);
+    navigation.navigate('Home', {
+      "id": id,
+    });
   }).catch(function (error) {
-    Alert.alert(error.message);
+    Alert.alert('ERROR', error.response.data);
     return;
   });
 };

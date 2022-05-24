@@ -11,38 +11,42 @@ import {
 
 const scalesColors = require('../colors.json');
 
-const Home = ({ navigation }) => {
-  return (
-    <SafeAreaView style={styles.safeArea}>
-    <View style={styles.container}>
-        <TouchableOpacity style={styles.buttonView}
-        onPress= {() => {
-            navigation.navigate('DataEntry');
-        }}>
-            <Text styles={styles.buttonText}>Data Entry</Text>
-        </TouchableOpacity>
+const Home = ({route, navigation}) => {
+    const id = route.params.id;
+    
+    return (
+        <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+            <TouchableOpacity style={styles.buttonView}
+            onPress= {() => {
+                navigation.navigate('DataEntry', {
+                    "id": id
+                });
+            }}>
+                <Text styles={styles.buttonText}>Data Entry</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity style={styles.buttonView}
-        onPress= {() => {
+            <TouchableOpacity style={styles.buttonView}
+            onPress= {() => {
 
-        }}>
-            <Text styles={styles.buttonText}>Search</Text>
-        </TouchableOpacity>
+            }}>
+                <Text styles={styles.buttonText}>Search</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity style= {styles.buttonView}
-        onPress= {() => {
-        }}>
-            <Text styles={styles.buttonText}>Previous Entries</Text>
-        </TouchableOpacity>
+            <TouchableOpacity style= {styles.buttonView}
+            onPress= {() => {
+            }}>
+                <Text styles={styles.buttonText}>Previous Entries</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity style= {styles.buttonView}
-        onPress= {() => {
-        }}>
-            <Text styles={styles.buttonText}>Account</Text>
-        </TouchableOpacity>
-    </View>
-    </SafeAreaView>
-  );
+            <TouchableOpacity style= {styles.buttonView}
+            onPress= {() => {
+            }}>
+                <Text styles={styles.buttonText}>Account</Text>
+            </TouchableOpacity>
+        </View>
+        </SafeAreaView>
+    );
 };
 
 const styles = StyleSheet.create({
@@ -57,7 +61,7 @@ const styles = StyleSheet.create({
     },
 
     buttonText: {
-
+        
     },
 
     safeArea: {

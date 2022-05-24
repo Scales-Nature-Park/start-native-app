@@ -91,7 +91,7 @@ function RegisterUser(email, password, password2, navigation) {
       console.log(response.status);
       navigation.navigate('Login');
     }).catch(function (error) {
-      Alert.alert(error.message);
+      Alert.alert('ERROR', error.response.data);
       return;
     });
 }

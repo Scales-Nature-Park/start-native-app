@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import {
     StatusBar,
     StyleSheet,
@@ -9,11 +10,13 @@ import {
     ScrollView,
     SafeAreaView,
     Dimensions,
+    Alert,
 } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 
 const scalesColors = require('../colors.json');
 const dataFields = require('../fields.json');
+const url = 'http://192.168.68.122:5000';
 
 // recursive function that display conditional fields of a field
 // and their conditionals
@@ -31,7 +34,10 @@ const displayConditionals = (jsObj, displayField, fields, states) => {
     }
 }
 
-const DataInput = ({ navigation }) => {
+const DataInput = ({route, navigation}) => {
+    const id = route.params.id;
+    console.log(id);
+
     let dateObj = new Date(),
         day = dateObj.getDate(), 
         month = dateObj.getMonth(),
@@ -262,7 +268,32 @@ const DataInput = ({ navigation }) => {
                 </View>
 
                 <View style={styles.container2}>
-                    <TouchableOpacity style={styles.submitBtn}>
+                    <TouchableOpacity style={styles.submitBtn}
+                    onPress={() => {
+                        axios({
+                            method: 'post',
+                            url: url + '/dataEntry',
+                            params: {
+                                "id": id,
+                                "day": currDay,
+                                "month": currMonth,
+                                "year": currYear,
+                                "hours": hours,
+                                "mins": mins,
+                                "category": category,
+                                "inputFields": states,
+                                "comment": comment
+                            }
+                        }).then((response) => {
+                            Alert.alert('Successful Data Entry', 'Your data has been submitted. Check the "Previous Entries" screen to edit your entries.');
+                            navigation.navigate('DataEntry', {
+                              "id": id,
+                            });
+                        }).catch(function (error) {
+                            Alert.alert('ERROR', error.response.data);
+                            return;
+                        });
+                    }}>
                         <Text style={styles.submitText}>SUBMIT</Text>
                     </TouchableOpacity>
                 </View>
