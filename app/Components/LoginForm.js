@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import storage from './Storage';
+import storage, { url } from './Storage';
 import {
     StatusBar,
     StyleSheet,
@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 
 const scalesColors = require('../colors.json');
-const url = 'http://10.0.0.227:5000';
 
 const LoginForm = ({ navigation }) => {
     const [email, setEmail] = useState('');

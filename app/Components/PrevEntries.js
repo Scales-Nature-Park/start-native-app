@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { url } from './Storage';
 import {
     StatusBar,
     StyleSheet,
@@ -14,7 +15,6 @@ import {
 } from 'react-native';
 
 const scalesColors = require('../colors.json');
-const url = 'http://10.0.0.227:5000';
 
 const PrevEntries = ({route, navigation}) => {
     const id = route.params.id;
