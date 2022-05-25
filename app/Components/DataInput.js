@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import storage, { url } from './Storage';
 import {
@@ -54,6 +54,26 @@ const DataInput = ({route, navigation}) => {
     const [category, setCategory] = useState('Turtle');
     const [comment, setComment] = useState('');
     const [states, setStates] = useState([]);
+    const [valid, setValid] = useState(true);
+
+    useEffect(() => {
+        let validStates = true;
+        states.forEach((state) => {
+            if (!state.dataValidation) return;
+
+            let validateData = new Function(state.dataValidation.arguments, state.dataValidation.body);
+            let response = validateData(Number(state.value));
+
+            console.log(state.dataValidation);
+            console.log(' : ' + response);
+            console.log(state.value);
+            
+            // 1 wrong field will cause valid states to be false
+            if (!response)  validStates = false;
+        });
+
+        setValid(validStates)
+    });
 
     const displayField = (field, fields) => {
         if (field.name == 'date') {
@@ -156,7 +176,9 @@ const DataInput = ({route, navigation}) => {
                                 });
                                 console.log(tempStates);
                                 
-                                if(tempIndex == -1) tempStates.push({"name": field.name, "value": field.values[myVal]});
+                                if(tempIndex == -1) tempStates.push(
+                                    {"name": field.name, "value": field.values[myVal], "dataValidation": field.dataValidation}
+                                );
                                 setStates(tempStates);
                             }}
                             />
@@ -183,7 +205,9 @@ const DataInput = ({route, navigation}) => {
                                 });
                                 
                                 console.log(tempStates);
-                                if(tempIndex == -1) tempStates.push({"name": field.name, "value": value});
+                                if(tempIndex == -1) tempStates.push(
+                                    {"name": field.name, "value": value, "dataValidation": field.dataValidation}
+                                    );
                                 setStates(tempStates);
                             }}
                         />
@@ -228,21 +252,20 @@ const DataInput = ({route, navigation}) => {
     // and display them with theire conditional fields
     for (let i = 0; i < modfDataFields.length; i++) {
         for (let field of modfDataFields[i].ConditionalFields) {
-            displayField(field, fields);         
+            displayField(field, fields);                 
             if (field.name.toLowerCase() == 'date' || field.name.toLowerCase() == 'time') continue;  
 
             // set a state for the fields in the sates list
             let state = states.filter((element) => element.name == field.name)[0];
 
-            if (!state){
-                state = {"name": field.name, "value": ''};
+            if (!state) {
+                state = {"name": field.name, "value": '', "dataValidation": field.dataValidation};
                 if (field.dropDown) state.value = field.values[0];
 
                 setStates([...states, state]);
             }
-
-            if (!field.conditionalFields) continue;
-            displayConditionals(field, displayField, fields, states);
+            
+            if (field.conditionalFields) displayConditionals(field, displayField, fields, states);
         }
     }
     
@@ -254,6 +277,13 @@ const DataInput = ({route, navigation}) => {
         buttons.push(
             <TouchableOpacity style={styles.submitBtn}
             onPress={() => {
+                // get the data validation value before proceedoing
+                // if its false return with an alert
+                if (!valid){
+                    Alert.alert('ERROR', 'Invalid data.');
+                    return;
+                }
+
                 axios({
                     method: 'post',
                     url: url + '/dataEntry',
@@ -340,9 +370,9 @@ const DataInput = ({route, navigation}) => {
 
                     <TouchableOpacity style={styles.save}
                     onPress={() => {
-                        // authenticate the data with their data validation functions
-                        // before saving them to drive
-                        if (!AuthenticateData()){
+                        // get the data validation value before proceedoing
+                        // if its false return with an alert
+                        if (!valid){
                             Alert.alert('ERROR', 'Invalid data.');
                             return;
                         }
@@ -370,10 +400,6 @@ const DataInput = ({route, navigation}) => {
         </SafeAreaView>
     );
 };
-
-const AuthenticateData = () => {
-    return false;
-}
 
 const SaveDataEntry = (dataObj) => {
     // try loading the entries local storage

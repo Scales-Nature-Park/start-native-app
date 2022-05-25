@@ -13,7 +13,7 @@
                 "dropDown": false,
                 "dataValidation":  {
                     "arguments": "input",
-                    "body": "(input >= 41 &&  input <= 46) ? return false; : return true;"
+                    "body": "return (input >= 41 &&  input <= 46) ? true : false;"
                 }
             }, 
             {
@@ -21,7 +21,7 @@
                 "dropDown": false,
                 "dataValidation":  {
                     "arguments": "input",
-                    "body": "(input >= -84 &&  input <= -75) ? return false; : return true;"
+                    "body": "return (input >= -84 &&  input <= -75) ? true : false;"
                 }
             },
             {
@@ -677,7 +677,7 @@
                 "dropDown": false,
                 "dataValidation":  {
                     "arguments": "input",
-                    "body": "(input < 0) ? return false; : return true;"
+                    "body": "return (input < 0) ? false : true;"
                 }
             },
             {
