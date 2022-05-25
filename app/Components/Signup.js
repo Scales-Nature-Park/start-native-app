@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 const scalesColors = require('../colors.json');
-const url = 'http://192.168.68.122:5000';
+const url = 'http://10.0.0.227:5000';
 
 const Signup = ({ navigation }) => {
     const [email, setEmail] = useState('');

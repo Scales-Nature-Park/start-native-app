@@ -3,7 +3,7 @@ import LoginForm from './Components/LoginForm';
 import DataInput from './Components/DataInput';
 import Signup from './Components/Signup';
 import Home from './Components/Home';
-import {StyleSheet, useColorScheme,} from 'react-native';
+import PrevEntries from './Components/PrevEntries';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -23,6 +23,9 @@ const App = () => {
         </Stack.Screen>
 
         <Stack.Screen name='Home' component={Home} options={{title: 'Home'}}>
+        </Stack.Screen>
+
+        <Stack.Screen name='PrevEntries' component={PrevEntries} options={{title: 'Saved Entries'}}>
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

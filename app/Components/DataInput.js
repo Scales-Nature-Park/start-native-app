@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import storage from './Storage';
 import {
     StatusBar,
     StyleSheet,
@@ -14,9 +15,11 @@ import {
 } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 
+
 const scalesColors = require('../colors.json');
 const dataFields = require('../fields.json');
-const url = 'http://192.168.68.122:5000';
+const url = 'http://10.0.0.227:5000';
+
 
 // recursive function that display conditional fields of a field
 // and their conditionals
@@ -36,7 +39,6 @@ const displayConditionals = (jsObj, displayField, fields, states) => {
 
 const DataInput = ({route, navigation}) => {
     const id = route.params.id;
-    console.log(id);
 
     let dateObj = new Date(),
         day = dateObj.getDate(), 
@@ -229,7 +231,8 @@ const DataInput = ({route, navigation}) => {
     // and display them with theire conditional fields
     for (let i = 0; i < modfDataFields.length; i++) {
         for (let field of modfDataFields[i].ConditionalFields) {
-            displayField(field, fields);            
+            displayField(field, fields);         
+            if (field.name.toLowerCase() == 'date' || field.name.toLowerCase() == 'time') continue;  
 
             // set a state for the fields in the sates list
             let state = states.filter((element) => element.name == field.name)[0];
@@ -246,6 +249,48 @@ const DataInput = ({route, navigation}) => {
         }
     }
     
+    let buttons = [];
+
+    // render submit button only in online mode, cuz we cant
+    // connect to the server offline
+    if (!route.params.offlineMode) {
+        buttons.push(
+            <TouchableOpacity style={styles.submitBtn}
+            onPress={() => {
+                axios({
+                    method: 'post',
+                    url: url + '/dataEntry',
+                    params: {
+                        "id": id,
+                        "day": currDay,
+                        "month": currMonth,
+                        "year": currYear,
+                        "hours": hours,
+                        "mins": mins,
+                        "category": category,
+                        "inputFields": states,
+                        "comment": comment
+                    }
+                }).then((response) => {
+                    Alert.alert(
+                        'Successful Data Entry', 
+                        'Your data has been submitted. Return to Home.',
+                        [
+                            {text: "OK", onPress: () => {
+                                navigation.navigate('Home', route);
+                            }}
+                        ],
+                        {cancelable: false}
+                    );
+                }).catch(function (error) {
+                    Alert.alert('ERROR', error.response.data);
+                    return;
+                });
+            }}>
+                <Text style={styles.submitText}>SUBMIT</Text>
+            </TouchableOpacity>
+        );
+    }
     return (
         <SafeAreaView style={styles.safeArea}>
             <ScrollView>
@@ -268,12 +313,10 @@ const DataInput = ({route, navigation}) => {
                 </View>
 
                 <View style={styles.container2}>
-                    <TouchableOpacity style={styles.submitBtn}
+                    <TouchableOpacity style={styles.quickSave}
                     onPress={() => {
-                        axios({
-                            method: 'post',
-                            url: url + '/dataEntry',
-                            params: {
+                        SaveDataEntry(
+                            {
                                 "id": id,
                                 "day": currDay,
                                 "month": currMonth,
@@ -284,23 +327,84 @@ const DataInput = ({route, navigation}) => {
                                 "inputFields": states,
                                 "comment": comment
                             }
-                        }).then((response) => {
-                            Alert.alert('Successful Data Entry', 'Your data has been submitted. Check the "Previous Entries" screen to edit your entries.');
-                            navigation.navigate('DataEntry', {
-                              "id": id,
-                            });
-                        }).catch(function (error) {
-                            Alert.alert('ERROR', error.response.data);
-                            return;
+                        );
+
+                        storage.load({
+                            key: 'entries',
+                        }).then((local) => {
+                            console.log(local);
+                        }).catch((err) => {
+                            Alert.alert("ERROR", err.message);
+                            navigation.navigate('LoginForm');
                         });
                     }}>
-                        <Text style={styles.submitText}>SUBMIT</Text>
+                        <Text style={styles.submitText}>QUICK SAVE</Text>
                     </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.save}
+                    onPress={() => {
+                        // authenticate the data with their data validation functions
+                        // before saving them to drive
+                        if (!AuthenticateData()){
+                            Alert.alert('ERROR', 'Invalid data.');
+                            return;
+                        }
+
+                        SaveDataEntry(
+                            {
+                                "id": id,
+                                "day": currDay,
+                                "month": currMonth,
+                                "year": currYear,
+                                "hours": hours,
+                                "mins": mins,
+                                "category": category,
+                                "inputFields": states,
+                                "comment": comment
+                            }
+                        );
+                    }}>
+                        <Text style={styles.submitText}>SAVE</Text>
+                    </TouchableOpacity>
+
+                    {buttons}
                 </View>
             </ScrollView>
         </SafeAreaView>
     );
 };
+
+const AuthenticateData = () => {
+    return false;
+}
+
+const SaveDataEntry = (dataObj) => {
+    // try loading the entries local storage
+    storage.load({
+        key: 'entries'
+    }).then((retEntries) => {
+        // append this entry to stored entries
+        let updatedEntries = [...retEntries.fields];
+        console.log(retEntries);
+        updatedEntries.push(dataObj); 
+
+        storage.save({
+            key: 'entries',
+            data: {
+                fields: [...updatedEntries]
+            }
+        });
+    }).catch((err) => {
+        console.log(err.message);
+        // store the entry into entries as the only element
+        storage.save({
+            key: 'entries',
+            data: {
+                fields: [dataObj]
+            }
+        });
+    });
+}
 
 const styles = StyleSheet.create({
     safeArea: {
@@ -419,8 +523,28 @@ const styles = StyleSheet.create({
       height: 50,
       alignItems: 'center',
       justifyContent: 'center',
-      marginTop: 40,
+      marginTop: 30,
       backgroundColor: scalesColors.DeepGreen,
+    },
+
+    save: {
+        width: '90%',
+        borderRadius: 25,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 30,
+        backgroundColor: scalesColors.blandingsTurtle1,
+    },
+
+    quickSave: {
+        width: '90%',
+        borderRadius: 25,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 40,
+        backgroundColor: scalesColors.Peach,
     },
 
     submitText: {

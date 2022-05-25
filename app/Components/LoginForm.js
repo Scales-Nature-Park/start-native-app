@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import storage from './Storage';
 import {
     StatusBar,
     StyleSheet,
@@ -14,7 +15,7 @@ import {
 } from 'react-native';
 
 const scalesColors = require('../colors.json');
-const url = 'http://192.168.68.122:5000';
+const url = 'http://10.0.0.227:5000';
 
 const LoginForm = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -59,6 +60,11 @@ const LoginForm = ({ navigation }) => {
             onPress = {() => navigation.navigate('SignUp')}>
                 <Text style={styles.loginText}>SIGNUP</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity style={styles.offlineBtn}
+            onPress = {() => navigation.navigate('Home', {offlineMode: true})}>
+                <Text style={styles.loginText}>OFFLINE MODE</Text>
+            </TouchableOpacity>
         </View>
       </ScrollView>
       </SafeAreaView>
@@ -75,6 +81,16 @@ function AuthenticateCredentials(email, password, navigation, id, setID) {
     }
   }).then((response) => {
     setID(response.data);
+    storage.save({
+      key: 'loginState', 
+      data: {
+        "email": email,
+        "password": password,
+        "id": response.data
+      },
+      expires: 1000 * 3600 // save for a day
+    }); 
+    
     navigation.navigate('Home', {
       "id": id,
     });
@@ -147,10 +163,20 @@ const styles = StyleSheet.create({
       height: 50,
       alignItems: "center",
       justifyContent: "center",
-      marginTop: 40,
+      marginTop: 30,
       backgroundColor: "#FFFFFF",
       borderColor: scalesColors.DeepGreen,
       borderWidth: 1.5,
+    },
+
+    offlineBtn: {
+      width: "80%",
+      borderRadius: 25,
+      height: 50,
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 30,
+      backgroundColor: scalesColors.BlueRacer,
     },
 });
 

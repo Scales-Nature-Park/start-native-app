@@ -4,6 +4,20 @@ changes, please include a short explanation of what your changes are trying to a
 with the rest of the codebase and/or how to run and build up on them. You can treat this file as a more in depth
 commit log and place your changes over the previous changes, below this message.
 
+## Offline Mode and Local Storage
+#### Changes:
+- Moved the Mongo database locally.
+- Added offline mode for the app that can be accessed through the `OFFLINE MODE` button in the initial login screen.
+- Added `QUICK SAVE` and `SAVE` buttons in the data entry screen. Both buttons allow the user to save the entered data locally on their phone however `SAVE` requires some extra data validation before storing the data locally (data validation functions from `fields.json`).
+
+#### Hot to use: 
+- No extra steps have been added from previous log, just need to add the new link in the `MONGODB` environment variable.
+
+#### Future Improvements: 
+- Need to add some security credentials to the local database so it isn't accessible by any device on the network.
+- Integrate the data validation functions from `fields.json` file.
+- Start working on the `Saved Entries` screen to allow the user to edit them and submit them when accessed in online mode.
+
 ## Node Server and DataBase Connection
 #### Changes:
 - Some structure changes to the repo: all the react-native client side is in `app` folder. and node.js server side in the `server` folder.
