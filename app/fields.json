@@ -665,11 +665,6 @@
             {
                 "name": "New Capture",
                 "dropDown": true,
-                "values": ["Yes", "No"]
-            },
-            {
-                "name": "New Capture",
-                "dropDown": true,
                 "values": ["Observed", "RECAP", "NEW"]
             },
             {
@@ -812,7 +807,52 @@
                     "Anthro-Other",
                     "Unvegetated"
                 ]                
+            },
+            {
+                "name": "Weather",
+                "dropDown": true,
+                "values": [
+                    "Sunny/Clear",
+                    "Partly Cloudy",
+                    "Overcast",
+                    "Light Rain",
+                    "Heavy Rain",
+                    "Other"
+                ],
+                "conditionalFields": [
+                    {
+                        "condition": "Other",
+                        "name": "Comment",
+                        "dropDown": false
+                    }
+                ]
+            },
+            {
+                "name": "Temperature",
+                "dropDown": false
+            },
+            {
+                "name": "Age",
+                "dropDown": true,
+                "values": [
+                    "Hatchling",
+                    "Juvenile",
+                    "Adult",
+                    "Neonate",
+                    "Sub-Adult",
+                    "UNK"
+                ]
+            },
+            {
+                "name": "Sex",
+                "dropDown": true,
+                "values": [
+                    "M",
+                    "F",
+                    "UNK"
+                ]
             }
+
         ]
     },
 
