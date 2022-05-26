@@ -112,6 +112,7 @@ app.post('/signup', (req, res) => {
 app.post('/dataEntry', (req, res) => {
     const data = req.query;
     if (!data) return res.status(400).send('Failed to retrieve entered data.');
+    console.log(req.files);
 
     try {
         let db = client.db('START-Project');
@@ -119,7 +120,7 @@ app.post('/dataEntry', (req, res) => {
 
         reptiles.insertOne(data).then((response) => {
             return res.status(200).send('');
-        }).catch((err) => {
+        }).catch((err)   => {
             console.log(err);
             return res.status(400).send(err);
         });

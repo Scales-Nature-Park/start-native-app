@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import storage, { url } from './Storage';
+import { launchImageLibrary } from 'react-native-image-picker';
 import {
     StatusBar,
     StyleSheet,
@@ -12,6 +13,8 @@ import {
     SafeAreaView,
     Dimensions,
     Alert,
+    Image,
+    Button,
 } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 
@@ -55,6 +58,8 @@ const DataInput = ({route, navigation}) => {
     const [comment, setComment] = useState('');
     const [states, setStates] = useState([]);
     const [valid, setValid] = useState(true);
+    const [photo, setPhoto] = useState(null);
+
 
     useEffect(() => {
         let validStates = true;
@@ -74,6 +79,28 @@ const DataInput = ({route, navigation}) => {
 
         setValid(validStates)
     });
+
+    const ChoosePhoto = () => {
+        launchImageLibrary({ noData: true }, (response) => {
+            if (response) setPhoto(response.assets[0]);
+        });
+    };
+
+    const createFormData = (photo, body = {}) => {
+        const data = new FormData();
+      
+        data.append('photo', {
+          name: photo.fileName,
+          type: photo.type,
+          uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
+        });
+      
+        Object.keys(body).forEach((key) => {
+          data.append(key, body[key]);
+        });
+
+        return data;
+    };
 
     const displayField = (field, fields) => {
         if (field.name == 'date') {
@@ -148,12 +175,43 @@ const DataInput = ({route, navigation}) => {
                 </ View>
             );
             return;
+        } else if (field.image) {
+            fields.push(
+                <View style={styles.container1}>
+                    <View style={{width: '45%'}}>
+                        <Text style={styles.field}>{field.name}:</Text>
+                    </View>
+                    <View style={styles.fieldInput}>
+                        {photo && (
+                            <>
+                                <TouchableOpacity style={styles.buttonView}
+                                onPress= {ChoosePhoto}>
+                                    <Text style={{color: '#000000'}}>{photo.uri}</Text>
+                                </TouchableOpacity>
+                            </>
+                        )}
+
+                        {!photo && (
+                            <>
+                                <TouchableOpacity style={styles.buttonView}
+                                onPress= {ChoosePhoto}>
+                                    <Text style={{color: '#000000'}}>Select Image</Text>
+                                </TouchableOpacity>
+                            </>
+                        )}
+                    </View>
+                </View>
+            );
+            
+            return;
         }
         
         if (field.dropDown) {
             fields.push(
                 <View style={styles.container1}>
-                    <Text style={styles.field}>{field.name}:</Text>
+                    <View style={{width: '45%'}}>
+                        <Text style={styles.field}>{field.name}:</Text>
+                    </View>
                     <View style={styles.fieldInput}>
                             <ModalDropdown 
                             options={field.values}
@@ -174,7 +232,6 @@ const DataInput = ({route, navigation}) => {
                                     curr.value = field.values[myVal];
                                     tempIndex = index;
                                 });
-                                console.log(tempStates);
                                 
                                 if(tempIndex == -1) tempStates.push(
                                     {"name": field.name, "value": field.values[myVal], "dataValidation": field.dataValidation}
@@ -188,7 +245,9 @@ const DataInput = ({route, navigation}) => {
         } else {
             fields.push(
                 <View style={styles.container1}>
-                    <Text style={styles.field}>{field.name}:</Text>
+                    <View style={{width: '45%'}}>
+                        <Text style={styles.field}>{field.name}:</Text>
+                    </View>
                     <View style={styles.fieldInput}>
                         <TextInput
                             style={styles.TextInput}
@@ -204,7 +263,6 @@ const DataInput = ({route, navigation}) => {
                                     tempIndex = index;
                                 });
                                 
-                                console.log(tempStates);
                                 if(tempIndex == -1) tempStates.push(
                                     {"name": field.name, "value": value, "dataValidation": field.dataValidation}
                                     );
@@ -283,10 +341,12 @@ const DataInput = ({route, navigation}) => {
                     Alert.alert('ERROR', 'Invalid data.');
                     return;
                 }
+                let imageForm = createFormData(photo, {})._parts[0][1];
 
                 axios({
                     method: 'post',
                     url: url + '/dataEntry',
+                    // data: imageForm
                     params: {
                         "id": id,
                         "day": currDay,
@@ -341,7 +401,7 @@ const DataInput = ({route, navigation}) => {
 
                 <View style={styles.container2}>
                     <TouchableOpacity style={styles.quickSave}
-                    onPress={() => {
+                    onPress={() => {                
                         SaveDataEntry(
                             {
                                 "id": id,
@@ -358,11 +418,9 @@ const DataInput = ({route, navigation}) => {
 
                         storage.load({
                             key: 'entries',
-                        }).then((local) => {
-                            console.log(local);
                         }).catch((err) => {
                             Alert.alert("ERROR", err.message);
-                            navigation.navigate('LoginForm');
+                            navigation.navigate('Login');
                         });
                     }}>
                         <Text style={styles.submitText}>QUICK SAVE</Text>
@@ -408,7 +466,6 @@ const SaveDataEntry = (dataObj) => {
     }).then((retEntries) => {
         // append this entry to stored entries
         let updatedEntries = [...retEntries.fields];
-        console.log(retEntries);
         updatedEntries.push(dataObj); 
 
         storage.save({
@@ -586,12 +643,11 @@ const styles = StyleSheet.create({
         color: '#000000',
         marginBottom: 20,
         textAlign: 'left',
-        width: '30%',
     },
 
     fieldInput: {
         alignItems: 'center',
-        width: '60%',
+        width: '50%',
         backgroundColor: scalesColors.BlueRacer,
         borderRadius: 10,
         height: '100%',
