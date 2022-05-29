@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import storage, { url } from './Storage';
+import storage, { url } from '../utils/Storage';
 import { launchImageLibrary } from 'react-native-image-picker';
 import {
     StatusBar,
@@ -39,27 +39,29 @@ const displayConditionals = (jsObj, displayField, fields, states) => {
 
 const DataInput = ({route, navigation}) => {
     const id = route.params.id;
+    const paramData = route.params.data;
 
-    let dateObj = new Date(),
-        day = dateObj.getDate(), 
-        month = dateObj.getMonth(),
-        year = dateObj.getFullYear(),
-        currHours = dateObj.getHours(),
-        currMins = dateObj.getMinutes();
-        
     const months = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'Novemeber', 'December'];
+    const dateObj = new Date(),
+        day = (paramData && paramData.day) ? paramData.day : dateObj.getDate(), 
+        month = (paramData && paramData.month) ? paramData.month : months[dateObj.getMonth()],
+        year = (paramData && paramData.year) ? paramData.year : dateObj.getFullYear(),
+        currHours = (paramData && paramData.hours) ? paramData.hours : dateObj.getHours(),
+        currMins = (paramData && paramData.mins) ? paramData.mins : dateObj.getMinutes();
+
+    const initialFields = (paramData && paramData.inputFields) ? [...paramData.inputFields] : []; 
+        
     const [currDay, setDay] = useState(day);
-    const [currMonth, setMonth] = useState(months[month]);
+    const [currMonth, setMonth] = useState(month);
     const [currYear, setYear] = useState(year);
     const [hours, setHours] = useState(currHours);
     const [mins, setMins] = useState(currMins);
 
-    const [category, setCategory] = useState('Turtle');
-    const [comment, setComment] = useState('');
-    const [states, setStates] = useState([]);
-    const [valid, setValid] = useState(true);
+    const [category, setCategory] = useState((paramData && paramData.category) ? paramData.category : 'Turtle');
+    const [comment, setComment] = useState((paramData && paramData.comment) ? paramData.comment : '');
+    const [states, setStates] = useState(initialFields);
+    const [valid, setValid] = useState(false);
     const [photo, setPhoto] = useState(null);
-
 
     useEffect(() => {
         let validStates = true;
@@ -82,7 +84,7 @@ const DataInput = ({route, navigation}) => {
 
     const ChoosePhoto = () => {
         launchImageLibrary({ noData: true }, (response) => {
-            if (response) setPhoto(response.assets[0]);
+            if (response && !response.didCancel) setPhoto(response.assets[0]);
         });
     };
 
@@ -124,8 +126,7 @@ const DataInput = ({route, navigation}) => {
                         dropdownTextStyle={styles.dropText}
                         dropdownStyle={styles.dropDown}
                         dropdownTextHighlightStyle={styles.dropText}
-                        defaultValue={currMonth}
-                        defaultIndex={month}
+                        defaultValue={month}
                         onSelect={(selectedMonth) => setMonth(months[selectedMonth])}
                         />
                     </View>
@@ -221,8 +222,7 @@ const DataInput = ({route, navigation}) => {
                             dropdownTextStyle={styles.dropText}
                             dropdownStyle={styles.dropDown}
                             dropdownTextHighlightStyle={styles.dropText}
-                            defaultValue={field.values[0]}
-                            defaultIndex={0}
+                            defaultValue={(paramData && paramData.inputFields.filter((element) => element.name == field.name)[0]) ? paramData.inputFields.filter((element) => element.name == field.name)[0].value : field.values[0]}
                             onSelect={(myVal) => {
                                 let tempStates = states.slice();
                                 let tempIndex = -1;
@@ -251,7 +251,8 @@ const DataInput = ({route, navigation}) => {
                     <View style={styles.fieldInput}>
                         <TextInput
                             style={styles.TextInput}
-                            placeholder={'Enter ' + field.name}
+                            placeholder={(paramData && paramData.inputFields.filter((element) => element.name == field.name)[0]) ? paramData.inputFields.filter((element) => element.name == field.name)[0].value : 'Enter ' + field.name}
+                            value={(states.filter((element) => element.name == field.name)[0]) ? states.filter((element) => element.name == field.name)[0].value : ''}
                             placeholderTextColor='#000000'
                             onChangeText={(value) => {
                                 let tempStates = states.slice();

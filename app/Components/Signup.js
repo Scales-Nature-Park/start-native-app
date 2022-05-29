@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { url } from './Storage'
+import { url } from '../utils/Storage'
 import {
     StatusBar,
     StyleSheet,

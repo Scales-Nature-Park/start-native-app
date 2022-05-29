@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import storage from './Storage';
+import storage from '../utils/Storage';
 import {
     StatusBar,
     StyleSheet,
@@ -7,6 +7,7 @@ import {
     View,
     TouchableOpacity,
     SafeAreaView,
+    Alert,
 } from 'react-native';
 
 const scalesColors = require('../colors.json');
@@ -74,7 +75,9 @@ const styles = StyleSheet.create({
     },
 
     buttonText: {
-        
+        fontSize: 20,
+        color: '#000000',
+        textAlign: 'center',
     },
 
     safeArea: {

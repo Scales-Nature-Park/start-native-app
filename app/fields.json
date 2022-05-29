@@ -25,6 +25,10 @@
                 }
             },
             {
+                "name": "Image",
+                "image": true
+            },
+            {
                 "name": "Project",
                 "dropDown": true,
                 "values": ["Pembroke", "Pelee", "Long Point", "START/CARES", "OTHER"]
@@ -668,7 +672,7 @@
                 "values": ["Observed", "RECAP", "NEW"]
             },
             {
-                "name": "Number of Individuals",
+                "name": "# of Individuals",
                 "dropDown": false,
                 "dataValidation":  {
                     "arguments": "input",

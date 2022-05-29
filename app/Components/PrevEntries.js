@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import storage, { url } from './Storage';
+import useSyncState from '../utils/SyncState';
+import storage from '../utils/Storage';
 import Entry from './Entry';
 import {
     StatusBar,
@@ -18,33 +19,34 @@ import {
 const scalesColors = require('../colors.json');
 
 const PrevEntries = ({route, navigation}) => {
-    const id = route.params.id;
-    const [entries, setEntries] = useState([]);
+  const id = route.params.id;
+  const entryElems = useSyncState([]);
 
-    // load the data from local storage and store it in the entries state
+  // load the data from local storage and store it in the entries state
+  if (entryElems.get().length == 0) {
     storage.load({
       key: 'entries',
-    }).then((local) => {
-        setEntries(local.fields);
+    }).then((local) => {        
+        // iterate over all entries and set an entry component
+        for (let entry of local.fields.reverse()) {
+          entryElems.set([...entryElems.get(), <Entry data={entry} onPress={() => {
+            navigation.navigate('DataEntry', {data: entry});
+          }}/>]);
+        } 
+        if (entryElems.get().length == 0) entryElems.set([<Text style={styles.emptyText}>No Entries Found.</Text>]);
     }).catch((err) => {
-        Alert.alert("Failure", err.message);
+        entryElems.set([<Text style={styles.emptyText}>No Entries Found.</Text>]);
     });
-    
-    // iterate over all entries and set an entry component
-    let entryElems = [];
-    for (let entry of entries) {
-      entryElems.push(<Entry data={entry} />);
-    }
+  }
 
-    return (
-      <SafeAreaView style={styles.safeArea}>
-      <ScrollView>
-        {entryElems}
-      </ScrollView>
-      </SafeAreaView>
-    );   
+  return (
+    <SafeAreaView style={styles.safeArea}>
+    <ScrollView>
+      {entryElems.get()}
+    </ScrollView>
+    </SafeAreaView>
+  );  
 };
-
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -52,6 +54,12 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight * 70 / 100,
     paddingBottom: StatusBar.currentHeight * 70 / 100,
     backgroundColor: '#fff',    
+  },
+
+  emptyText: {
+    fontSize: 20,
+    color: '#000000',
+    textAlign: 'center',
   }
 });
 
