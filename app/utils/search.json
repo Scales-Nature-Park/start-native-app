@@ -1,0 +1,50 @@
+[
+    {
+        "Category": "All",
+        "ConditionalCriteria": [
+            {
+                "name": "Location",
+                "dropdown": false,
+                "Subfields": [
+                    {
+                        "name": "Longitude Lower Bound",
+                        "dropdown": false
+                    },
+                    {
+                        "name": "Longitude Upper Bound",
+                        "dropdown": false
+                    },
+                    {
+                        "name": "Latitude Lower Bound",
+                        "dropdown": false
+                    },
+                    {
+                        "name": "Latitude Upper Bound",
+                        "dropdown": false
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "Category": "Turtle",
+        "ConditionalCriteria": [
+            {
+                "name": "Notch Code",
+                "dropdown": false
+            }
+        ]
+    },
+    {
+        "Category": "Snake",
+        "ConditionalCriteria": [
+
+        ]
+    },
+    {
+        "Category": "Lizard",
+        "ConditionalCriteria": [
+            
+        ]
+    }
+]

@@ -14,7 +14,7 @@ import {
     Alert,
 } from 'react-native';
 
-const scalesColors = require('../colors.json');
+const scalesColors = require('../utils/colors.json');
 
 const LoginForm = ({ navigation }) => {
     const [email, setEmail] = useState('');

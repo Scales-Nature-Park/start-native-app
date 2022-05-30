@@ -18,8 +18,8 @@ import {
 } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 
-const scalesColors = require('../colors.json');
-const dataFields = require('../fields.json');
+const scalesColors = require('../utils/colors.json');
+const dataFields = require('../utils/fields.json');
 
 // recursive function that display conditional fields of a field
 // and their conditionals

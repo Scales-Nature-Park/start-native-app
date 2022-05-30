@@ -1,18 +1,11 @@
 import React, { useState } from 'react';
 import {
-    StatusBar,
     StyleSheet,
     Text,
-    View,
-    TextInput,
     TouchableOpacity,
-    ScrollViewBase,
-    ScrollView,
-    SafeAreaView,
-    Alert,
 } from 'react-native';
 
-const scalesColors = require('../colors.json');
+const scalesColors = require('../utils/colors.json');
 
 const Entry = ({data, onPress}) => {
     return (

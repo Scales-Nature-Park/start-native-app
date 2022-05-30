@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import useSyncState from '../utils/SyncState';
 import storage from '../utils/Storage';
 import Entry from './Entry';
@@ -7,16 +6,11 @@ import {
     StatusBar,
     StyleSheet,
     Text,
-    View,
-    TextInput,
-    TouchableOpacity,
-    ScrollViewBase,
     ScrollView,
     SafeAreaView,
-    Alert,
 } from 'react-native';
 
-const scalesColors = require('../colors.json');
+const scalesColors = require('../utils/colors.json');
 
 const PrevEntries = ({route, navigation}) => {
   const id = route.params.id;

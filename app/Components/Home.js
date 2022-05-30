@@ -10,7 +10,7 @@ import {
     Alert,
 } from 'react-native';
 
-const scalesColors = require('../colors.json');
+const scalesColors = require('../utils/colors.json');
 
 const Home = ({route, navigation}) => {
     var id = route.params.id;
@@ -24,8 +24,9 @@ const Home = ({route, navigation}) => {
             id = local.id;
             console.log('Loaded local user data.');
         }).catch((err) => {
-            Alert.alert("ERROR", err.message);
-            navigation.navigate('LoginForm');
+            if (!err.message.includes('Expired')) Alert.alert("ERROR", err.message);
+            else Alert.alert("ERROR", "Expired login credentials.");
+            navigation.navigate('Login');
         });
     }
     
@@ -36,27 +37,27 @@ const Home = ({route, navigation}) => {
             onPress= {() => {
                 navigation.navigate('DataEntry', route.params);
             }}>
-                <Text styles={styles.buttonText}>Data Entry</Text>
+                <Text style={styles.buttonText}>Data Entry</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.buttonView}
             onPress= {() => {
-
+                navigation.navigate('Search', route.params);
             }}>
-                <Text styles={styles.buttonText}>Search</Text>
+                <Text style={styles.buttonText}>Search</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style= {styles.buttonView}
             onPress= {() => {
                 navigation.navigate('PrevEntries', route.params);
             }}>
-                <Text styles={styles.buttonText}>Saved Entries</Text>
+                <Text style={styles.buttonText}>Saved Entries</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style= {styles.buttonView}
             onPress= {() => {
             }}>
-                <Text styles={styles.buttonText}>Account</Text>
+                <Text style={styles.buttonText}>Account</Text>
             </TouchableOpacity>
         </View>
         </SafeAreaView>
@@ -65,7 +66,7 @@ const Home = ({route, navigation}) => {
 
 const styles = StyleSheet.create({
     buttonView: {
-        width: '85%',
+        width: '100%',
         borderRadius: 10,
         height: '20%',
         alignItems: 'center',
