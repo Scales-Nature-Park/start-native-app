@@ -47,6 +47,7 @@ app.get('/signin', (req, res) => {
         // retrieve the array of the account and respond with the id
         results.toArray().then((response) => {
             if (response.length <= 0) {
+                console.log('Invalid.');
                 return res.status(500).send('Invalid credentials. Please verify you have entered the correct email and password.');
             }
 

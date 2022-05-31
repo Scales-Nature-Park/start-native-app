@@ -8,7 +8,6 @@ import {
     View,
     TextInput,
     TouchableOpacity,
-    ScrollViewBase,
     ScrollView,
     SafeAreaView,
     Alert,
@@ -86,8 +85,7 @@ function AuthenticateCredentials(email, password, navigation, id, setID) {
         "email": email,
         "password": password,
         "id": response.data
-      },
-      expires: 1000 * 3600 // save for a day
+      }
     }); 
     
     navigation.navigate('Home', {
@@ -95,6 +93,7 @@ function AuthenticateCredentials(email, password, navigation, id, setID) {
     });
   }).catch(function (error) {
     Alert.alert('ERROR', error.response.data);
+    console.log(error);
     return;
   });
 };

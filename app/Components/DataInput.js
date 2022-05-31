@@ -14,7 +14,6 @@ import {
     Dimensions,
     Alert,
     Image,
-    Button,
 } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 
@@ -293,7 +292,6 @@ const DataInput = ({route, navigation}) => {
                 </TouchableOpacity>
             );
         } 
-
     });
 
     let modfDataFields = [];
