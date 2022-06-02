@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ModalDropdown from 'react-native-modal-dropdown';
+import uuid from 'react-native-uuid';
 import {
     StatusBar,
     SafeAreaView,
@@ -10,6 +11,7 @@ import {
     Dimensions,
     TextInput,
     ScrollView,
+    Alert,
 } from 'react-native';
 
 const scalesColors = require('../utils/colors.json');
@@ -21,11 +23,10 @@ function ArrayEquals (array1, array2) {
 }
 
 const Search = ({route, navigation}) => {
-    const [criteria, setCriteria] = useState([]);
     const [criteriaElements, setCriteriaElements] = useState([]);
     const [category, setCategory] = useState('Turtle');
     const [states, setStates] = useState([]);
-    const [inputFields, setFields] = useState([]);
+    const [selections, setSelections] = useState([]);
     
     const displayField = (field, fields) => {
         if (field.dropDown) {
@@ -57,7 +58,7 @@ const Search = ({route, navigation}) => {
                             if(tempIndex == -1) tempStates.push(
                                 {"name": field.name, "value": field.values[myVal]}
                             );
-                            setStates(tempStates);
+                            if (!ArrayEquals(states, tempStates)) setStates(tempStates);
                         }}
                         />
                     </View>
@@ -87,7 +88,7 @@ const Search = ({route, navigation}) => {
                                 if(tempIndex == -1) tempStates.push(
                                     {"name": field.name, "value": value}
                                 );
-                                setStates(tempStates);
+                                if (!ArrayEquals(states, tempStates)) setStates(tempStates);
                             }}
                         />
                     </View>
@@ -115,7 +116,7 @@ const Search = ({route, navigation}) => {
         } 
     });
 
-    let modfSearchFields = [], tempCriteria = [];
+    let modfSearchFields = [], criteria = [];
     if (allIndex == -1 && catIndex == -1) {
         alert("Invalid fields specified.");
         return (<View></View>);
@@ -125,16 +126,37 @@ const Search = ({route, navigation}) => {
     if (catIndex != -1) modfSearchFields.push(searchFields[catIndex]);
 
     // add criteria to dropdown of selected category 
+    let tempFields = criteriaElements.slice();
     for (let i = 0; i < modfSearchFields.length; i++) {
         for (let field of modfSearchFields[i].ConditionalCriteria) {
-            let currCriteria = tempCriteria.filter((element) => element == field.name)[0];
-            if (!currCriteria) tempCriteria.push(field.name);
+            let currCriteria = criteria.filter((element) => element == field.name)[0];
+            if (!currCriteria) criteria.push(field.name);
+            
+            for (let j = 0; j < criteriaElements.length; j++) {     
+                let tempSelections = selections.slice();
+                let tempIndex = -1;
+
+                tempSelections.forEach((curr, index) => {
+                    if (curr.key == criteriaElements[j].key) tempIndex = index;
+                });
+
+                if (tempIndex != -1) {
+                    if (tempSelections[tempIndex].value != criteriaElements[j].value) {
+
+                    }
+                    continue;
+                } 
+
+                for (let thisField of field.Subfields) {
+                    tempFields = displayField(thisField, tempFields);
+                }
+            }
         }
     }
-    if (!ArrayEquals(criteria, tempCriteria)) setCriteria(tempCriteria);
-        
-    console.log(inputFields);
 
+    console.log(tempFields.length + ' + ' + criteriaElements.length);
+    if (!ArrayEquals(tempFields, criteriaElements)) setCriteriaElements(tempFields);
+        
     return (
         <SafeAreaView style={styles.safeArea}>
         <ScrollView>
@@ -146,35 +168,49 @@ const Search = ({route, navigation}) => {
                 {criteriaElements}
             </View>
             
-            {inputFields}
-
             <View style={styles.container}>
                 <TouchableOpacity style={styles.addCriteria}
                 onPress={() => {
+                    let compId = uuid.v4();
+                    if (selections.length <= criteriaElements.length){
+                        console.log('Setting selections of dropdowns.');
+                        setSelections([...selections, {"key": compId, "value": criteria[0]}]);
+                    } 
                     setCriteriaElements(
                         [
                             ...criteriaElements,
                             <ModalDropdown 
+                                key={compId}
                                 options={criteria}
                                 showsVerticalScrollIndicator={true}
                                 textStyle={styles.dropText}
                                 style={styles.dropButton}
                                 dropdownTextStyle={styles.dropText}
+                                isFullWidth={true}
                                 dropdownStyle={styles.dropDown}
                                 dropdownTextHighlightStyle={styles.dropText}
                                 defaultValue={criteria[0]}
-                                onSelect={(val, element) => {
+                                defaultIndex={0}
+                                onSelect={(index, element) => {
+                                    let tempSelections = selections.slice();
+                                    let tempIndex = -1;
+
+                                    tempSelections.forEach((curr, index) => {
+                                        if (curr.key == compId) tempIndex = index;
+                                    });
+                                    
+                                    if(tempIndex == -1) tempSelections.push(
+                                        {"key": compId, "value": element}
+                                    );
+                                    else tempSelections[tempIndex].value = element;
+                                    if (!ArrayEquals(selections, tempSelections)) setSelections(tempSelections);
+
+                                    // get the index of the selected criteria dropdown
+                                    // to insert the subfields right after it
                                     for (let i = 0; i < modfSearchFields.length; i++) {
                                         for (let field of modfSearchFields[i].ConditionalCriteria) {
                                             if (element != field.name) continue;   
-                                            if (field.Subfields) {
-                                                let tempFields = inputFields.slice();
-                                                for (let subField of field.Subfields) {
-                                                    tempFields = displayField(subField, tempFields);                 
-                                                }
-                                                setFields(tempFields);
-                                            }  
-
+                                            
                                             // set a state for the fields in the sates list
                                             let state = states.filter((element) => element.name == field.name)[0];
                                             
@@ -183,13 +219,11 @@ const Search = ({route, navigation}) => {
                                                 state = {"name": field.name, "value": ''};
                                                 if (field.dropDown) state.value = field.values[0];
                                                 setStates([...states, state]);
-                                            }
-                                            
-                                            // if (field.SubFields) displayConditionals(field, displayField, fields, states);
+                                            }                                            
                                         }
                                     }
                                 }}
-                                />
+                            />
                         ]
                     );
                 }}>

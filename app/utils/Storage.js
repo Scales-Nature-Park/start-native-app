@@ -1,7 +1,7 @@
 import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const url = 'http://192.168.43.63:5000';
+const url = 'http://192.168.68.111:5000';
 
 const storage = new Storage({
   size: 1000,

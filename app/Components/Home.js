@@ -13,7 +13,7 @@ import {
 const scalesColors = require('../utils/colors.json');
 
 const Home = ({route, navigation}) => {
-    var id = route.params.id;
+    let id = (route && route.params && route.params.id) ? route.params.id : '';
     
     // offline mode tries to retrieve login info from local
     // storage, returns to login form on fail

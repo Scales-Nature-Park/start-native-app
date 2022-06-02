@@ -37,7 +37,8 @@ const displayConditionals = (jsObj, displayField, fields, states) => {
 }
 
 const DataInput = ({route, navigation}) => {
-    const id = route.params.id;
+    console.log(route.params.id);
+    const id = (route && route.params && route.params.id) ? route.params.id : '';
     const paramData = route.params.data;
 
     const months = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'Novemeber', 'December'];
@@ -363,7 +364,7 @@ const DataInput = ({route, navigation}) => {
                         'Your data has been submitted. Return to Home.',
                         [
                             {text: "OK", onPress: () => {
-                                navigation.navigate('Home', route);
+                                navigation.navigate('Home', route.params);
                             }}
                         ],
                         {cancelable: false}
@@ -412,7 +413,8 @@ const DataInput = ({route, navigation}) => {
                                 "category": category,
                                 "inputFields": states,
                                 "comment": comment
-                            }
+                            },
+                            navigation
                         );
 
                         storage.load({
@@ -445,8 +447,10 @@ const DataInput = ({route, navigation}) => {
                                 "category": category,
                                 "inputFields": states,
                                 "comment": comment
-                            }
+                            },
+                            navigation
                         );
+
                     }}>
                         <Text style={styles.submitText}>SAVE</Text>
                     </TouchableOpacity>
@@ -458,7 +462,7 @@ const DataInput = ({route, navigation}) => {
     );
 };
 
-const SaveDataEntry = (dataObj) => {
+const SaveDataEntry = (dataObj, navigation, params) => {
     // try loading the entries local storage
     storage.load({
         key: 'entries'
@@ -473,6 +477,12 @@ const SaveDataEntry = (dataObj) => {
                 fields: [...updatedEntries]
             }
         });
+
+        navigation.navigate('Home', {
+            screen: 'Home',
+            params: params,
+        });
+        
     }).catch((err) => {
         console.log(err.message);
         // store the entry into entries as the only element
