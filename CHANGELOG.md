@@ -4,19 +4,52 @@ changes, please include a short explanation of what your changes are trying to a
 with the rest of the codebase and/or how to run and build up on them. You can treat this file as a more in depth
 commit log and place your changes over the previous changes, below this message.
 
+## Search Screen Changes & App Icon Change
+#### Changes:
+- Search screen now displays its subfields under the dropdown that triggered them.
+- App icon changed to Scales Nature Park logo.
+
+##### How to use:
+- To change the icon, generate an icon package using [makeappicon](concatSearchFields). 
+- Place the package in `/path/to/project/android/app/src/main/res`.
+
+#### Known issues:
+- Selecting a different criteria from the default one doesn't delete all previous subfields from the triggering dropdown, instead it sometimes removes some elements from the dropdown below it.
+- Select image field in `Data Entry` screen doesn't have backend support for storing the image, might need cloud storage, BSON or seperate axios call to store file in the database seperately.
+    * Last option seems most viable until we understand BSON, only problem is that it can be slow and data wont be uploaded until the image uploads (internet issue - important).
+
+#### Future Improvements:
+- Fix known issues.
+- Complete `search.json` and `fields.json`
+- Add functionality where a selected criteria doesn't appear in the othe dropdowns on the screen.
+- Add backend support.
+    * Could be static handler that searches just the criteria specified during development.
+    * Another approach can also be comparing the field name or subfield names to existing fields in the database and if they match search for entries that match the value of that field.
+
+## Saved Entries
+#### Changes: 
+- Added some local support for storing and loading data entries offline. 
+
+#### How to use: 
+- Entries can be saved using the `Quick Save` button in `Data Entry` screen, use `Save` for data validation before saving.
+- Saved Entries screen displays all the saved entries on the device.
+
+#### Future Improvements:
+- Remove previous saved entries once submitted to the database or edited resaved locally as a new entry.
+
 ## Offline Mode and Local Storage
 #### Changes:
 - Moved the Mongo database locally.
 - Added offline mode for the app that can be accessed through the `OFFLINE MODE` button in the initial login screen.
 - Added `QUICK SAVE` and `SAVE` buttons in the data entry screen. Both buttons allow the user to save the entered data locally on their phone however `SAVE` requires some extra data validation before storing the data locally (data validation functions from `fields.json`).
 
-#### Hot to use: 
+#### How to use: 
 - No extra steps have been added from previous log, just need to add the new link in the `MONGODB` environment variable.
 
 #### Future Improvements: 
 - Need to add some security credentials to the local database so it isn't accessible by any device on the network.
-- Integrate the data validation functions from `fields.json` file.
-- Start working on the `Saved Entries` screen to allow the user to edit them and submit them when accessed in online mode.
+- ~~Integrate the data validation functions from `fields.json` file.~~
+- ~~Start working on the `Saved Entries` screen to allow the user to edit them and submit them when accessed in online mode.~~
 
 ## Node Server and DataBase Connection
 #### Changes:
@@ -46,10 +79,10 @@ Implemented a mostly generic data entry form that reads the fields from `fields.
 - `dataValidation` is an object with arguments and body to a function that validates data input, in the case the function is violated, program will alert the user to fix their input.
 
 #### Future Improvements:
-- Need to add a generic framework for specifying categories instead of the current 3 static categories `Turtle, Snake, Lizard`.
+- ~~Need to add a generic framework for specifying categories instead of the current 3 static categories `Turtle, Snake, Lizard`.~~
 - Fill the `fields.json` file with all the fields from google sheets.
 
 
 #### TODO: 
-- Build `Home` screen that directs the user to all screens in the app.
-- Start building express endpoints in node.js.
+- ~~Build `Home` screen that directs the user to all screens in the app.~~
+- ~~Start building express endpoints in node.js.~~
