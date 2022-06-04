@@ -63,6 +63,8 @@ const DataInput = ({route, navigation}) => {
     const [valid, setValid] = useState(false);
     const [photo, setPhoto] = useState(null);
 
+    let validityError = '';
+
     useEffect(() => {
         let validStates = true;
         states.forEach((state) => {
@@ -76,10 +78,14 @@ const DataInput = ({route, navigation}) => {
             console.log(state.value);
             
             // 1 wrong field will cause valid states to be false
-            if (!response)  validStates = false;
+            if (!response) {
+                validStates = false;
+                validityError = (state.dataValidation.error) ? state.dataValidation.error : validityError;
+                console.log(validityError);
+            }
         });
-
-        setValid(validStates)
+        
+        setValid(validStates);
     });
 
     const ChoosePhoto = () => {
@@ -338,10 +344,10 @@ const DataInput = ({route, navigation}) => {
                 // get the data validation value before proceedoing
                 // if its false return with an alert
                 if (!valid){
-                    Alert.alert('ERROR', 'Invalid data.');
+                    Alert.alert('ERROR', (validityError != '') ? validityError : 'Invalid data.');
                     return;
                 }
-                let imageForm = createFormData(photo, {})._parts[0][1];
+                // let imageForm = createFormData(photo, {})._parts[0][1];
 
                 axios({
                     method: 'post',
@@ -370,7 +376,7 @@ const DataInput = ({route, navigation}) => {
                         {cancelable: false}
                     );
                 }).catch(function (error) {
-                    Alert.alert('ERROR', error.response.data);
+                    Alert.alert('ERROR', error.message);
                     return;
                 });
             }}>
@@ -432,7 +438,7 @@ const DataInput = ({route, navigation}) => {
                         // get the data validation value before proceedoing
                         // if its false return with an alert
                         if (!valid){
-                            Alert.alert('ERROR', 'Invalid data.');
+                            Alert.alert('ERROR', (validityError != '') ? validityError : 'Invalid data.');
                             return;
                         }
 

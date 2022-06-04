@@ -13,7 +13,8 @@
                 "dropDown": false,
                 "dataValidation":  {
                     "arguments": "input",
-                    "body": "return (input >= 41 &&  input <= 46) ? true : false;"
+                    "body": "return (input >= 41 &&  input <= 46) ? true : false;",
+                    "error": "Latitude needs to be a number between 41 and 46."
                 }
             }, 
             {
@@ -21,7 +22,8 @@
                 "dropDown": false,
                 "dataValidation":  {
                     "arguments": "input",
-                    "body": "return (input >= -84 &&  input <= -75) ? true : false;"
+                    "body": "return (input >= -84 &&  input <= -75) ? true : false;",
+                    "error": "Longitude needs to be a number between -84 and -75."
                 }
             },
             {
@@ -676,7 +678,8 @@
                 "dropDown": false,
                 "dataValidation":  {
                     "arguments": "input",
-                    "body": "return (input < 0) ? false : true;"
+                    "body": "return (input < 0) ? false : true;",
+                    "error": "# of Individuals needs to be a number bigger than or equal 0."
                 }
             },
             {

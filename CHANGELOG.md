@@ -4,13 +4,27 @@ changes, please include a short explanation of what your changes are trying to a
 with the rest of the codebase and/or how to run and build up on them. You can treat this file as a more in depth
 commit log and place your changes over the previous changes, below this message.
 
+## Search Server Side Functionality
+#### Changes:
+- Integrated a generic search engine endpoint that parses field names and queries the database based on the string values.
+- Fixed an issue with the data entry endpoint where the `inputFields` list was storing string values instead of BSON/Document values. 
+- Changed the name of inputFields to always be lower case for ease of manipulation during search.
+
+#### How to Use: 
+- When adding search fields to `search.json` including `upper bound` in the subfield name means that this value is the greatest value that the field can have.
+- Likewise including `lower bound` in the subfield name means that this value is the lowest value that the field can have. 
+- The rest of the name would be the field name in the database e.g. `Longitude Upper Bound` will search the `longitude` field in each entry's `inputFields` objects.
+
+#### Known Issues:
+- `/dataentry` endpoint format doesn't fully match the format used by the `/search` endpoint, not sure how. Tried to take a look at it and it seemed fine. Should be easy to figure out.
+
 ## Search Screen Changes & App Icon Change
 #### Changes:
 - Search screen now displays its subfields under the dropdown that triggered them.
 - App icon changed to Scales Nature Park logo.
 
 ##### How to use:
-- To change the icon, generate an icon package using [makeappicon](concatSearchFields). 
+- To change the icon, generate an icon package using [makeappicon](https://makeappicon.com/). 
 - Place the package in `/path/to/project/android/app/src/main/res`.
 
 #### Known issues:
@@ -22,9 +36,9 @@ commit log and place your changes over the previous changes, below this message.
 - Fix known issues.
 - Complete `search.json` and `fields.json`
 - Add functionality where a selected criteria doesn't appear in the othe dropdowns on the screen.
-- Add backend support.
-    * Could be static handler that searches just the criteria specified during development.
-    * Another approach can also be comparing the field name or subfield names to existing fields in the database and if they match search for entries that match the value of that field.
+- ~~Add backend support.~~
+    * Could be static handler that searches just the criteria specified during development. (Not considered)
+    * ~~Another approach can also be comparing the field name or subfield names to existing fields in the database and if they match search for entries that match the value of that field.~~
 
 ## Saved Entries
 #### Changes: 

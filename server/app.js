@@ -118,6 +118,13 @@ app.post('/dataEntry', (req, res) => {
     try {
         let db = client.db('START-Project');
         let reptiles = db.collection('reptiles');
+        
+        // convert list of strings to JSON objects so that they can be queryable later
+        // also make field names lowercase for case insensitive comparisons
+        for (let i = 0; data.inputFields && i < data.inputFields.length; i++) {
+            if (typeof data.inputFields[i] == 'string') data.inputFields[i] = JSON.parse(data.inputFields[i]);
+            data.inputFields[i].name = data.inputFields[i].name.toLowerCase();
+        }
 
         reptiles.insertOne(data).then((response) => {
             return res.status(200).send('');
@@ -129,6 +136,75 @@ app.post('/dataEntry', (req, res) => {
         console.log(error);
         return res.status(500).send(error);
     }
+});
+
+/**
+ * Search endpoint that searches the reptiles collection in the
+ * START-Project database for the values specified in the selections 
+ * and states. 
+ */
+app.get('/search', (req, res) => {
+    let params = req.query;
+    if (!params) return res.status(500).send('Could not find valid criteria.');
+    
+    let queryObj = {};
+    if (params.states) {
+        // loop over all the states and append the conditions to the query object
+        for (let state of params.states) {
+            if (typeof state == 'string') state = JSON.parse(state);
+
+            if (state.name.toString().toLowerCase().includes('lower bound')) {
+                // make sure we have a valid number
+                if (!state.value || state.value.toString().trim() == '' || isNaN(state.value)) continue;
+                let name = state.name.toString().toLowerCase().trim().replace(' lower bound', '');
+               
+                // field is "name" and value is name string
+                let currSubQuery = {$elemMatch: {name, value: {$gte : Number(state.value)}}};
+
+                // add a condition to the query that the value of the element with the name must be >= state.value
+                if (!queryObj.inputFields) queryObj.inputFields = {$all: [currSubQuery]};
+                else queryObj.inputFields.$all = [...queryObj.inputFields.$all, currSubQuery];
+                continue;
+            } else if (state.name.toString().toLowerCase().includes('upper bound')) {
+                // make sure we have a valid number
+                if (!state.value || state.value.toString().trim() == '' || isNaN(state.value)) continue;
+                let name = state.name.toString().toLowerCase().trim().replace(' upper bound', '');
+
+                // field is "name" and value is name string
+                let currSubQuery = {$elemMatch: {name, value: {$lte : Number(state.value)}}};
+
+                // add a condition to the query that the value of the element with the name must be <= state.value
+                if (!queryObj.inputFields) queryObj.inputFields = {$all: [currSubQuery]};
+                else queryObj.inputFields.$all = [...queryObj.inputFields.$all, currSubQuery];
+                continue;
+            }
+            
+            // add a condition to the query that the value of the element in inputFields with the state name must 
+            // be the same as the state value
+            let currSubQuery = {$elemMatch: {name: state.name, value: state.value}};
+            if (!queryObj.inputFields) queryObj.inputFields = {$all: [currSubQuery]};
+            else queryObj.inputFields.$all = [...queryObj.inputFields.$all, currSubQuery];
+        }
+    }
+    
+    console.log(queryObj.inputFields.$all);
+    
+    // perform the find query using our query object from the above loop, 
+    // otherwise empty and will return our entire collection
+    try {
+        let db = client.db('START-Project');
+        let reptiles = db.collection('reptiles');
+        
+        reptiles.find(queryObj).toArray((err, searchRes) => {
+            if (err) return res.status(400).send(err.message);
+            
+            console.log(searchRes);
+            return res.status(200).send(searchRes);
+        });
+    } catch(error) {
+        console.log(error);
+        return res.status(500).send(error);
+    }  
 });
 
 app.listen(port);

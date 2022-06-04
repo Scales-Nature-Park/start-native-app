@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ModalDropdown from 'react-native-modal-dropdown';
 import uuid from 'react-native-uuid';
+import Entry from './Entry';
 import {
     StatusBar,
     SafeAreaView,
@@ -14,6 +15,8 @@ import {
     Alert,
 } from 'react-native';
 import useSyncState from '../utils/SyncState';
+import { url } from '../utils/Storage';
+import axios from 'axios';
 
 const scalesColors = require('../utils/colors.json');
 const searchFields = require('../utils/search.json');
@@ -25,7 +28,7 @@ function ArrayEquals (array1, array2) {
 
 const Search = ({route, navigation}) => {
     const [category, setCategory] = useState('Turtle');
-    const [states, setStates] = useState([]);
+    const states = useSyncState([]);
     const criteriaElements = useSyncState([]);
     const selections = useSyncState([]);
     
@@ -47,7 +50,7 @@ const Search = ({route, navigation}) => {
                         dropdownTextHighlightStyle={styles.dropText}
                         defaultValue={field.values[0]}
                         onSelect={(myVal) => {
-                            let tempStates = states.slice();
+                            let tempStates = states.get().slice();
                             let tempIndex = -1;
 
                             tempStates.forEach((curr, index) => {
@@ -59,7 +62,7 @@ const Search = ({route, navigation}) => {
                             if(tempIndex == -1) tempStates.push(
                                 {"name": field.name, "value": field.values[myVal]}
                             );
-                            if (!ArrayEquals(states, tempStates)) setStates(tempStates);
+                            if (!ArrayEquals(states.get(), tempStates)) states.set(tempStates);
                         }}
                         />
                     </View>
@@ -77,7 +80,7 @@ const Search = ({route, navigation}) => {
                             placeholder={'Enter ' + field.name}
                             placeholderTextColor='#000000'
                             onChangeText={(value) => {
-                                let tempStates = states.slice();
+                                let tempStates = states.get().slice();
                                 let tempIndex = -1;
 
                                 tempStates.forEach((curr, index) => {
@@ -89,7 +92,7 @@ const Search = ({route, navigation}) => {
                                 if(tempIndex == -1) tempStates.push(
                                     {"name": field.name, "value": value}
                                 );
-                                if (!ArrayEquals(states, tempStates)) setStates(tempStates);
+                                if (!ArrayEquals(states.get(), tempStates)) states.set(tempStates);
                             }}
                         />
                     </View>
@@ -127,7 +130,6 @@ const Search = ({route, navigation}) => {
     if (catIndex != -1) modfSearchFields.push(searchFields[catIndex]);
 
     // add criteria to dropdown of selected category 
-    let tempFields = criteriaElements.get().slice();
     for (let i = 0; i < modfSearchFields.length; i++) {
         for (let field of modfSearchFields[i].ConditionalCriteria) {
             let currCriteria = criteria.filter((element) => element == field.name)[0];
@@ -141,6 +143,7 @@ const Search = ({route, navigation}) => {
     }
     
     // loop through all dropdowns and display their conditional subfields
+    let tempFields = criteriaElements.get().slice();
     for (let j = 0; j < tempFields.length; j++) {     
         // skip subField elements by checking their keys
         if (!tempFields[j].key) continue;
@@ -156,7 +159,6 @@ const Search = ({route, navigation}) => {
         if (tempIndex == -1 || tempSelections[tempIndex].displayed) continue;
         
         console.log('Before: ' + tempFields.length);
-        console.log(tempFields.filter((element) => element.key == undefined));
 
         // remove previous subfields related to that dropbox
         for (let idx = j + 1; idx < tempFields.length; idx++) {
@@ -167,7 +169,6 @@ const Search = ({route, navigation}) => {
         }
 
         console.log('After: ' + tempFields.length);
-        console.log(tempFields.filter((element) => element.key == undefined));
 
         let field = concatSearchFields.filter((element) => element.name == tempSelections[tempIndex].value);
         if (field.length > 0) field = field[0];
@@ -187,6 +188,7 @@ const Search = ({route, navigation}) => {
         // display subfields of a criteria under its dropdown
         for (let subField of field.Subfields) {
             tempFields = displayField(subField, tempFields, j + 1);
+            console.log(tempFields[j + 1]);
         }
     }
 
@@ -201,7 +203,7 @@ const Search = ({route, navigation}) => {
             </ScrollView>
             
             <View style={styles.container}>
-                {tempFields}
+                {criteriaElements.get()}
             </View>
             
             <View style={styles.container}>
@@ -252,13 +254,13 @@ const Search = ({route, navigation}) => {
                                             if (element != field.name) continue;   
                                             
                                             // set a state for the fields in the sates list
-                                            let state = states.filter((element) => element.name == field.name)[0];
+                                            let state = states.get().filter((element) => element.name == field.name)[0];
                                             
                                             // create a new state element if no existing state is found
                                             if (!state) {
                                                 state = {"name": field.name, "value": ''};
                                                 if (field.dropDown) state.value = field.values[0];
-                                                setStates([...states, state]);
+                                                states.set([...states.get(), state]);
                                             }                                            
                                         }
                                     }
@@ -270,7 +272,21 @@ const Search = ({route, navigation}) => {
                     <Text style={styles.emptyText}>ADD CRITERIA</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.search}>
+                <TouchableOpacity style={styles.search} onPress={() => {
+                    axios({
+                        method: 'get',
+                        url: url + '/search',
+                        params: {
+                            selections: selections.get(),
+                            states: states.get()
+                        }
+                    }).then((response) => {
+                        console.log(response.data);
+                    }).catch((error) => {
+                        console.log(error.message);
+                        Alert.alert('ERROR', error.message);
+                    });
+                }}>
                     <Text style={styles.emptyText}>SEARCH</Text>
                 </TouchableOpacity>
             </View>
