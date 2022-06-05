@@ -13,8 +13,6 @@ commit log and place your changes over the previous changes, below this message.
 - For any field in data entry that needs to be queried as a number from the search screen, you should have an indication that this value should be a number. i.e 
 ```json 
 {
-    ....
-
     dataValidation: {
         "isNumber": true,
         "arguments": "input",
@@ -54,14 +52,14 @@ commit log and place your changes over the previous changes, below this message.
 - Place the package in `/path/to/project/android/app/src/main/res`.
 
 #### Known issues:
-- Selecting a different criteria from the default one doesn't delete all previous subfields from the triggering dropdown, instead it sometimes removes some elements from the dropdown below it.
+- ~~Selecting a different criteria from the default one doesn't delete all previous subfields from the triggering dropdown, instead it sometimes removes some elements from the dropdown below it.~~
 - Select image field in `Data Entry` screen doesn't have backend support for storing the image, might need cloud storage, BSON or seperate axios call to store file in the database seperately.
     * Last option seems most viable until we understand BSON, only problem is that it can be slow and data wont be uploaded until the image uploads (internet issue - important).
 
 #### Future Improvements:
 - Fix known issues.
 - Complete `search.json` and `fields.json`
-- Add functionality where a selected criteria doesn't appear in the othe dropdowns on the screen.
+- Add functionality where a selected criteria doesn't appear in the other dropdowns on the screen.
 - ~~Add backend support.~~
     * Could be static handler that searches just the criteria specified during development. (Not considered)
     * ~~Another approach can also be comparing the field name or subfield names to existing fields in the database and if they match search for entries that match the value of that field.~~

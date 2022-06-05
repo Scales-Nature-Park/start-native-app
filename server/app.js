@@ -150,7 +150,7 @@ app.get('/search', (req, res) => {
     let params = req.query;
     if (!params) return res.status(500).send('Could not find valid criteria.');
     
-    let queryObj = {};
+    let queryObj = (params.category) ? {category: params.category} : {};
     if (params.states) {
         // loop over all the states and append the conditions to the query object
         for (let state of params.states) {
