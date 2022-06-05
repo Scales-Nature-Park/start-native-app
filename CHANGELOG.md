@@ -4,6 +4,32 @@ changes, please include a short explanation of what your changes are trying to a
 with the rest of the codebase and/or how to run and build up on them. You can treat this file as a more in depth
 commit log and place your changes over the previous changes, below this message.
 
+## fields.json minor changes and bug fixes
+#### Changes:
+- Fixed a problem where the search fields where looking for integers but the existing format in the database was as string. Changed the `dataEntry` endpoint to always switch the value to a number if the field is specified as `isNumber` in dataValidation element from `field.json`
+- Added a GUI display for the search results using the Entry component previously used in `PrevEntries.js`. A user can now access a returned entry by clicking on its tab which will bring the user to `Data Entry` screen with a copy of that entry. 
+
+#### How to Use:
+- For any field in data entry that needs to be queried as a number from the search screen, you should have an indication that this value should be a number. i.e 
+```json 
+{
+    ....
+
+    dataValidation: {
+        "isNumber": true,
+        "arguments": "input",
+        "body": "return (!isNaN(input))",
+        "error": "Value needs to be a number."
+    }
+}
+```
+- At the very least, your body of the condition should have ```(!isNaN(input)) // not is not a number```.
+- You can add more conditions using `&&`. You don't have to specify this if you don't need to data validate the field and will not make this field searchable in `search.json`.
+
+#### Known Issues:
+- Navigation when using `save` or `quick save` in data entry screen causes a problem where the user is allowed to Submit to the server in offline mode. Data validation would still work but we don't want users accessing our database without credentials.
+
+
 ## Search Server Side Functionality
 #### Changes:
 - Integrated a generic search engine endpoint that parses field names and queries the database based on the string values.
@@ -16,7 +42,7 @@ commit log and place your changes over the previous changes, below this message.
 - The rest of the name would be the field name in the database e.g. `Longitude Upper Bound` will search the `longitude` field in each entry's `inputFields` objects.
 
 #### Known Issues:
-- `/dataentry` endpoint format doesn't fully match the format used by the `/search` endpoint, not sure how. Tried to take a look at it and it seemed fine. Should be easy to figure out.
+- ~~`/dataentry` endpoint format doesn't fully match the format used by the `/search` endpoint, not sure how. Tried to take a look at it and it seemed fine. Should be easy to figure out.~~
 
 ## Search Screen Changes & App Icon Change
 #### Changes:

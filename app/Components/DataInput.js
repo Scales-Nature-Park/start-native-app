@@ -23,7 +23,7 @@ const dataFields = require('../utils/fields.json');
 // recursive function that display conditional fields of a field
 // and their conditionals
 const displayConditionals = (jsObj, displayField, fields, states) => {
-    let state = states.filter((element) => element.name == jsObj.name)[0];
+    let state = states.filter((element) => element.name.toLowerCase() == jsObj.name.toLowerCase())[0];
     if(!state) return;
 
     if (jsObj.conditionalFields) {
@@ -37,7 +37,7 @@ const displayConditionals = (jsObj, displayField, fields, states) => {
 }
 
 const DataInput = ({route, navigation}) => {
-    console.log(route.params.id);
+    console.log(route.params);
     const id = (route && route.params && route.params.id) ? route.params.id : '';
     const paramData = route.params.data;
 
@@ -68,10 +68,12 @@ const DataInput = ({route, navigation}) => {
     useEffect(() => {
         let validStates = true;
         states.forEach((state) => {
-            if (!state.dataValidation) return;
-
+            if (!state.dataValidation || !state.dataValidation.arguments) return;
+            
+            // validate the data after states are set
             let validateData = new Function(state.dataValidation.arguments, state.dataValidation.body);
-            let response = validateData(Number(state.value));
+            let value = (state.dataValidation.isNumber) ? Number(state.value) : state.value;
+            let response = validateData(value);
 
             console.log(state.dataValidation);
             console.log(' : ' + response);
@@ -111,7 +113,7 @@ const DataInput = ({route, navigation}) => {
     };
 
     const displayField = (field, fields) => {
-        if (field.name == 'date') {
+        if (field.name.toLowerCase() == 'date') {
             fields.push(
                 <View style={styles.container1}>
                     <View style={styles.inputView}>
@@ -148,7 +150,7 @@ const DataInput = ({route, navigation}) => {
                 </ View>
             );
             return;
-        } else if (field.name == 'time') {
+        } else if (field.name.toLowerCase() == 'time') {
             fields.push(
                 <View style={styles.container1}>
                     <Text style={styles.timeField}>Time: </Text>
@@ -228,19 +230,19 @@ const DataInput = ({route, navigation}) => {
                             dropdownTextStyle={styles.dropText}
                             dropdownStyle={styles.dropDown}
                             dropdownTextHighlightStyle={styles.dropText}
-                            defaultValue={(paramData && paramData.inputFields.filter((element) => element.name == field.name)[0]) ? paramData.inputFields.filter((element) => element.name == field.name)[0].value : field.values[0]}
+                            defaultValue={(paramData && paramData.inputFields && paramData.inputFields.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? paramData.inputFields.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : field.values[0].toString()}
                             onSelect={(myVal) => {
                                 let tempStates = states.slice();
                                 let tempIndex = -1;
     
                                 tempStates.forEach((curr, index) => {
-                                    if (curr.name != field.name) return;
+                                    if (curr.name.toLowerCase() != field.name.toLowerCase()) return;
                                     curr.value = field.values[myVal];
                                     tempIndex = index;
                                 });
                                 
                                 if(tempIndex == -1) tempStates.push(
-                                    {"name": field.name, "value": field.values[myVal], "dataValidation": field.dataValidation}
+                                    {"name": field.name.toLowerCase(), "value": field.values[myVal].toString(), "dataValidation": field.dataValidation}
                                 );
                                 setStates(tempStates);
                             }}
@@ -257,21 +259,21 @@ const DataInput = ({route, navigation}) => {
                     <View style={styles.fieldInput}>
                         <TextInput
                             style={styles.TextInput}
-                            placeholder={(paramData && paramData.inputFields.filter((element) => element.name == field.name)[0]) ? paramData.inputFields.filter((element) => element.name == field.name)[0].value : 'Enter ' + field.name}
-                            value={(states.filter((element) => element.name == field.name)[0]) ? states.filter((element) => element.name == field.name)[0].value : ''}
+                            placeholder={(paramData && paramData.inputFields.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? paramData.inputFields.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : 'Enter ' + field.name}
+                            value={(states.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? states.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : ''}
                             placeholderTextColor='#000000'
                             onChangeText={(value) => {
                                 let tempStates = states.slice();
                                 let tempIndex = -1;
 
                                 tempStates.forEach((curr, index) => {
-                                    if (curr.name != field.name) return;
-                                    curr.value = value;
+                                    if (curr.name.toLowerCase() != field.name.toLowerCase()) return;
+                                    curr.value = value.toString();
                                     tempIndex = index;
                                 });
                                 
                                 if(tempIndex == -1) tempStates.push(
-                                    {"name": field.name, "value": value, "dataValidation": field.dataValidation}
+                                    {"name": field.name.toLowerCase(), "value": value, "dataValidation": field.dataValidation}
                                     );
                                 setStates(tempStates);
                             }}
@@ -320,11 +322,11 @@ const DataInput = ({route, navigation}) => {
             if (field.name.toLowerCase() == 'date' || field.name.toLowerCase() == 'time') continue;  
 
             // set a state for the fields in the sates list
-            let state = states.filter((element) => element.name == field.name)[0];
+            let state = states.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0];
 
             if (!state) {
-                state = {"name": field.name, "value": '', "dataValidation": field.dataValidation};
-                if (field.dropDown) state.value = field.values[0];
+                state = {"name": field.name.toLowerCase(), "value": '', "dataValidation": field.dataValidation};
+                if (field.dropDown) state.value = field.values[0].toString();
 
                 setStates([...states, state]);
             }
@@ -420,7 +422,7 @@ const DataInput = ({route, navigation}) => {
                                 "inputFields": states,
                                 "comment": comment
                             },
-                            navigation
+                            navigation, route.params
                         );
 
                         storage.load({
@@ -454,7 +456,7 @@ const DataInput = ({route, navigation}) => {
                                 "inputFields": states,
                                 "comment": comment
                             },
-                            navigation
+                            navigation, route.params
                         );
 
                     }}>
@@ -469,6 +471,8 @@ const DataInput = ({route, navigation}) => {
 };
 
 const SaveDataEntry = (dataObj, navigation, params) => {
+    console.log(params);
+
     // try loading the entries local storage
     storage.load({
         key: 'entries'

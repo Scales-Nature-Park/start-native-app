@@ -24,7 +24,7 @@ const PrevEntries = ({route, navigation}) => {
         // iterate over all entries and set an entry component
         for (let entry of local.fields.reverse()) {
           entryElems.set([...entryElems.get(), <Entry data={entry} onPress={() => {
-            navigation.navigate('DataEntry', {data: entry});
+            navigation.navigate('DataEntry', {...route.params, data: entry});
           }}/>]);
         } 
         if (entryElems.get().length == 0) entryElems.set([<Text style={styles.emptyText}>No Entries Found.</Text>]);

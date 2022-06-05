@@ -28,6 +28,7 @@ function ArrayEquals (array1, array2) {
 
 const Search = ({route, navigation}) => {
     const [category, setCategory] = useState('Turtle');
+    const [entries, setEntries] = useState([]);
     const states = useSyncState([]);
     const criteriaElements = useSyncState([]);
     const selections = useSyncState([]);
@@ -271,6 +272,10 @@ const Search = ({route, navigation}) => {
                 }}>
                     <Text style={styles.emptyText}>ADD CRITERIA</Text>
                 </TouchableOpacity>
+                
+                <View style={(entries.length > 0 ) ? styles.searchResults : {}}>
+                    {entries}
+                </View>
 
                 <TouchableOpacity style={styles.search} onPress={() => {
                     axios({
@@ -281,7 +286,14 @@ const Search = ({route, navigation}) => {
                             states: states.get()
                         }
                     }).then((response) => {
-                        console.log(response.data);
+                        let entries = [];
+                        // display list of entries under the Add criteria button
+                        for (let entry of response.data) {
+                            entries = [...entries, <Entry data={entry} onPress={() => {
+                                navigation.navigate('DataEntry', {...route.params, data: entry});
+                            }}/>];
+                        }
+                        setEntries(entries);
                     }).catch((error) => {
                         console.log(error.message);
                         Alert.alert('ERROR', error.message);
@@ -301,6 +313,13 @@ const styles = StyleSheet.create({
       paddingTop: StatusBar.currentHeight * 70 / 100,
       paddingBottom: StatusBar.currentHeight * 70 / 100,
       backgroundColor: '#fff',    
+    },
+
+    searchResults: {
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 30
     },
   
     emptyText: {

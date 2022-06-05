@@ -113,17 +113,20 @@ app.post('/signup', (req, res) => {
 app.post('/dataEntry', (req, res) => {
     const data = req.query;
     if (!data) return res.status(400).send('Failed to retrieve entered data.');
-    console.log(req.files);
 
     try {
         let db = client.db('START-Project');
         let reptiles = db.collection('reptiles');
         
         // convert list of strings to JSON objects so that they can be queryable later
-        // also make field names lowercase for case insensitive comparisons
+        // also make field names lowercase for case insensitive comparisons 
         for (let i = 0; data.inputFields && i < data.inputFields.length; i++) {
             if (typeof data.inputFields[i] == 'string') data.inputFields[i] = JSON.parse(data.inputFields[i]);
             data.inputFields[i].name = data.inputFields[i].name.toLowerCase();
+            
+            // convert value fields that should be numbers to numbers
+            if (data.inputFields[i].dataValidation && data.inputFields[i].dataValidation.isNumber) 
+            data.inputFields[i].value = Number(data.inputFields[i].value);
         }
 
         reptiles.insertOne(data).then((response) => {
@@ -187,7 +190,9 @@ app.get('/search', (req, res) => {
         }
     }
     
-    console.log(queryObj.inputFields.$all);
+    queryObj.inputFields.$all.forEach((elem) => {
+        console.log(elem);
+    });
     
     // perform the find query using our query object from the above loop, 
     // otherwise empty and will return our entire collection
