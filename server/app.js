@@ -2,6 +2,7 @@
 
 // Express App (Routes)
 const express = require('express');
+const fs = require('fs');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 
@@ -12,6 +13,7 @@ app.use(fileUpload());
 
 // DB client
 const {MongoClient} = require('mongodb');
+const { ObjectID } = require('bson');
 const uri = process.env.MONGODB;
 const client = new MongoClient(uri);
 const port = process.env.PORT || 5000;
@@ -125,16 +127,59 @@ app.post('/imageUpload', async (req, res) => {
         image.mv('uploads/' + image.name, (err) => {
             if(err) return res.status(500).send(err);
         });
-
+        
         // generate a document in the images collection on our database and 
         // and respond with the ObjectID of that document
+        let db = client.db('START-Project');
+        let images = db.collection('images');
+        let { name, mimetype, size } = image; 
 
-        res.status(200).send('Success');
+        images.insertOne({ name, mimetype, size }).then((response) => {
+            return res.status(200).send(response.insertedId);
+        }).catch((err)   => {
+            console.log(err);
+            return res.status(400).send(err);
+        });
     } catch (err) {
-        console.log(err);
         res.status(500).send(err.message);
     }
-  });
+});
+
+/**
+ * Get endpoint that retrieves an image file from the uploads folder with the same
+ * name as the images document that corresponds to the request photoId parameter.
+ */
+app.get('/image', (req, res) => {
+    let params = req.query;
+    if(!params.photoId) return res.status(400).send('No image ID was sepcified.');
+
+    try {
+        // load the images collection from the START-Project db
+        let db = client.db('START-Project');
+        let images = db.collection('images');
+
+        // search an image document using the passed in photoid
+        images.find({_id: ObjectID(params.photoId)}).toArray((err, searchRes) => {
+            if (err) return res.status(400).send(err.message);
+
+            // get the name of the file we're looking for and search for it in /uploads
+            let name = searchRes[0].name;
+            let file = {};
+            fs.readdir('uploads', (err, files) => {
+                if (err) return res.status(500).send(err);
+                
+                // search for file with the name were looking for
+                file = files.filter((curr) => curr.name == name);
+                (file.length > 0) ? file = file[0] : file = undefined;
+                
+            });
+
+            return res.status(200).send(searchRes);
+        });
+    } catch(err) {
+        res.status(500).send(err.message);
+    }
+});
 
 /**
  * Data Entry endpoint that sends in passed data to the reptiles

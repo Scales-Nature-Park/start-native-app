@@ -37,7 +37,6 @@ const displayConditionals = (jsObj, displayField, fields, states) => {
 }
 
 const DataInput = ({route, navigation}) => {
-    console.log(route.params);
     const id = (route && route.params && route.params.id) ? route.params.id : '';
     const paramData = route.params.data;
 
@@ -115,10 +114,23 @@ const DataInput = ({route, navigation}) => {
     const SubmitData = async () => {
         let imageForm = createFormData(photo);
         
-        let config = {
-            method: "post",
-            body: imageForm,
-        };
+        if (!photo) {
+            let returnVal = false;
+            Alert.alert('WARNING', "You haven't uploaded an image.",
+                [
+                    {
+                    text: "Cancel",
+                    onPress: () => returnVal = true,
+                    },
+                    { 
+                        text: "OK", 
+                        onPress: () => console.log("OK Pressed")
+                    }
+                ]
+            );
+    
+            if (returnVal) return;
+        }
 
         let photoId = await    
         axios.post(url + '/imageUpload', imageForm, {
@@ -130,6 +142,8 @@ const DataInput = ({route, navigation}) => {
         }).catch((e) => {
             console.log(e.message);
         });
+        
+        photoId = (photoId) ? photoId.data : undefined;
 
         axios({
             method: 'post',
