@@ -3,16 +3,17 @@
 // Express App (Routes)
 const express = require('express');
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
+
 const app = express();
+
 app.use(cors());
+app.use(fileUpload());
 
 // DB client
 const {MongoClient} = require('mongodb');
 const uri = process.env.MONGODB;
 const client = new MongoClient(uri);
-
-const bodyParser = require('body-parser');
-const path = require('path');
 const port = process.env.PORT || 5000;
 
 /**
@@ -104,6 +105,36 @@ app.post('/signup', (req, res) => {
         return res.status(500).send(error);
     }
 });
+
+/**
+ * Image Upload endpoint that stores a passed in image from the request into
+ * the database and responds with the ObjectID.
+ */
+app.post('/imageUpload', async (req, res) => {
+    if(!req.files) return res.status(400).send('No files were uploaded.');
+
+    try {
+        const image = req.files.photo;
+        console.log(image);
+
+        if (!image) {
+            return res.status(400).send('Please enter an icon url.');
+        }
+
+        // store our image in the uploads folder on our server
+        image.mv('uploads/' + image.name, (err) => {
+            if(err) return res.status(500).send(err);
+        });
+
+        // generate a document in the images collection on our database and 
+        // and respond with the ObjectID of that document
+
+        res.status(200).send('Success');
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err.message);
+    }
+  });
 
 /**
  * Data Entry endpoint that sends in passed data to the reptiles

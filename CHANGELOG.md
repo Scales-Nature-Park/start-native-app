@@ -4,6 +4,18 @@ changes, please include a short explanation of what your changes are trying to a
 with the rest of the codebase and/or how to run and build up on them. You can treat this file as a more in depth
 commit log and place your changes over the previous changes, below this message.
 
+## Image Upload to node Server
+#### Changes: 
+- Implemented image upload from the `Data Entry` screen form. 
+    * App handles image selection form the user's library, an initial post request is sent to the server with just an image form.
+    * `/imageUpload` endpoint then moves that image to the `uploads` folder in the server's root directory.
+
+#### Future Improvements: 
+- Add a document to the `images` collection in the database with all the image data.
+- Store the ObjectID of that document in the next post request directed to the `/dataEntry` endpoint.
+- Accessing the image later should be simply retrieving the image id from the entry document and looking it up in `images`, then finding the image from uploads folder and sending the file to the front end.
+
+
 ## fields.json minor changes and bug fixes
 #### Changes:
 - Fixed a problem where the search fields where looking for integers but the existing format in the database was as string. Changed the `dataEntry` endpoint to always switch the value to a number if the field is specified as `isNumber` in dataValidation element from `field.json`
@@ -13,7 +25,7 @@ commit log and place your changes over the previous changes, below this message.
 - For any field in data entry that needs to be queried as a number from the search screen, you should have an indication that this value should be a number. i.e 
 ```json 
 {
-    dataValidation: {
+    "dataValidation": {
         "isNumber": true,
         "arguments": "input",
         "body": "return (!isNaN(input))",

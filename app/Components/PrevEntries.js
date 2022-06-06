@@ -21,10 +21,11 @@ const PrevEntries = ({route, navigation}) => {
     storage.load({
       key: 'entries',
     }).then((local) => {        
+        let fields = local.fields;
         // iterate over all entries and set an entry component
-        for (let entry of local.fields.reverse()) {
-          entryElems.set([...entryElems.get(), <Entry data={entry} onPress={() => {
-            navigation.navigate('DataEntry', {...route.params, data: entry});
+        for (let i = fields.length - 1; i >= 0 ; i--) {
+          entryElems.set([...entryElems.get(), <Entry data={fields[i]} onPress={() => {
+            navigation.navigate('DataEntry', {...route.params, data: fields[i]});
           }}/>]);
         } 
         if (entryElems.get().length == 0) entryElems.set([<Text style={styles.emptyText}>No Entries Found.</Text>]);

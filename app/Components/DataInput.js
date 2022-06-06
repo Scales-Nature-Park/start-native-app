@@ -98,7 +98,7 @@ const DataInput = ({route, navigation}) => {
 
     const createFormData = (photo, body = {}) => {
         const data = new FormData();
-      
+        
         data.append('photo', {
           name: photo.fileName,
           type: photo.type,
@@ -111,6 +111,57 @@ const DataInput = ({route, navigation}) => {
 
         return data;
     };
+
+    const SubmitData = async () => {
+        let imageForm = createFormData(photo);
+        
+        let config = {
+            method: "post",
+            body: imageForm,
+        };
+
+        let photoId = await    
+        axios.post(url + '/imageUpload', imageForm, {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+            },
+            onUploadProgress: ({loaded, total}) => console.log(loaded / total)
+        }).catch((e) => {
+            console.log(e.message);
+        });
+
+        axios({
+            method: 'post',
+            url: url + '/dataEntry',
+            params: {
+                "id": id,
+                photoId,
+                "day": currDay,
+                "month": currMonth,
+                "year": currYear,
+                "hours": hours,
+                "mins": mins,
+                "category": category,
+                "inputFields": states,
+                "comment": comment
+            }
+        }).then((response) => {
+            Alert.alert(
+                'Successful Data Entry', 
+                'Your data has been submitted. Return to Home.',
+                [
+                    {text: "OK", onPress: () => {
+                        navigation.navigate('Home', route.params);
+                    }}
+                ],
+                {cancelable: false}
+            );
+        }).catch(function (error) {
+            Alert.alert('ERROR', error.message);
+            return;
+        });
+    }
 
     const displayField = (field, fields) => {
         if (field.name.toLowerCase() == 'date') {
@@ -349,38 +400,7 @@ const DataInput = ({route, navigation}) => {
                     Alert.alert('ERROR', (validityError != '') ? validityError : 'Invalid data.');
                     return;
                 }
-                // let imageForm = createFormData(photo, {})._parts[0][1];
-
-                axios({
-                    method: 'post',
-                    url: url + '/dataEntry',
-                    // data: imageForm
-                    params: {
-                        "id": id,
-                        "day": currDay,
-                        "month": currMonth,
-                        "year": currYear,
-                        "hours": hours,
-                        "mins": mins,
-                        "category": category,
-                        "inputFields": states,
-                        "comment": comment
-                    }
-                }).then((response) => {
-                    Alert.alert(
-                        'Successful Data Entry', 
-                        'Your data has been submitted. Return to Home.',
-                        [
-                            {text: "OK", onPress: () => {
-                                navigation.navigate('Home', route.params);
-                            }}
-                        ],
-                        {cancelable: false}
-                    );
-                }).catch(function (error) {
-                    Alert.alert('ERROR', error.message);
-                    return;
-                });
+                SubmitData();
             }}>
                 <Text style={styles.submitText}>SUBMIT</Text>
             </TouchableOpacity>

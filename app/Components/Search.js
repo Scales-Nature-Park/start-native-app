@@ -105,7 +105,55 @@ const Search = ({route, navigation}) => {
         return fields;
     }
 
-    const dropDownSelect = (element, compId) => {
+    const resetCriteriaDrops = (tempCriteria = criteria) => {
+        let tempElements = criteriaElements.get();
+        console.log(tempElements.length);
+        for (let i = 0; i < tempElements.length; i++) {
+            if (!tempElements[i].key) continue;
+            
+            let currSelection = selections.get().filter((sel) => sel.key == tempElements[i].key);
+            if (currSelection.length == 0) continue;
+            else currSelection = currSelection[0];
+
+            console.log(currSelection);
+
+            tempElements[i] = 
+            <ModalDropdown 
+                key={tempElements[i].key}
+                options={[currSelection.value, ...tempCriteria]}
+                showsVerticalScrollIndicator={true}
+                textStyle={styles.dropText}
+                style={styles.dropButton}
+                dropdownTextStyle={styles.dropText}
+                isFullWidth={true}
+                dropdownStyle={styles.dropDown}
+                dropdownTextHighlightStyle={styles.dropText}
+                value={currSelection.value}
+                defaultValue={currSelection.value}
+                defaultIndex={0}
+                onSelect={(index, elem) => dropDownSelect(elem, tempElements[i].key, modfSearchFields)}
+            />
+        }
+        criteriaElements.set(tempElements);
+        console.log(tempElements.length);
+    }
+
+    const resetCriteria = (modfSearchFields) => {
+        // add criteria to dropdown of selected category 
+        let tempCriteria = criteria.splice();
+        for (let i = 0; i < modfSearchFields.length; i++) {
+            for (let field of modfSearchFields[i].ConditionalCriteria) {
+                // let existingSelection = selections.get().filter((element) => element.value == field.name);
+                // if (existingSelection.length == 0) 
+                tempCriteria.push(field.name);
+            }
+        }
+        if (!ArrayEquals(criteria, tempCriteria)) setCriteria(tempCriteria);
+        return tempCriteria;
+    }
+
+    const dropDownSelect = (element, compId, modfSearchFields) => {
+        console.log('Element: '+element);
         let tempSelections = selections.get().slice();
         let tempIndex = -1;
 
@@ -133,6 +181,7 @@ const Search = ({route, navigation}) => {
             }
         }
         selections.set(tempSelections);
+        // resetCriteriaDrops(resetCriteria(modfSearchFields));
     }
 
     // get the indeces of the all category and the selected
@@ -145,7 +194,11 @@ const Search = ({route, navigation}) => {
             if (element.Category == category) catIndex = index;
             categoryButtons.push(
                 <TouchableOpacity style={(category == element.Category) ? styles.buttonView : styles.buttonView2}
-                onPress= {() => setCategory(element.Category)}>
+                onPress= {() => {
+                    setCategory(element.Category);
+                    criteriaElements.set([]);
+                    selections.set([]);
+                }}>
                     <Text style={(category == element.Category) ? {color: '#000000'} : {color: scalesColors.BlueRacer}}>{element.Category}</Text>
                 </TouchableOpacity>
             );
@@ -197,17 +250,9 @@ const Search = ({route, navigation}) => {
             tempFields = displayField(subField, tempFields, j + 1);
         }
     }
-
-    // add criteria to dropdown of selected category 
-    let tempCriteria = criteria.splice();
-    for (let i = 0; i < modfSearchFields.length; i++) {
-        for (let field of modfSearchFields[i].ConditionalCriteria) {
-            let existingSelection = selections.get().filter((element) => element.value == field.name);
-            if (existingSelection.length == 0) tempCriteria.push(field.name);
-        }
-    }
-    if (!ArrayEquals(criteria, tempCriteria)) setCriteria(tempCriteria);
     if (!ArrayEquals(tempFields, criteriaElements.get())) criteriaElements.set(tempFields);
+
+    resetCriteria(modfSearchFields);
         
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -241,13 +286,13 @@ const Search = ({route, navigation}) => {
                                 dropdownTextHighlightStyle={styles.dropText}
                                 defaultValue={criteria[0]}
                                 defaultIndex={0}
-                                onSelect={(index, element) => dropDownSelect(element, compId)}
+                                onSelect={(index, element) => dropDownSelect(element, compId, modfSearchFields)}
                             />
                         ]
                     );
                     
                     // add new selection and Subfields to be displayed next render
-                    if (selections.get().length <= criteriaElements.get().length){
+                    if (selections.get().length <= criteriaElements.get().length) {
                         console.log('Setting selections of dropdowns.');
 
                         let Subfields = modfSearchFields[0].ConditionalCriteria.filter((elem) => elem.name == criteria[0]);
@@ -257,6 +302,7 @@ const Search = ({route, navigation}) => {
                         Subfields = (Subfields.length > 0) ? Subfields[0].Subfields : undefined;
                         selections.set([...selections.get(), {"key": compId, "value": criteria[0], "displayed": false, Subfields, prevFields: (Subfields) ? Subfields.length : 0}]);
                     } 
+                    // resetCriteriaDrops(resetCriteria(modfSearchFields));
                 }}>
                     <Text style={styles.emptyText}>ADD CRITERIA</Text>
                 </TouchableOpacity>
