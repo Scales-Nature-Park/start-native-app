@@ -5,6 +5,7 @@ const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
+const path = require('path');
 
 const app = express();
 
@@ -149,8 +150,8 @@ app.post('/imageUpload', async (req, res) => {
  * Get endpoint that retrieves an image file from the uploads folder with the same
  * name as the images document that corresponds to the request photoId parameter.
  */
-app.get('/image', (req, res) => {
-    let params = req.query;
+app.get('/image/:photoId', (req, res) => {
+    let params = req.params;
     if(!params.photoId) return res.status(400).send('No image ID was sepcified.');
 
     try {
@@ -164,17 +165,17 @@ app.get('/image', (req, res) => {
 
             // get the name of the file we're looking for and search for it in /uploads
             let name = searchRes[0].name;
-            let file = {};
+            let file = '';
             fs.readdir('uploads', (err, files) => {
                 if (err) return res.status(500).send(err);
                 
                 // search for file with the name were looking for
-                file = files.filter((curr) => curr.name == name);
+                file = files.filter((curr) => curr == name);
                 (file.length > 0) ? file = file[0] : file = undefined;
                 
+                if(!file) res.status(400).send('Could not find a file with the name: ', name);
+                else return res.status(200).sendFile(path.join(__dirname + '/uploads/' + file));
             });
-
-            return res.status(200).send(searchRes);
         });
     } catch(err) {
         res.status(500).send(err.message);
@@ -225,7 +226,7 @@ app.post('/dataEntry', (req, res) => {
 app.get('/search', (req, res) => {
     let params = req.query;
     if (!params) return res.status(500).send('Could not find valid criteria.');
-    
+
     let queryObj = (params.category) ? {category: params.category} : {};
     if (params.states) {
         // loop over all the states and append the conditions to the query object
@@ -265,10 +266,6 @@ app.get('/search', (req, res) => {
             else queryObj.inputFields.$all = [...queryObj.inputFields.$all, currSubQuery];
         }
     }
-    
-    queryObj.inputFields.$all.forEach((elem) => {
-        console.log(elem);
-    });
     
     // perform the find query using our query object from the above loop, 
     // otherwise empty and will return our entire collection

@@ -325,7 +325,7 @@ const Search = ({route, navigation}) => {
                         // display list of entries under the Add criteria button
                         for (let entry of response.data) {
                             entries = [...entries, <Entry data={entry} onPress={() => {
-                                navigation.navigate('DataEntry', {...route.params, data: entry});
+                                navigation.navigate('DataEntry', {...route.params, data: entry, search: true});
                             }}/>];
                         }
                         setEntries(entries);

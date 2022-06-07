@@ -60,9 +60,10 @@ const DataInput = ({route, navigation}) => {
     const [comment, setComment] = useState((paramData && paramData.comment) ? paramData.comment : '');
     const [states, setStates] = useState(initialFields);
     const [valid, setValid] = useState(false);
-    const [photo, setPhoto] = useState(null);
+    const [photo, setPhoto] = useState((paramData && paramData.photo) ? paramData.photo : null);
 
     let validityError = '';
+    let photoId = (paramData && paramData.photoId && !photo) ? paramData.photoId : null;
 
     useEffect(() => {
         let validStates = true;
@@ -260,7 +261,7 @@ const DataInput = ({route, navigation}) => {
                             <>
                                 <TouchableOpacity style={styles.buttonView}
                                 onPress= {ChoosePhoto}>
-                                    <Text style={{color: '#000000'}}>{photo.uri}</Text>
+                                    <Text style={{color: '#000000'}}>Image Selected</Text>
                                 </TouchableOpacity>
                             </>
                         )}
@@ -349,6 +350,10 @@ const DataInput = ({route, navigation}) => {
         }
     }
     
+    if (photoId && !photo) {
+        setPhoto({uri: url + '/image/' + photoId});
+    } 
+    
     let allIndex = -1, catIndex = -1;
     let categoryButtons = [];
 
@@ -419,13 +424,19 @@ const DataInput = ({route, navigation}) => {
                 <Text style={styles.submitText}>SUBMIT</Text>
             </TouchableOpacity>
         );
-    }
+    } console.log(photo);   
+    
     return (
         <SafeAreaView style={styles.safeArea}>
             <ScrollView>
                 <ScrollView horizontal={true}>
                         {categoryButtons}
                 </ScrollView>
+
+                {(photo) ? 
+                <View style={styles.container2}>
+                    <Image source={photo} style={styles.image}/>
+                </View> : null}
                 
                 {fields}
                 
@@ -440,13 +451,15 @@ const DataInput = ({route, navigation}) => {
                         />
                     </View>
                 </View>
-
+                
+                {(!route || !route.params || !route.params.search) ? 
                 <View style={styles.container2}>
                     <TouchableOpacity style={styles.quickSave}
                     onPress={() => {                
                         SaveDataEntry(
                             {
                                 "id": id,
+                                photo,
                                 "day": currDay,
                                 "month": currMonth,
                                 "year": currYear,
@@ -481,6 +494,7 @@ const DataInput = ({route, navigation}) => {
                         SaveDataEntry(
                             {
                                 "id": id,
+                                photo,
                                 "day": currDay,
                                 "month": currMonth,
                                 "year": currYear,
@@ -498,7 +512,7 @@ const DataInput = ({route, navigation}) => {
                     </TouchableOpacity>
 
                     {buttons}
-                </View>
+                </View> : null}
             </ScrollView>
         </SafeAreaView>
     );
@@ -542,7 +556,7 @@ const SaveDataEntry = (dataObj, navigation, params) => {
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        paddingTop: StatusBar.currentHeight * 70 / 100,
+        paddingTop: StatusBar.currentHeight * 35 / 100,
         paddingBottom: StatusBar.currentHeight * 70 / 100,
         backgroundColor: '#fff',    
     },
@@ -593,7 +607,11 @@ const styles = StyleSheet.create({
     },
    
     image: {
-      marginBottom: 40,
+        width: '95%',
+        height: 200,
+        marginTop: 20,
+        marginBottom: 20,
+        borderRadius: 10,
     },
    
     inputView: {

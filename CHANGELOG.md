@@ -4,6 +4,15 @@ changes, please include a short explanation of what your changes are trying to a
 with the rest of the codebase and/or how to run and build up on them. You can treat this file as a more in depth
 commit log and place your changes over the previous changes, below this message.
 
+## Image Upload and Retrieval 
+#### Changes:
+- Implemented full functionality for image upload with data entry form.
+- Saving to mobile drive or uploading to server now supports images.
+- Created an endpoint with a `photoId` parameter that sends the image file in response.
+
+#### How to Use: 
+- To access the image enter the server url followed by the endpoint name and photo id. e.g. `http://<server domain>:PORT/image/<photo id from database>`
+
 ## Image Upload to node Server
 #### Changes: 
 - Implemented image upload from the `Data Entry` screen form. 
@@ -11,9 +20,9 @@ commit log and place your changes over the previous changes, below this message.
     * `/imageUpload` endpoint then moves that image to the `uploads` folder in the server's root directory.
 
 #### Future Improvements: 
-- Add a document to the `images` collection in the database with all the image data.
-- Store the ObjectID of that document in the next post request directed to the `/dataEntry` endpoint.
-- Accessing the image later should be simply retrieving the image id from the entry document and looking it up in `images`, then finding the image from uploads folder and sending the file to the front end.
+- ~~Add a document to the `images` collection in the database with all the image data.~~
+- ~~Store the ObjectID of that document in the next post request directed to the `/dataEntry` endpoint.~~
+- ~~Accessing the image later should be simply retrieving the image id from the entry document and looking it up in `images`, then finding the image from uploads folder and sending the file to the front end.~~
 
 
 ## fields.json minor changes and bug fixes
@@ -65,7 +74,7 @@ commit log and place your changes over the previous changes, below this message.
 
 #### Known issues:
 - ~~Selecting a different criteria from the default one doesn't delete all previous subfields from the triggering dropdown, instead it sometimes removes some elements from the dropdown below it.~~
-- Select image field in `Data Entry` screen doesn't have backend support for storing the image, might need cloud storage, BSON or seperate axios call to store file in the database seperately.
+- ~~Select image field in `Data Entry` screen doesn't have backend support for storing the image, might need cloud storage, BSON or seperate axios call to store file in the database seperately.~~
     * Last option seems most viable until we understand BSON, only problem is that it can be slow and data wont be uploaded until the image uploads (internet issue - important).
 
 #### Future Improvements:
