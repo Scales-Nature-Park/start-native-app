@@ -6,6 +6,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
+    "android-release": "react-native run-android --variant=release",
     "test": "jest",
     "lint": "eslint .",
     "windows": "react-native run-windows"

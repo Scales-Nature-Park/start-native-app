@@ -107,15 +107,12 @@ const Search = ({route, navigation}) => {
 
     const resetCriteriaDrops = (tempCriteria = criteria) => {
         let tempElements = criteriaElements.get();
-        console.log(tempElements.length);
         for (let i = 0; i < tempElements.length; i++) {
             if (!tempElements[i].key) continue;
             
             let currSelection = selections.get().filter((sel) => sel.key == tempElements[i].key);
             if (currSelection.length == 0) continue;
             else currSelection = currSelection[0];
-
-            console.log(currSelection);
 
             tempElements[i] = 
             <ModalDropdown 
@@ -135,7 +132,6 @@ const Search = ({route, navigation}) => {
             />
         }
         criteriaElements.set(tempElements);
-        console.log(tempElements.length);
     }
 
     const resetCriteria = (modfSearchFields) => {
@@ -153,7 +149,6 @@ const Search = ({route, navigation}) => {
     }
 
     const dropDownSelect = (element, compId, modfSearchFields) => {
-        console.log('Element: '+element);
         let tempSelections = selections.get().slice();
         let tempIndex = -1;
 
@@ -323,9 +318,9 @@ const Search = ({route, navigation}) => {
                     }).then((response) => {
                         let entries = [];
                         // display list of entries under the Add criteria button
-                        for (let entry of response.data) {
-                            entries = [...entries, <Entry data={entry} onPress={() => {
-                                navigation.navigate('DataEntry', {...route.params, data: entry, search: true});
+                        for (let i = response.data.length - 1; i >= 0; i--) {
+                            entries = [...entries, <Entry data={response.data[i]} onPress={() => {
+                                navigation.navigate('DataEntry', {...route.params, data: response.data[i], search: true});
                             }}/>];
                         }
                         setEntries(entries);

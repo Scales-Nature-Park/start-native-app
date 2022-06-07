@@ -4,8 +4,9 @@
 const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
-const fileUpload = require('express-fileupload');
 const path = require('path');
+const sanitize = require('mongo-sanitize');
+const fileUpload = require('express-fileupload');
 
 const app = express();
 
@@ -13,7 +14,7 @@ app.use(cors());
 app.use(fileUpload());
 
 // DB client
-const {MongoClient} = require('mongodb');
+const { MongoClient } = require('mongodb');
 const { ObjectID } = require('bson');
 const uri = process.env.MONGODB;
 const client = new MongoClient(uri);
@@ -39,7 +40,11 @@ DBConnect();
  * a success response if they exist.
  */
 app.get('/signin', (req, res) => {
-    const {email, password} = req.query;
+    if (!req.query || !req.query.email || !req.query.password)
+    return res.status(400).send('Invalid credentials. Please verify you have entered the correct email and password.');
+    
+    const email = sanitize(req.query.email);
+    const password = sanitize(req.query.password);
 
     try {
         // search the credentials collection in the START-Project
@@ -50,10 +55,8 @@ app.get('/signin', (req, res) => {
         
         // retrieve the array of the account and respond with the id
         results.toArray().then((response) => {
-            if (response.length <= 0) {
-                console.log('Invalid.');
-                return res.status(500).send('Invalid credentials. Please verify you have entered the correct email and password.');
-            }
+            if (response.length <= 0) 
+            return res.status(500).send('Invalid credentials. Please verify you have entered the correct email and password.');
 
             return res.status(200).send(response[0]._id);
         }).catch((err) => {
@@ -73,7 +76,11 @@ app.get('/signin', (req, res) => {
  * them otherwise.
  */
 app.post('/signup', (req, res) => {
-    const {email, password} = req.query;
+    if (!req.query || !req.query.email || !req.query.password)
+    return res.status(400).send('Email and password were not sent to the server.');
+
+    const email = sanitize(req.query.email);
+    const password = sanitize(req.query.password);
     
     try {
         // search the credentials collection in the START-Project
@@ -118,7 +125,6 @@ app.post('/imageUpload', async (req, res) => {
 
     try {
         const image = req.files.photo;
-        console.log(image);
 
         if (!image) {
             return res.status(400).send('Please enter an icon url.');
@@ -153,7 +159,7 @@ app.post('/imageUpload', async (req, res) => {
 app.get('/image/:photoId', (req, res) => {
     let params = req.params;
     if(!params.photoId) return res.status(400).send('No image ID was sepcified.');
-
+    
     try {
         // load the images collection from the START-Project db
         let db = client.db('START-Project');
@@ -200,6 +206,7 @@ app.post('/dataEntry', (req, res) => {
         for (let i = 0; data.inputFields && i < data.inputFields.length; i++) {
             if (typeof data.inputFields[i] == 'string') data.inputFields[i] = JSON.parse(data.inputFields[i]);
             data.inputFields[i].name = data.inputFields[i].name.toLowerCase();
+            data.inputFields[i].value = sanitize(data.inputFields[i].value);
             
             // convert value fields that should be numbers to numbers
             if (data.inputFields[i].dataValidation && data.inputFields[i].dataValidation.isNumber) 
@@ -232,6 +239,7 @@ app.get('/search', (req, res) => {
         // loop over all the states and append the conditions to the query object
         for (let state of params.states) {
             if (typeof state == 'string') state = JSON.parse(state);
+            state.value = sanitize(state.value);
 
             if (state.name.toString().toLowerCase().includes('lower bound')) {
                 // make sure we have a valid number

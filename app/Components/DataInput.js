@@ -97,6 +97,7 @@ const DataInput = ({route, navigation}) => {
     };
 
     const createFormData = (photo, body = {}) => {
+        if (!photo) return;
         const data = new FormData();
         
         data.append('photo', {
@@ -114,32 +115,13 @@ const DataInput = ({route, navigation}) => {
 
     const SubmitData = async () => {
         let imageForm = createFormData(photo);
-        
-        if (!photo) {
-            let returnVal = false;
-            Alert.alert('WARNING', "You haven't uploaded an image.",
-                [
-                    {
-                    text: "Cancel",
-                    onPress: () => returnVal = true,
-                    },
-                    { 
-                        text: "OK", 
-                        onPress: () => console.log("OK Pressed")
-                    }
-                ]
-            );
-    
-            if (returnVal) return;
-        }
 
         let photoId = await    
         axios.post(url + '/imageUpload', imageForm, {
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'multipart/form-data',
-            },
-            onUploadProgress: ({loaded, total}) => console.log(loaded / total)
+            }
         }).catch((e) => {
             console.log(e.message);
         });
@@ -419,7 +401,19 @@ const DataInput = ({route, navigation}) => {
                     Alert.alert('ERROR', (validityError != '') ? validityError : 'Invalid data.');
                     return;
                 }
-                SubmitData();
+                if (!photo) {
+                    Alert.alert('WARNING', "You haven't uploaded an image.",
+                        [
+                            {
+                            text: "Cancel",
+                            },
+                            { 
+                                text: "OK", 
+                                onPress: () => SubmitData()
+                            }
+                        ]
+                    );
+                } else SubmitData();
             }}>
                 <Text style={styles.submitText}>SUBMIT</Text>
             </TouchableOpacity>
@@ -536,8 +530,7 @@ const SaveDataEntry = (dataObj, navigation, params) => {
             }
         });
 
-        navigation.navigate('Home', params);
-        
+        navigation.navigate('Home', params);     
     }).catch((err) => {
         console.log(err.message);
         // store the entry into entries as the only element

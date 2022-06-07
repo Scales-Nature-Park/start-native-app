@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import storage from '../utils/Storage';
+import React from 'react';
 import {
     StatusBar,
     StyleSheet,
@@ -7,7 +6,6 @@ import {
     View,
     TouchableOpacity,
     SafeAreaView,
-    Alert,
 } from 'react-native';
 
 const scalesColors = require('../utils/colors.json');
@@ -15,26 +13,12 @@ const scalesColors = require('../utils/colors.json');
 const Home = ({route, navigation}) => {
     let id = (route && route.params && route.params.id) ? route.params.id : '';
     
-    // offline mode tries to retrieve login info from local
-    // storage, returns to login form on fail
-    if (!route.params.onlineMode) {
-        storage.load({
-            key: 'loginState',
-        }).then((local) => {
-            id = local.id;
-            console.log('Loaded local user data.');
-        }).catch((err) => {
-            if (!err.message.includes('Expired')) Alert.alert("ERROR", err.message);
-            else Alert.alert("ERROR", "Expired login credentials.");
-            navigation.navigate('Login');
-        });
-    }
-    
     return (
         <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
             <TouchableOpacity style={styles.buttonView}
             onPress= {() => {
+                if (route.params.data) route.params.data = undefined;
                 navigation.navigate('DataEntry', route.params);
             }}>
                 <Text style={styles.buttonText}>Data Entry</Text>

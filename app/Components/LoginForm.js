@@ -61,7 +61,7 @@ const LoginForm = ({ navigation }) => {
 
             <TouchableOpacity style={styles.offlineBtn}
             onPress = {() => navigation.navigate('Home', {id: '', onlineMode: false})}>
-                <Text style={styles.loginText}>OFFLINE MODE</Text>
+                <Text style={styles.loginText}>GUEST MODE</Text>
             </TouchableOpacity>
         </View>
       </ScrollView>
