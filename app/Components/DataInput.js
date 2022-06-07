@@ -409,7 +409,7 @@ const DataInput = ({route, navigation}) => {
 
     // render submit button only in online mode, cuz we cant
     // connect to the server offline
-    if (!route.params.offlineMode) {
+    if (route.params.onlineMode) {
         buttons.push(
             <TouchableOpacity style={styles.submitBtn}
             onPress={() => {
@@ -536,10 +536,7 @@ const SaveDataEntry = (dataObj, navigation, params) => {
             }
         });
 
-        navigation.navigate('Home', {
-            screen: 'Home',
-            params: params,
-        });
+        navigation.navigate('Home', params);
         
     }).catch((err) => {
         console.log(err.message);

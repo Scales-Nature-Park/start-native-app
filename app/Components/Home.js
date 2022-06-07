@@ -17,7 +17,7 @@ const Home = ({route, navigation}) => {
     
     // offline mode tries to retrieve login info from local
     // storage, returns to login form on fail
-    if (route.params.offlineMode) {
+    if (!route.params.onlineMode) {
         storage.load({
             key: 'loginState',
         }).then((local) => {

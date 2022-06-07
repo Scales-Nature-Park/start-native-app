@@ -60,7 +60,7 @@ const LoginForm = ({ navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.offlineBtn}
-            onPress = {() => navigation.navigate('Home', {id: '', offlineMode: true})}>
+            onPress = {() => navigation.navigate('Home', {id: '', onlineMode: false})}>
                 <Text style={styles.loginText}>OFFLINE MODE</Text>
             </TouchableOpacity>
         </View>
@@ -90,6 +90,7 @@ function AuthenticateCredentials(email, password, navigation, id, setID) {
     
     navigation.navigate('Home', {
       "id": id,
+      "onlineMode": true,
     });
   }).catch(function (error) {
     Alert.alert('ERROR', error.response.data);
