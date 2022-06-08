@@ -269,7 +269,7 @@ app.get('/search', (req, res) => {
             
             // add a condition to the query that the value of the element in inputFields with the state name must 
             // be the same as the state value
-            let currSubQuery = {$elemMatch: {name: state.name, value: state.value}};
+            let currSubQuery = {$elemMatch: {name: state.name.toString().toLowerCase(), value: state.value.toString().toLowerCase()}};
             if (!queryObj.inputFields) queryObj.inputFields = {$all: [currSubQuery]};
             else queryObj.inputFields.$all = [...queryObj.inputFields.$all, currSubQuery];
         }

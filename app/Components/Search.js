@@ -27,19 +27,34 @@ function ArrayEquals (array1, array2) {
 }
 
 const Search = ({route, navigation}) => {
-    const [category, setCategory] = useState('Turtle');
-    const [entries, setEntries] = useState([]);
-    const [criteria, setCriteria] = useState([]);
     const states = useSyncState([]);
     const criteriaElements = useSyncState([]);
     const selections = useSyncState([]);
+    const [category, setCategory] = useState('Turtle');
+    const [entries, setEntries] = useState([]);
+    const [criteria, setCriteria] = useState([]);
+    const [dark, setDark] = useState(true);
+
+    React.useLayoutEffect(() => {
+        navigation.setOptions({
+          headerRight: () => (
+            <TouchableOpacity onPress= {() => setDark(!dark)}>
+                {
+                    // (dark) ? <Image source={photo} style={styles.image}/> :
+                    //          <Image source={photo} style={styles.image}/>
+                }
+                <Text>Dark Mode</Text>
+            </TouchableOpacity>
+          ),
+        });
+    });
     
     const displayField = (field, fields, index) => {
         if (field.dropDown) {
             fields.splice(index, 0,
                 <View style={styles.container}>
                     <View style={{width: '45%'}}>
-                        <Text style={styles.field}>{field.name}:</Text>
+                        <Text style={(dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
                     </View>
                     <View style={styles.fieldInput}>
                         <ModalDropdown 
@@ -74,7 +89,7 @@ const Search = ({route, navigation}) => {
             fields.splice(index, 0,
                 <View style={styles.entryLine}>
                     <View style={{width: '45%'}}>
-                        <Text style={styles.field}>{field.name}:</Text>
+                        <Text style={(dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
                     </View>
                     <View style={styles.fieldInput}>
                         <TextInput
@@ -250,7 +265,8 @@ const Search = ({route, navigation}) => {
     resetCriteria(modfSearchFields);
         
     return (
-        <SafeAreaView style={styles.safeArea}>
+        <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
+        <View style={styles.overlay}/>
         <ScrollView>
             <ScrollView horizontal={true}>
                 {categoryButtons}
@@ -346,6 +362,24 @@ const styles = StyleSheet.create({
       backgroundColor: '#fff',    
     },
 
+    safeAreaDark: {
+        flex: 1,
+        paddingTop: StatusBar.currentHeight * 70 / 100,
+        paddingBottom: StatusBar.currentHeight * 70 / 100,
+        backgroundColor: '#121212',    
+    },
+
+    overlay: {
+        flex: 1,
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        opacity: 0.07,
+        backgroundColor: '#fff',
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height
+    },
+
     searchResults: {
         width: '100%',
         justifyContent: 'center',
@@ -362,7 +396,6 @@ const styles = StyleSheet.create({
     
     container: {
         flex: 1,
-        backgroundColor: "#fff",
         alignItems: "center",
         width: '100%',
         justifyContent: "center",
@@ -370,7 +403,6 @@ const styles = StyleSheet.create({
 
     entryLine: {
         flex: 1,
-        backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'space-evenly',   
         flexDirection:'row',
@@ -468,6 +500,13 @@ const styles = StyleSheet.create({
     field: {
         fontSize: 16,
         color: '#000000',
+        marginBottom: 20,
+        textAlign: 'left',
+    },
+
+    fieldDark: {
+        fontSize: 16,
+        color: '#fff',
         marginBottom: 20,
         textAlign: 'left',
     },

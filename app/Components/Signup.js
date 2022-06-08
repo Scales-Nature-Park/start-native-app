@@ -10,6 +10,7 @@ import {
     TouchableOpacity,
     SafeAreaView,
     ScrollView,
+    Dimensions,
     Alert,
 } from 'react-native';
 
@@ -19,9 +20,28 @@ const Signup = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
+    const [dark, setDark] = useState(true);
+
+    React.useLayoutEffect(() => {
+        navigation.setOptions({
+          headerRight: () => (
+            <TouchableOpacity onPress= {() => {
+                    console.log(dark);
+                    setDark(!dark);
+                }}>
+                {
+                    // (dark) ? <Image source={photo} style={styles.image}/> :
+                    //          <Image source={photo} style={styles.image}/>
+                }
+                <Text style={styles.buttonText}>Dark Mode</Text>
+            </TouchableOpacity>
+          ),
+        });
+    });
     
     return (
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
+      <View style={styles.overlay}/>
       <ScrollView>
         <View style={styles.container}>
             <StatusBar style="auto" />
@@ -104,9 +124,26 @@ const styles = StyleSheet.create({
       backgroundColor: '#fff',    
     },
 
+    safeAreaDark: {
+      flex: 1,
+      paddingTop: StatusBar.currentHeight * 70 / 100,
+      paddingBottom: StatusBar.currentHeight * 70 / 100,
+      backgroundColor: '#121212',    
+    },
+
+    overlay: {
+      flex: 1,
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      opacity: 0.07,
+      backgroundColor: '#fff',
+      width: Dimensions.get('window').width,
+      height: Dimensions.get('window').height
+    },
+
     container: {
       flex: 1,
-      backgroundColor: "#fff",
       alignItems: "center",
       justifyContent: "center",
       marginTop: 100,

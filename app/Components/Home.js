@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     StatusBar,
     StyleSheet,
@@ -6,44 +6,63 @@ import {
     View,
     TouchableOpacity,
     SafeAreaView,
+    Image,
+    Dimensions
 } from 'react-native';
 
 const scalesColors = require('../utils/colors.json');
+const { width, height } = Dimensions.get('window');
 
 const Home = ({route, navigation}) => {
     let id = (route && route.params && route.params.id) ? route.params.id : '';
+    const [dark, setDark] = useState(true);
+
+    React.useLayoutEffect(() => {
+        navigation.setOptions({
+          headerRight: () => (
+            <TouchableOpacity onPress= {() => setDark(!dark)}>
+                {
+                    // (dark) ? <Image source={photo} style={styles.image}/> :
+                    //          <Image source={photo} style={styles.image}/>
+                }
+                <Text>Dark Mode</Text>
+            </TouchableOpacity>
+          ),
+        });
+    });
     
     return (
-        <SafeAreaView style={styles.safeArea}>
-        <View style={styles.container}>
-            <TouchableOpacity style={styles.buttonView}
-            onPress= {() => {
-                if (route.params.data) route.params.data = undefined;
-                navigation.navigate('DataEntry', route.params);
-            }}>
-                <Text style={styles.buttonText}>Data Entry</Text>
-            </TouchableOpacity>
+        <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
+            <View style={styles.overlay}/>
+            <View style={(dark) ? styles.containerDark : styles.container}>
+                <TouchableOpacity style={styles.buttonView}
+                onPress= {() => {
+                    if (route.params.data) route.params.data = undefined;
+                    navigation.navigate('DataEntry', route.params);
+                }}>
+                    <Text style={styles.buttonText}>Data Entry</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity style={styles.buttonView}
-            onPress= {() => {
-                navigation.navigate('Search', route.params);
-            }}>
-                <Text style={styles.buttonText}>Search</Text>
-            </TouchableOpacity>
+                <TouchableOpacity style={styles.buttonView}
+                onPress= {() => {
+                    navigation.navigate('Search', route.params);
+                }}>
+                    <Text style={styles.buttonText}>Search</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity style= {styles.buttonView}
-            onPress= {() => {
-                navigation.navigate('PrevEntries', route.params);
-            }}>
-                <Text style={styles.buttonText}>Saved Entries</Text>
-            </TouchableOpacity>
+                <TouchableOpacity style= {styles.buttonView}
+                onPress= {() => {
+                    navigation.navigate('PrevEntries', route.params);
+                }}>
+                    <Text style={styles.buttonText}>Saved Entries</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity style= {styles.buttonView}
-            onPress= {() => {
-            }}>
-                <Text style={styles.buttonText}>Account</Text>
-            </TouchableOpacity>
-        </View>
+                <TouchableOpacity style= {styles.buttonView}
+                onPress= {() => {
+                }}>
+                    <Text style={styles.buttonText}>Account</Text>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     );
 };
@@ -71,9 +90,35 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',    
     },
 
+    safeAreaDark: {
+        flex: 1,
+        padding: StatusBar.currentHeight * 70 / 100,
+        backgroundColor: '#121212',
+    },
+
+    overlay: {
+        flex: 1,
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        opacity: 0.07,
+        backgroundColor: '#fff',
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height
+    },
+
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',   
+        flexDirection:'column',
+        width: '100%',
+        height: 50,
+        marginTop: 20,
+    },
+
+    containerDark: {
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'space-evenly',   
         flexDirection:'column',

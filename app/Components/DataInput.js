@@ -61,6 +61,21 @@ const DataInput = ({route, navigation}) => {
     const [states, setStates] = useState(initialFields);
     const [valid, setValid] = useState(false);
     const [photo, setPhoto] = useState((paramData && paramData.photo) ? paramData.photo : null);
+    const [dark, setDark] = useState(true);
+
+    React.useLayoutEffect(() => {
+        navigation.setOptions({
+          headerRight: () => (
+            <TouchableOpacity onPress= {() => setDark(!dark)}>
+                {
+                    // (dark) ? <Image source={photo} style={styles.image}/> :
+                    //          <Image source={photo} style={styles.image}/>
+                }
+                <Text style={styles.buttonText}>Dark Mode</Text>
+            </TouchableOpacity>
+          ),
+        });
+    });
 
     let validityError = '';
     let photoId = (paramData && paramData.photoId && !photo) ? paramData.photoId : null;
@@ -213,7 +228,7 @@ const DataInput = ({route, navigation}) => {
         } else if (field.name.toLowerCase() == 'time') {
             fields.push(
                 <View style={styles.container1}>
-                    <Text style={styles.timeField}>Time: </Text>
+                    <Text style={(dark) ? styles.timeFieldDark : styles.timeField}>Time: </Text>
                     <View style={styles.inputView}>
                         <TextInput
                         style={styles.TextInput}
@@ -227,7 +242,7 @@ const DataInput = ({route, navigation}) => {
                         />
                     </View>
     
-                    <Text style={styles.timeField}>:</Text>
+                    <Text style={(dark) ? styles.timeFieldDark : styles.timeField}>:</Text>
     
                     <View style={styles.inputView}>
                         <TextInput
@@ -248,7 +263,7 @@ const DataInput = ({route, navigation}) => {
             fields.push(
                 <View style={styles.container1}>
                     <View style={{width: '45%'}}>
-                        <Text style={styles.field}>{field.name}:</Text>
+                        <Text style={(dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
                     </View>
                     <View style={styles.fieldInput}>
                         {photo && (
@@ -279,7 +294,7 @@ const DataInput = ({route, navigation}) => {
             fields.push(
                 <View style={styles.container1}>
                     <View style={{width: '45%'}}>
-                        <Text style={styles.field}>{field.name}:</Text>
+                        <Text style={(dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
                     </View>
                     <View style={styles.fieldInput}>
                             <ModalDropdown 
@@ -314,7 +329,7 @@ const DataInput = ({route, navigation}) => {
             fields.push(
                 <View style={styles.container1}>
                     <View style={{width: '45%'}}>
-                        <Text style={styles.field}>{field.name}:</Text>
+                        <Text style={(dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
                     </View>
                     <View style={styles.fieldInput}>
                         <TextInput
@@ -429,7 +444,8 @@ const DataInput = ({route, navigation}) => {
     } console.log(photo);   
     
     return (
-        <SafeAreaView style={styles.safeArea}>
+        <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
+            <View style={styles.overlay}/>
             <ScrollView>
                 <ScrollView horizontal={true}>
                         {categoryButtons}
@@ -550,6 +566,24 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',    
     },
 
+    safeAreaDark: {
+        flex: 1,
+        paddingTop: StatusBar.currentHeight * 35 / 100,
+        paddingBottom: StatusBar.currentHeight * 70 / 100,
+        backgroundColor: '#121212',
+    },
+
+    overlay: {
+        flex: 1,
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        opacity: 0.07,
+        backgroundColor: '#fff',
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height
+    },
+
     dropButton: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -578,7 +612,6 @@ const styles = StyleSheet.create({
 
     container1: {
       flex: 1,
-      backgroundColor: '#fff',
       alignItems: 'center',
       justifyContent: 'space-evenly',   
       flexDirection:'row',
@@ -589,7 +622,6 @@ const styles = StyleSheet.create({
 
     container2: {
         flex: 1,
-        backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'column',
@@ -698,9 +730,23 @@ const styles = StyleSheet.create({
         textAlign: 'left',
     },
 
+    timeFieldDark: {
+        fontSize: 20,
+        color: '#fff',
+        marginBottom: 20,
+        textAlign: 'left',
+    },
+
     field: {
         fontSize: 16,
         color: '#000000',
+        marginBottom: 20,
+        textAlign: 'left',
+    },
+
+    fieldDark: {
+        fontSize: 16,
+        color: '#fff',
         marginBottom: 20,
         textAlign: 'left',
     },
