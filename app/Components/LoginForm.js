@@ -10,6 +10,7 @@ import {
     TouchableOpacity,
     ScrollView,
     SafeAreaView,
+    Image,
     Alert,
     Dimensions,
 } from 'react-native';
@@ -27,10 +28,9 @@ const LoginForm = ({ navigation }) => {
           headerRight: () => (
             <TouchableOpacity onPress= {() => setDark(!dark)}>
                 {
-                    // (dark) ? <Image source={photo} style={styles.image}/> :
-                    //          <Image source={photo} style={styles.image}/>
+                    (dark) ? <Image source={require('../assets/sun.png')} style={styles.iconImage}/> :
+                             <Image source={require('../assets/moon.png')} style={styles.iconImage}/>
                 }
-                <Text>Dark Mode</Text>
             </TouchableOpacity>
           ),
         });
@@ -135,10 +135,15 @@ const styles = StyleSheet.create({
       position: 'absolute',
       left: 0,
       top: 0,
-      opacity: 0.07,
+      opacity: 0.14,
       backgroundColor: '#fff',
       width: Dimensions.get('window').width,
       height: Dimensions.get('window').height
+    },
+    
+    iconImage: {
+        width: 40,
+        height: 40
     },
 
     container: {
