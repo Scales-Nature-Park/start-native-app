@@ -64,6 +64,8 @@ const DataInput = ({route, navigation}) => {
 
     let validityError = '';
     let photoId = (paramData && paramData.photoId && !photo) ? paramData.photoId : null;
+    console.log(photo);
+    if (photoId && !photo) setPhoto({uri: url + '/image/' + photoId});
 
     useEffect(() => {
         let validStates = true;
@@ -113,18 +115,28 @@ const DataInput = ({route, navigation}) => {
         return data;
     };
 
-    const SubmitData = async () => {
-        let imageForm = createFormData(photo);
+    const SubmitData = async (second = undefined) => {
+        if (photo) {
+            let imageForm = createFormData(photo);
+    
+            photoId = await    
+            axios.post(url + '/imageUpload', imageForm, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'multipart/form-data',
+                }
+            }).catch((e) => {
+                console.log(e);
+                imageForm = undefined;
+            });
 
-        let photoId = await    
-        axios.post(url + '/imageUpload', imageForm, {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'multipart/form-data',
+            // if image upload fails, try it again. give network error alert if on second attempt
+            if(!imageForm) {
+                if (second) Alert.alert('Network Error', 'Failed to upload image.');
+                else SubmitData(true);
+                return;
             }
-        }).catch((e) => {
-            console.log(e.message);
-        });
+        }
         
         photoId = (photoId) ? photoId.data : undefined;
 
@@ -322,7 +334,7 @@ const DataInput = ({route, navigation}) => {
                                 
                                 if(tempIndex == -1) tempStates.push(
                                     {"name": field.name.toLowerCase(), "value": value, "dataValidation": field.dataValidation}
-                                    );
+                                );
                                 setStates(tempStates);
                             }}
                         />
@@ -331,10 +343,6 @@ const DataInput = ({route, navigation}) => {
             );
         }
     }
-    
-    if (photoId && !photo) {
-        setPhoto({uri: url + '/image/' + photoId});
-    } 
     
     let allIndex = -1, catIndex = -1;
     let categoryButtons = [];
@@ -465,13 +473,6 @@ const DataInput = ({route, navigation}) => {
                             },
                             navigation, route.params
                         );
-
-                        storage.load({
-                            key: 'entries',
-                        }).catch((err) => {
-                            Alert.alert("ERROR", err.message);
-                            navigation.navigate('Login');
-                        });
                     }}>
                         <Text style={styles.submitText}>QUICK SAVE</Text>
                     </TouchableOpacity>
@@ -513,8 +514,6 @@ const DataInput = ({route, navigation}) => {
 };
 
 const SaveDataEntry = (dataObj, navigation, params) => {
-    console.log(params);
-
     // try loading the entries local storage
     storage.load({
         key: 'entries'

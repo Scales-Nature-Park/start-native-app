@@ -46,7 +46,7 @@ commit log and place your changes over the previous changes, below this message.
 - You can add more conditions using `&&`. You don't have to specify this if you don't need to data validate the field and will not make this field searchable in `search.json`.
 
 #### Known Issues:
-- Navigation when using `save` or `quick save` in data entry screen causes a problem where the user is allowed to Submit to the server in offline mode. Data validation would still work but we don't want users accessing our database without credentials.
+- ~~Navigation when using `save` or `quick save` in data entry screen causes a problem where the user is allowed to Submit to the server in offline mode. Data validation would still work but we don't want users accessing our database without credentials.~~
 
 
 ## Search Server Side Functionality
@@ -78,7 +78,7 @@ commit log and place your changes over the previous changes, below this message.
     * Last option seems most viable until we understand BSON, only problem is that it can be slow and data wont be uploaded until the image uploads (internet issue - important).
 
 #### Future Improvements:
-- Fix known issues.
+- ~~Fix known issues.~~
 - Complete `search.json` and `fields.json`
 - Add functionality where a selected criteria doesn't appear in the other dropdowns on the screen.
 - ~~Add backend support.~~
