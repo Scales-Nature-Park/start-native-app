@@ -4,6 +4,18 @@ changes, please include a short explanation of what your changes are trying to a
 with the rest of the codebase and/or how to run and build up on them. You can treat this file as a more in depth
 commit log and place your changes over the previous changes, below this message.
 
+## Admin Windows App
+#### Changes:
+- Added react native boiler plate for windows admin app.
+- Created a login screen that can only enter existing credentials in the `admin-credentials` collection in our database.
+
+#### How to Use:
+- cd into admin folder and run `npm start` and `npm run windows`.
+- You might need to install a windows SDK dependancy from visual studio installer.
+
+#### Known Issues:
+- [Issue #5](https://github.com/Scales-Nature-Park/start-native-app/issues/5).
+
 ## Image Upload and Retrieval 
 #### Changes:
 - Implemented full functionality for image upload with data entry form.

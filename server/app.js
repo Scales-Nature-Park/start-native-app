@@ -70,6 +70,41 @@ app.get('/signin', (req, res) => {
 });
 
 /**
+ * Admin login endpoint that authenticates passed in credentials
+ * with existing documents in the database and sends 
+ * a success response if they exist.
+ */
+ app.get('/admin-signin', (req, res) => {
+    if (!req.query || !req.query.username || !req.query.password)
+    return res.status(400).send('Invalid credentials. Please verify you have entered the correct username and password.');
+    
+    const username = sanitize(req.query.username);
+    const password = sanitize(req.query.password);
+
+    try {
+        // search the credentials collection in the START-Project
+        // database for the passed username and password
+        let db = client.db('START-Project');
+        let credentials = db.collection('admin-credentials');
+        let results = credentials.find({"username": username, "password": password});
+        
+        // retrieve the array of the account and respond with the id
+        results.toArray().then((response) => {
+            if (response.length <= 0) 
+            return res.status(500).send('Invalid credentials. Please verify you have entered the correct username and password.');
+
+            return res.status(200).send(response[0]._id);
+        }).catch((err) => {
+            console.log(err.message);
+            return res.status(500).send(err.message);
+        });
+    } catch (error) {
+        console.log(error.message);
+        return res.status(400).send(error.message);
+    }
+});
+
+/**
  * Signup endpoint that authenticates passed credentials
  * with existing documents in the database and sends 
  * a fail response if they exist, create a new document for
