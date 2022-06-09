@@ -26,7 +26,7 @@ const port = process.env.PORT || 5000;
 async function DBConnect() {
     try {
         await client.connect();    
-        console.log("Connected successfully to server");
+        console.log("Connected successfully to database");
     } catch (e) {
         console.log(e.message);
     } 
