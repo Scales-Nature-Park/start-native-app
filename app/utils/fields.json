@@ -9,6 +9,122 @@
                 "name": "time"
             },
             {
+                "name": "Initials",
+                "dropDown": true,
+                "values": [
+                    "ABC",
+                    "ACV",
+                    "ANL",
+                    "ARL",
+                    "AVB",
+                    "AWD",
+                    "BPM",
+                    "CJH",
+                    "CSH",
+                    "DKB",
+                    "DRW",
+                    "EAZ",
+                    "ELO",
+                    "ENT",
+                    "ESA",
+                    "ETU",
+                    "GEC",
+                    "HJH",
+                    "IFS",
+                    "IRS",
+                    "JAK",
+                    "JAR",
+                    "JAZ",
+                    "JBM",
+                    "JUL",
+                    "JUS",
+                    "KAM",
+                    "KCD",
+                    "KEC",
+                    "KGM",
+                    "KLR",
+                    "KVW",
+                    "LAS",
+                    "LMM",
+                    "MEB",
+                    "MFM",
+                    "MHB",
+                    "MHL",
+                    "MWX",
+                    "NAN",
+                    "NAT",
+                    "NMH",
+                    "RMI",
+                    "SED",
+                    "SES",
+                    "SIB",
+                    "SKF",
+                    "SMM",
+                    "STB",
+                    "TAK",
+                    "TDH",
+                    "TMM",
+                    "TSG",
+                    "ZOO",
+                    "OTHER"
+                ],
+                "conditionalFields": [
+                    {
+                        "condition": "OTHER",
+                        "name": "Other Initials",
+                        "dropDown": false 
+                    }
+                ]
+            },
+            {
+                "name": "Phone Location",
+                "dropDown": true,
+                "values": [
+                    "Phone 1",
+                    "Phone 2",
+                    "Phone 3",
+                    "Phone 4",
+                    "Phone 5",
+                    "Phone 6",
+                    "Phone 7",
+                    "Phone 8",
+                    "Phone 9",
+                    "Phone 10",
+                    "Phone 11",
+                    "Phone 12",
+                    "Phone 13",
+                    "Phone 14",
+                    "Phone 15",
+                    "Phone 16",
+                    "Phone 17",
+                    "Phone 18",
+                    "Phone 19",
+                    "Phone 20",
+                    "Tablet 1",
+                    "Tablet 2",
+                    "Tablet 3",
+                    "Tablet 4",
+                    "Tablet 5",
+                    "Tablet 6",
+                    "Tablet 7",
+                    "Tablet 8",
+                    "Tablet 9",
+                    "Tablet 10",
+                    "Tablet 11",
+                    "Tablet 12",
+                    "Jeff Personal",
+                    "Personal",
+                    "Other"
+                ],
+                "conditionalFields": [
+                    {
+                        "condition": "Other",
+                        "name": "Other Phone Location",
+                        "dropDown": false 
+                    }
+                ]
+            },
+            {
                 "name": "Latitude",
                 "dropDown": false,
                 "dataValidation":  {
@@ -619,7 +735,15 @@
                     "YEARLEY RD",
                     "YELLOW ROCK DR",
                     "YOUNG ST",
-                    "ZISKA RD"
+                    "ZISKA RD",
+                    "Other"
+                ],
+                "conditionalFields": [
+                    {
+                        "condition": "Other",
+                        "name": "Other Road Name",
+                        "dropDown": false 
+                    }
                 ]
             },
             {
@@ -832,7 +956,7 @@
                 "conditionalFields": [
                     {
                         "condition": "Other",
-                        "name": "Comment",
+                        "name": "Other Weather",
                         "dropDown": false
                     }
                 ]
@@ -895,78 +1019,76 @@
                         "dropdown": false
                     },
                     {
-                        
-                        "name": "",
-                        "conditionalFields": [
-                            {
-                                "name": "Nest Info",
-                                "dropdown": true,
-                                "values": [
-                                    "NEST-Laid",
-                                    "NEST-Discovery",
-                                    "NEST-Check"
-                                ]
-                            },
-                            {
-                                "name": "Nest Number",
-                                "dropdown": false
-                            },
-                            {
-                                "name": "Condition",
-                                "dropdown": true,
-                                "values": [
-                                    "Partially Predated",
-                                    "Predated",
-                                    "Predation Attempt",
-                                    "Emerged",
-                                    "Anthro Disturbance",
-                                    "Abandoned",
-                                    "Other: See Comments"
-                                ] 
-                            },
-                            {
-                                "name": "Predator Suspect",
-                                "dropdown": true,
-                                "values": [
-                                    "Skunk",
-                                    "Fox",
-                                    "Bear",
-                                    "Otter",
-                                    "Weasel",
-                                    "Squirrel",
-                                    "Badger",
-                                    "Fisher",
-                                    "Coyote",
-                                    "Wolf",
-                                    "Snake",
-                                    "Raccoon"
-                                ]
-                            },
-                            {
-                                "name": "Predator Evidence",
-                                "dropdown": true,
-                                "values": [
-                                    "Tracks",
-                                    "Scat",
-                                    "Fur",
-                                    "Visual ID" 
-                                ]
-                            },
-                            {
-                                "name": "Nest Action",
-                                "dropdown": true,
-                                "values": [
-                                    "Excavated",
-                                    "Inspection Dig",
-                                    "Eggs Extracted from Dead Female",
-                                    "CAGE- Placed",
-                                    "CAGE- Checked"
-                                ]
-                            }
+                        "name": "Nest Info",
+                        "dropdown": true,
+                        "condition": "Nest Only",
+                        "values": [
+                            "NEST-Laid",
+                            "NEST-Discovery",
+                            "NEST-Check"
                         ]
-                        
+                    },
+                    {
+                        "name": "Nest Number",
+                        "dropdown": false,
+                        "condition": "Nest Only"
+                    },
+                    {
+                        "name": "Condition",
+                        "dropdown": true,
+                        "condition": "Nest Only",
+                        "values": [
+                            "Partially Predated",
+                            "Predated",
+                            "Predation Attempt",
+                            "Emerged",
+                            "Anthro Disturbance",
+                            "Abandoned",
+                            "Other: See Comments"
+                        ] 
+                    },
+                    {
+                        "name": "Predator Suspect",
+                        "dropdown": true,
+                        "condition": "Nest Only",
+                        "values": [
+                            "Skunk",
+                            "Fox",
+                            "Bear",
+                            "Otter",
+                            "Weasel",
+                            "Squirrel",
+                            "Badger",
+                            "Fisher",
+                            "Coyote",
+                            "Wolf",
+                            "Snake",
+                            "Raccoon"
+                        ]
+                    },
+                    {
+                        "name": "Predator Evidence",
+                        "dropdown": true,
+                        "condition": "Nest Only",
+                        "values": [
+                            "Tracks",
+                            "Scat",
+                            "Fur",
+                            "Visual ID" 
+                        ]
+                    },
+                    {
+                        "name": "Nest Action",
+                        "dropdown": true,
+                        "condition": "Nest Only",
+                        "values": [
+                            "Excavated",
+                            "Inspection Dig",
+                            "Eggs Extracted from Dead Female",
+                            "CAGE- Placed",
+                            "CAGE- Checked"
+                        ]
                     }
-
                 ]
             }
         ]
