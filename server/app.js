@@ -212,9 +212,9 @@ app.get('/image/:photoId', (req, res) => {
                 
                 // search for file with the name were looking for
                 file = files.filter((curr) => curr == name);
-                (file.length > 0) ? file = file[0] : file = undefined;
+                (file.length > 0) ? file = file[0] : undefined;
                 
-                if(!file) res.status(400).send('Could not find a file with the name: ', name);
+                if(!file) res.status(404).send('Could not find a file with the name: ', name);
                 else return res.status(200).sendFile(path.join(__dirname + '/uploads/' + file));
             });
         });
