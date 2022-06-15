@@ -754,7 +754,7 @@
                     {
                         "condition": "Yes",
                         "name": "CallerName",
-                        "dropDown": false 
+                        "dropDown": false
                     },
                     {
                         "condition": "Yes",
@@ -1003,92 +1003,135 @@
                 "values": [
                     "Captured",
                     "Observed",
-                    "Nest Only",
+                    "Nest Found",
                     "Injured-Collected for Rehab",
                     "Field Euthenized"
                 ],
                 "conditionalFields": [
                     {
-                        "name": "Observed",
                         "condition": "Observed",
-                        "dropdown": false
+                        "name": "Observed",
+                        "dropDown": false
                     },
                     {
-                        "name": "Field Euthenized",
                         "condition": "Field Euthenized",
-                        "dropdown": false
+                        "name": "Field Euthenized",
+                        "dropDown": false,
+                        "conditionalFields": [
+                            {
+
+                            }
+                        ]
                     },
                     {
+                        "condition": "Nest Found",
                         "name": "Nest Info",
-                        "dropdown": true,
-                        "condition": "Nest Only",
+                        "dropDown": true,
                         "values": [
                             "NEST-Laid",
                             "NEST-Discovery",
                             "NEST-Check"
-                        ]
-                    },
-                    {
-                        "name": "Nest Number",
-                        "dropdown": false,
-                        "condition": "Nest Only"
-                    },
-                    {
-                        "name": "Condition",
-                        "dropdown": true,
-                        "condition": "Nest Only",
-                        "values": [
-                            "Partially Predated",
-                            "Predated",
-                            "Predation Attempt",
-                            "Emerged",
-                            "Anthro Disturbance",
-                            "Abandoned",
-                            "Other: See Comments"
-                        ] 
-                    },
-                    {
-                        "name": "Predator Suspect",
-                        "dropdown": true,
-                        "condition": "Nest Only",
-                        "values": [
-                            "Skunk",
-                            "Fox",
-                            "Bear",
-                            "Otter",
-                            "Weasel",
-                            "Squirrel",
-                            "Badger",
-                            "Fisher",
-                            "Coyote",
-                            "Wolf",
-                            "Snake",
-                            "Raccoon"
-                        ]
-                    },
-                    {
-                        "name": "Predator Evidence",
-                        "dropdown": true,
-                        "condition": "Nest Only",
-                        "values": [
-                            "Tracks",
-                            "Scat",
-                            "Fur",
-                            "Visual ID" 
-                        ]
-                    },
-                    {
-                        "name": "Nest Action",
-                        "dropdown": true,
-                        "condition": "Nest Only",
-                        "values": [
-                            "Excavated",
-                            "Inspection Dig",
-                            "Eggs Extracted from Dead Female",
-                            "CAGE- Placed",
-                            "CAGE- Checked"
+                        ],
+                        "conditionalFields": [
+                            {
+                                "condition": "Nest-Laid",
+                                "name": "Nest Info",
+                                "dropDown": true,
+                                "values": [
+                                    "NEST-Laid",
+                                    "NEST-Discovery",
+                                    "NEST-Check"
+                                ]
+                            },
+                            {
+                                "condition": "NEST-Laid",                                
+                                "name": "Nest ID",
+                                "dropDown": false
+                            },
+                            {
+                                "condition": "NEST-Laid",
+                                "name": "Condition",
+                                "dropDown": true,
+                                "values": [
+                                    "Partially Predated",
+                                    "Predated",
+                                    "Predation Attempt",
+                                    "Emerged",
+                                    "Anthro Disturbance",
+                                    "Abandoned",
+                                    "Other: See Comments"
+                                ] 
+                            },
+                            {
+                                "name": "Predator Evidence",
+                                "dropDown": true,
+                                "condition": "NEST-Laid",
+                                "values": [
+                                    "Tracks",
+                                    "Scat",
+                                    "Fur",
+                                    "Visual ID" 
+                                ]
+                            },
+                            {
+                                "name": "Predator Suspect",
+                                "dropDown": true,
+                                "condition": "NEST-Laid",
+                                "values": [
+                                    "Skunk",
+                                    "Fox",
+                                    "Bear",
+                                    "Otter",
+                                    "Weasel",
+                                    "Squirrel",
+                                    "Badger",
+                                    "Fisher",
+                                    "Coyote",
+                                    "Wolf",
+                                    "Snake",
+                                    "Raccoon"
+                                ]
+                            },
+                            {
+                                "name": "Nest Action",
+                                "dropDown": true,
+                                "condition": "Nest Only",
+                                "values": [
+                                    "Excavated",
+                                    "Inspection Dig",
+                                    "Eggs Extracted from Dead Female",
+                                    "CAGE- Placed",
+                                    "CAGE- Checked"
+                                ],
+                                "conditionalFields": [
+                                    {
+                                        "condition": "Excavated",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+
+                                    },
+                                    {
+                                        "condition": "Excavated",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    }
+                                ]
+                            }
                         ]
                     }
+                    
                 ]
             }
         ]
