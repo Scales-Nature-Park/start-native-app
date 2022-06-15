@@ -60,7 +60,7 @@ const DataInput = ({route, navigation}) => {
     const [comment, setComment] = useState((paramData && paramData.comment) ? paramData.comment : '');
     const [states, setStates] = useState(initialFields);
     const [valid, setValid] = useState(false);
-    const [photo, setPhoto] = useState((paramData && paramData.photo) ? paramData.photo : null);
+    const [photos, setPhotos] = useState((paramData && paramData.photos) ? [...paramData.photos] : null);
     const [dark, setDark] = useState(true);
 
     React.useLayoutEffect(() => {
@@ -77,9 +77,12 @@ const DataInput = ({route, navigation}) => {
     });
 
     let validityError = '';
-    let photoId = (paramData && paramData.photoId && !photo) ? paramData.photoId : null;
-    console.log(photo);
-    if (photoId && !photo) setPhoto({uri: url + '/image/' + photoId});
+    let photoIds = (paramData && paramData.photoIds && !photos) ? [...paramData.photoIds] : null;
+    if (photoIds && photoIds.length > 0 && !photos) {
+        let tempPhotos = [];
+        for (let id of photoIds) tempPhotos.push({uri: url + '/image/' + id});
+        setPhotos(tempPhotos);
+    } 
 
     useEffect(() => {
         let validStates = true;
@@ -108,7 +111,7 @@ const DataInput = ({route, navigation}) => {
 
     const ChoosePhoto = () => {
         launchImageLibrary({ noData: true }, (response) => {
-            if (response && !response.didCancel) setPhoto(response.assets[0]);
+            if (response && !response.didCancel) setPhotos([...photos, response.assets[0]]);
         });
     };
 
@@ -130,36 +133,40 @@ const DataInput = ({route, navigation}) => {
     };
 
     const SubmitData = async (second = undefined) => {
-        if (photo) {
-            let imageForm = createFormData(photo);
-    
-            photoId = await    
-            axios.post(url + '/imageUpload', imageForm, {
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'multipart/form-data',
-                }
-            }).catch((e) => {
-                console.log(e);
-                imageForm = undefined;
-            });
+        photoIds = [];
 
-            // if image upload fails, try it again. give network error alert if on second attempt
-            if(!imageForm) {
-                if (second) Alert.alert('Network Error', 'Failed to upload image.');
-                else SubmitData(true);
-                return;
+        if (photos && photos.length > 0) {
+            for (let photo of photos) {
+                let imageForm = createFormData(photo);
+        
+                let photoId = await    
+                axios.post(url + '/imageUpload', imageForm, {
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'multipart/form-data',
+                    }
+                }).catch((e) => {
+                    console.log(e);
+                    imageForm = undefined;
+                });
+    
+                // if image upload fails, try it again. give network error alert if on second attempt
+                if(!imageForm) {
+                    if (second) Alert.alert('Error', 'Failed to upload image.');
+                    else SubmitData(true);
+                    return;
+                }
+
+                photoIds = (photoId) ? [...photoIds, photoId.data] : [...photoIds];
             }
         }
         
-        photoId = (photoId) ? photoId.data : undefined;
-
         axios({
             method: 'post',
             url: url + '/dataEntry',
             params: {
                 "id": id,
-                photoId,
+                photoIds,
                 "day": currDay,
                 "month": currMonth,
                 "year": currYear,
@@ -265,16 +272,16 @@ const DataInput = ({route, navigation}) => {
                         <Text style={(dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
                     </View>
                     <View style={styles.fieldInput}>
-                        {photo && (
+                        {photos && (
                             <>
                                 <TouchableOpacity style={styles.buttonView}
-                                onPress= {ChoosePhoto}>
+                                onPress={ChoosePhoto}>
                                     <Text style={{color: '#000000'}}>Image Selected</Text>
                                 </TouchableOpacity>
                             </>
                         )}
 
-                        {!photo && (
+                        {!photos && (
                             <>
                                 <TouchableOpacity style={styles.buttonView}
                                 onPress= {ChoosePhoto}>
@@ -423,7 +430,7 @@ const DataInput = ({route, navigation}) => {
                     Alert.alert('ERROR', (validityError != '') ? validityError : 'Invalid data.');
                     return;
                 }
-                if (!photo) {
+                if (!photos || photos.length <= 0) {
                     Alert.alert('WARNING', "You haven't uploaded an image.",
                         [
                             {
@@ -440,7 +447,7 @@ const DataInput = ({route, navigation}) => {
                 <Text style={styles.submitText}>SUBMIT</Text>
             </TouchableOpacity>
         );
-    } console.log(photo);   
+    } 
     
     return (
         <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
@@ -450,9 +457,9 @@ const DataInput = ({route, navigation}) => {
                         {categoryButtons}
                 </ScrollView>
 
-                {(photo) ? 
+                {(photos) ? 
                 <View style={styles.container2}>
-                    <Image source={photo} style={styles.image}/>
+                    <Image source={photos[0]} style={styles.image}/>
                 </View> : null}
                 
                 {fields}
@@ -476,7 +483,7 @@ const DataInput = ({route, navigation}) => {
                         SaveDataEntry(
                             {
                                 "id": id,
-                                photo,
+                                photos,
                                 "day": currDay,
                                 "month": currMonth,
                                 "year": currYear,
@@ -504,7 +511,7 @@ const DataInput = ({route, navigation}) => {
                         SaveDataEntry(
                             {
                                 "id": id,
-                                photo,
+                                photos,
                                 "day": currDay,
                                 "month": currMonth,
                                 "year": currYear,
