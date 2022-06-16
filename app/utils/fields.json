@@ -795,11 +795,6 @@
                 ]
             },
             {
-                "name": "New Capture",
-                "dropDown": true,
-                "values": ["Observed", "RECAP", "NEW"]
-            },
-            {
                 "name": "# of Individuals",
                 "dropDown": false,
                 "dataValidation":  {
@@ -1126,14 +1121,305 @@
                                             "body": "return (!isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of broken eggs can not be a negative number."
                                         }
+                                    },
+                                    {
+                                        "condition": "Eggs Extracted from Dead Female",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+
+                                    },
+                                    {
+                                        "condition": "Eggs Extracted from Dead Female",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "Cage Type",
+                                        "dropDown": true,
+                                        "values": [
+                                            "Wire Sided",
+                                            "Wooden Sided",
+                                            "Other"
+                                        ]
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "Cage Type",
+                                        "dropDown": true,
+                                        "values": [
+                                            "Wire Sided",
+                                            "Wooden Sided",
+                                            "Other"
+                                        ]
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
                                     }
+
                                 ]
                             }
                         ]
+                    },
+                    {
+                    
+                        "name": "New Capture",
+                        "dropDown": true,
+                        "values": ["Observed", "RECAP", "NEW"]
+                    
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Measurer Initials",
+                        "dropDown": true,
+                        "values": [
+                            "ACV",
+                            "ANL",
+                            "ARL",
+                            "AVB",
+                            "AWD",
+                            "BPM",
+                            "CJH",
+                            "CSH",
+                            "DKB",
+                            "DRW",
+                            "EAZ",
+                            "ELO",
+                            "ENT",
+                            "ESA",
+                            "ETU",
+                            "GEC",
+                            "HJH",
+                            "IFS",
+                            "IRS",
+                            "JAK",
+                            "ABC",
+                            "JAR",
+                            "JAZ",
+                            "JBM",
+                            "JUL",
+                            "JUS",
+                            "KAM",
+                            "KCD",
+                            "KEC",
+                            "KGM",
+                            "KLR",
+                            "KVW",
+                            "LAS",
+                            "LMM",
+                            "MEB",
+                            "MFM",
+                            "MHB",
+                            "MHL",
+                            "MWX",
+                            "NAN",
+                            "NAT",
+                            "NMH",
+                            "RMI",
+                            "SED",
+                            "SES",
+                            "SIB",
+                            "SKF",
+                            "SMM",
+                            "STB",
+                            "TAK",
+                            "TDH",
+                            "TMM",
+                            "TSG",
+                            "ZOO"
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Scribe Initials",
+                        "dropDown": true,
+                        "values": [
+                            "ACV",
+                            "ANL",
+                            "ARL",
+                            "AVB",
+                            "AWD",
+                            "BPM",
+                            "CJH",
+                            "CSH",
+                            "DKB",
+                            "DRW",
+                            "EAZ",
+                            "ELO",
+                            "ENT",
+                            "ESA",
+                            "ETU",
+                            "GEC",
+                            "HJH",
+                            "IFS",
+                            "IRS",
+                            "JAK",
+                            "ABC",
+                            "JAR",
+                            "JAZ",
+                            "JBM",
+                            "JUL",
+                            "JUS",
+                            "KAM",
+                            "KCD",
+                            "KEC",
+                            "KGM",
+                            "KLR",
+                            "KVW",
+                            "LAS",
+                            "LMM",
+                            "MEB",
+                            "MFM",
+                            "MHB",
+                            "MHL",
+                            "MWX",
+                            "NAN",
+                            "NAT",
+                            "NMH",
+                            "RMI",
+                            "SED",
+                            "SES",
+                            "SIB",
+                            "SKF",
+                            "SMM",
+                            "STB",
+                            "TAK",
+                            "TDH",
+                            "TMM",
+                            "TSG",
+                            "ZOO"
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "GravGest",
+                        "dropDown": true,
+                        "values": [
+                            "Yes", 
+                            "No",
+                            "Unknown"
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Gross Mass",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (!isNaN(input) && input < 0 ? false : true;",
+                            "error": "Gross Mass must be a non negative number."
+                        }   
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Bag Mass",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (!isNaN(input) && input < 0 ? false : true;",
+                            "error": "Bag Mass must be a non negative number."
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Mass Accuracy",
+                        "dropDown": true,
+                        "values": [
+                            "300g",
+                            "1000g",
+                            "2500g",
+                            "25kg"
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Spec Mass",
+                        "dropDown": false
+                        
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Bio Sample",
+                        "dropDown": true,
+                        "values": [
+                            "No",
+                            "Blood Taken",
+                            "Tissue Taken"
+                        ]
+
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Blood Vial ID",
+                        "dropDown": false
+                    },
+                    {
+
                     }
+                
                     
                 ]
             }
+            
+
+            
         ]
     },
 
