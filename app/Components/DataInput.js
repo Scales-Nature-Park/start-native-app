@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import storage, { url } from '../utils/Storage';
 import { launchImageLibrary } from 'react-native-image-picker';
+import Carousel from 'react-native-reanimated-carousel';
+import * as Progress from 'react-native-progress';
 import {
     StatusBar,
     StyleSheet,
@@ -14,8 +16,10 @@ import {
     Dimensions,
     Alert,
     Image,
+    ImageBackground,
 } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const scalesColors = require('../utils/colors.json');
 const dataFields = require('../utils/fields.json');
@@ -60,8 +64,10 @@ const DataInput = ({route, navigation}) => {
     const [comment, setComment] = useState((paramData && paramData.comment) ? paramData.comment : '');
     const [states, setStates] = useState(initialFields);
     const [valid, setValid] = useState(false);
-    const [photo, setPhoto] = useState((paramData && paramData.photo) ? paramData.photo : null);
+    const [photos, setPhotos] = useState((paramData && paramData.photos) ? [...paramData.photos] : null);
     const [dark, setDark] = useState(true);
+    const [progress, setProgress] = useState({display: false, progress: 0});
+    const ref = useRef(null);
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -75,11 +81,15 @@ const DataInput = ({route, navigation}) => {
           ),
         });
     });
-
+    
+    // append image uris to photos from existing photoids passed in paramdata
     let validityError = '';
-    let photoId = (paramData && paramData.photoId && !photo) ? paramData.photoId : null;
-    console.log(photo);
-    if (photoId && !photo) setPhoto({uri: url + '/image/' + photoId});
+    let photoIds = (paramData && paramData.photoIds && !photos) ? [...paramData.photoIds] : null;
+    if (photoIds && photoIds.length > 0 && !photos) {
+        let tempPhotos = [];
+        for (let id of photoIds) (!tempPhotos.includes({uri: url + '/image/' + id})) ? tempPhotos.push({uri: url + '/image/' + id}) : null;
+        setPhotos(tempPhotos);
+    } 
 
     useEffect(() => {
         let validStates = true;
@@ -105,10 +115,11 @@ const DataInput = ({route, navigation}) => {
         
         setValid(validStates);
     });
-
+    
     const ChoosePhoto = () => {
         launchImageLibrary({ noData: true }, (response) => {
-            if (response && !response.didCancel) setPhoto(response.assets[0]);
+            let tempPhotos = (photos) ? [...photos] : [];
+            if (response && !response.didCancel && !tempPhotos.includes(response.assets[0])) setPhotos([...tempPhotos, response.assets[0]]);
         });
     };
 
@@ -130,36 +141,47 @@ const DataInput = ({route, navigation}) => {
     };
 
     const SubmitData = async (second = undefined) => {
-        if (photo) {
-            let imageForm = createFormData(photo);
-    
-            photoId = await    
-            axios.post(url + '/imageUpload', imageForm, {
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'multipart/form-data',
-                }
-            }).catch((e) => {
-                console.log(e);
-                imageForm = undefined;
-            });
+        photoIds = [];
+        setProgress({display: true, progress: progress.progress});
 
-            // if image upload fails, try it again. give network error alert if on second attempt
-            if(!imageForm) {
-                if (second) Alert.alert('Network Error', 'Failed to upload image.');
-                else SubmitData(true);
-                return;
+        if (photos && photos.length > 0) {
+            let i = 0;
+            for (let photo of photos) {
+                i++
+                let imageForm = createFormData(photo);
+        
+                let photoId = await    
+                axios.post(url + '/imageUpload', imageForm, {
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'multipart/form-data',
+                    },
+                    onUploadProgress: (currProgress) => {
+                        console.log(currProgress);
+                        setProgress({display: true, progress: progress.progress + (currProgress.loaded / currProgress.total * i / photos.length)});
+                    }
+                }
+                ).catch((e) => {
+                    console.log(e);
+                    imageForm = undefined;
+                });
+    
+                // if image upload fails, try it again. give network error alert if on second attempt
+                if(!imageForm) {
+                    if (second) Alert.alert('Error', 'Failed to upload image.');
+                    else SubmitData(true);
+                    return;
+                }
+                photoIds = (photoId) ? [...photoIds, photoId.data] : [...photoIds];
             }
         }
         
-        photoId = (photoId) ? photoId.data : undefined;
-
         axios({
             method: 'post',
             url: url + '/dataEntry',
             params: {
                 "id": id,
-                photoId,
+                photoIds,
                 "day": currDay,
                 "month": currMonth,
                 "year": currYear,
@@ -170,17 +192,19 @@ const DataInput = ({route, navigation}) => {
                 "comment": comment
             }
         }).then((response) => {
+            setProgress({progress: 0, display: false});
             Alert.alert(
                 'Successful Data Entry', 
                 'Your data has been submitted. Return to Home.',
                 [
                     {text: "OK", onPress: () => {
-                        navigation.navigate('Home', route.params);
+                        // navigation.navigate('Home', route.params);
                     }}
                 ],
                 {cancelable: false}
             );
         }).catch(function (error) {
+            setProgress({progress: 0, display: false});
             Alert.alert('ERROR', error.message);
             return;
         });
@@ -265,16 +289,16 @@ const DataInput = ({route, navigation}) => {
                         <Text style={(dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
                     </View>
                     <View style={styles.fieldInput}>
-                        {photo && (
+                        {photos && (
                             <>
                                 <TouchableOpacity style={styles.buttonView}
-                                onPress= {ChoosePhoto}>
+                                onPress={ChoosePhoto}>
                                     <Text style={{color: '#000000'}}>Image Selected</Text>
                                 </TouchableOpacity>
                             </>
                         )}
 
-                        {!photo && (
+                        {!photos && (
                             <>
                                 <TouchableOpacity style={styles.buttonView}
                                 onPress= {ChoosePhoto}>
@@ -423,7 +447,7 @@ const DataInput = ({route, navigation}) => {
                     Alert.alert('ERROR', (validityError != '') ? validityError : 'Invalid data.');
                     return;
                 }
-                if (!photo) {
+                if (!photos || photos.length <= 0) {
                     Alert.alert('WARNING', "You haven't uploaded an image.",
                         [
                             {
@@ -440,90 +464,120 @@ const DataInput = ({route, navigation}) => {
                 <Text style={styles.submitText}>SUBMIT</Text>
             </TouchableOpacity>
         );
-    } console.log(photo);   
+    } 
     
     return (
         <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
             <View style={styles.overlay}/>
-            <ScrollView>
-                <ScrollView horizontal={true}>
-                        {categoryButtons}
-                </ScrollView>
+            <GestureHandlerRootView>
+                <ScrollView>
+                    <ScrollView horizontal={true}>
+                            {categoryButtons}
+                    </ScrollView>
 
-                {(photo) ? 
-                <View style={styles.container2}>
-                    <Image source={photo} style={styles.image}/>
-                </View> : null}
-                
-                {fields}
-                
-                <View style={[styles.container1, {height: 150}]}>
-                    <View style={styles.commentInput}>
-                        <TextInput
-                            multiline={true}
-                            style={styles.commentBox}
-                            placeholder={'Add Comments...'}
-                            placeholderTextColor='#000000'
-                            onChangeText={(value) => setComment(value)}
+                    {(photos) ? (photos.length > 1) ?
+                        <Carousel
+                            width={Dimensions.get('window').width}
+                            ref={ref}
+                            height={220}
+                            mode="parallax"
+                            modeConfig={{
+                                parallaxScrollingScale: 0.9,
+                                parallaxScrollingOffset: 50,
+                            }}
+                            data={photos}
+                            renderItem={({ item }) => 
+                            <View style={styles.container2}>
+                                <Image source={item} style={styles.image} />
+                            </View>}
                         />
+                    :
+                    <View style={styles.container2}>
+                        <Image source={photos[0]} style={[styles.imageSingle]} />
                     </View>
-                </View>
-                
-                {(!route || !route.params || !route.params.search) ? 
-                <View style={styles.container2}>
-                    <TouchableOpacity style={styles.quickSave}
-                    onPress={() => {                
-                        SaveDataEntry(
-                            {
-                                "id": id,
-                                photo,
-                                "day": currDay,
-                                "month": currMonth,
-                                "year": currYear,
-                                "hours": hours,
-                                "mins": mins,
-                                "category": category,
-                                "inputFields": states,
-                                "comment": comment
-                            },
-                            navigation, route.params
-                        );
-                    }}>
-                        <Text style={styles.submitText}>QUICK SAVE</Text>
-                    </TouchableOpacity>
+                    : 
+                    <View style={styles.container2}>
+                        <TouchableOpacity onPress={ChoosePhoto}>
+                            <Text>Select Image</Text>
+                        </TouchableOpacity>
+                    </View>}
+                    
+                    {fields}
 
-                    <TouchableOpacity style={styles.save}
-                    onPress={() => {
-                        // get the data validation value before proceedoing
-                        // if its false return with an alert
-                        if (!valid){
-                            Alert.alert('ERROR', (validityError != '') ? validityError : 'Invalid data.');
-                            return;
-                        }
+                    <View style={[styles.container1, {height: 150}]}>
+                        <View style={styles.commentInput}>
+                            <TextInput
+                                multiline={true}
+                                style={styles.commentBox}
+                                placeholder={'Add Comments...'}
+                                placeholderTextColor='#000000'
+                                onChangeText={(value) => setComment(value)}
+                            />
+                        </View>
+                    </View>
+                    
+                    {(!route || !route.params || !route.params.search) ? 
+                    <View style={styles.container2}>
+                        <TouchableOpacity style={styles.quickSave}
+                        onPress={() => {                
+                            SaveDataEntry(
+                                {
+                                    "id": id,
+                                    photos,
+                                    "day": currDay,
+                                    "month": currMonth,
+                                    "year": currYear,
+                                    "hours": hours,
+                                    "mins": mins,
+                                    "category": category,
+                                    "inputFields": states,
+                                    "comment": comment
+                                },
+                                navigation, route.params
+                            );
+                        }}>
+                            <Text style={styles.submitText}>QUICK SAVE</Text>
+                        </TouchableOpacity>
 
-                        SaveDataEntry(
-                            {
-                                "id": id,
-                                photo,
-                                "day": currDay,
-                                "month": currMonth,
-                                "year": currYear,
-                                "hours": hours,
-                                "mins": mins,
-                                "category": category,
-                                "inputFields": states,
-                                "comment": comment
-                            },
-                            navigation, route.params
-                        );
+                        <TouchableOpacity style={styles.save}
+                        onPress={() => {
+                            // get the data validation value before proceedoing
+                            // if its false return with an alert
+                            if (!valid){
+                                Alert.alert('ERROR', (validityError != '') ? validityError : 'Invalid data.');
+                                return;
+                            }
 
-                    }}>
-                        <Text style={styles.submitText}>SAVE</Text>
-                    </TouchableOpacity>
+                            SaveDataEntry(
+                                {
+                                    "id": id,
+                                    photos,
+                                    "day": currDay,
+                                    "month": currMonth,
+                                    "year": currYear,
+                                    "hours": hours,
+                                    "mins": mins,
+                                    "category": category,
+                                    "inputFields": states,
+                                    "comment": comment
+                                },
+                                navigation, route.params
+                            );
 
-                    {buttons}
-                </View> : null}
+                        }}>
+                            <Text style={styles.submitText}>SAVE</Text>
+                        </TouchableOpacity>
+                        
+                        {(buttons.length > 0 && progress.display) ?
+                        
+                        <View style={styles.overlay}>
+                             <Progress.Circle indeterminate={true} /> 
+                        </View> : null}
+                    
+                        {buttons}
+                    </View> : null}
             </ScrollView>
+        </GestureHandlerRootView>
         </SafeAreaView>
     );
 };
@@ -632,10 +686,16 @@ const styles = StyleSheet.create({
     },
    
     image: {
+        position: 'absolute',
+        width: '100%',
+        height: 200,
+        borderRadius: 10,
+    },
+
+    imageSingle: {
+        position: 'relative',
         width: '95%',
         height: 200,
-        marginTop: 20,
-        marginBottom: 20,
         borderRadius: 10,
     },
    
