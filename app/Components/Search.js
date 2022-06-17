@@ -34,14 +34,14 @@ const Search = ({route, navigation}) => {
     const [category, setCategory] = useState('Turtle');
     const [entries, setEntries] = useState([]);
     const [criteria, setCriteria] = useState([]);
-    const [dark, setDark] = useState(true);
+    const [dark, setDark] = useState({value: true, change: false});
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
           headerRight: () => (
-            <TouchableOpacity onPress= {() => setDark(!dark)}>
+            <TouchableOpacity onPress= {() => setDark({value: !dark.value, change: true})}>
                 {
-                    (dark) ? <Image source={require('../assets/sun.png')} style={styles.iconImage}/> :
+                    (dark.value) ? <Image source={require('../assets/sun.png')} style={styles.iconImage}/> :
                              <Image source={require('../assets/moon.png')} style={styles.iconImage}/>
                 }
             </TouchableOpacity>
@@ -54,7 +54,7 @@ const Search = ({route, navigation}) => {
             fields.splice(index, 0,
                 <View style={styles.container}>
                     <View style={{width: '45%'}}>
-                        <Text style={(dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
+                        <Text style={(dark.value) ? styles.fieldDark : styles.field}>{field.name}:</Text>
                     </View>
                     <View style={styles.fieldInput}>
                         <ModalDropdown 
@@ -89,7 +89,7 @@ const Search = ({route, navigation}) => {
             fields.splice(index, 0,
                 <View style={styles.entryLine}>
                     <View style={{width: '45%'}}>
-                        <Text style={(dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
+                        <Text style={(dark.value) ? styles.fieldDark : styles.field}>{field.name}:</Text>
                     </View>
                     <View style={styles.fieldInput}>
                         <TextInput
@@ -149,7 +149,7 @@ const Search = ({route, navigation}) => {
         criteriaElements.set(tempElements);
     }
 
-    const resetCriteria = (modfSearchFields) => {
+    const resetCriteria = (modfSearchFields, override = false) => {
         // add criteria to dropdown of selected category 
         let tempCriteria = criteria.splice();
         for (let i = 0; i < modfSearchFields.length; i++) {
@@ -159,7 +159,7 @@ const Search = ({route, navigation}) => {
                 tempCriteria.push(field.name);
             }
         }
-        if (!ArrayEquals(criteria, tempCriteria)) setCriteria(tempCriteria);
+        if (!ArrayEquals(criteria, tempCriteria) || override) setCriteria(tempCriteria);
         return tempCriteria;
     }
 
@@ -238,7 +238,7 @@ const Search = ({route, navigation}) => {
             if (curr.key == tempFields[j].key) tempIndex = index;
         });
         
-        if (tempIndex == -1 || tempSelections[tempIndex].displayed) continue;
+        if (!dark.change && (tempIndex == -1 || tempSelections[tempIndex].displayed)) continue;
                 
         // remove previous subfields related to that dropbox
         console.log('Removing previous subfields.');
@@ -260,12 +260,13 @@ const Search = ({route, navigation}) => {
             tempFields = displayField(subField, tempFields, j + 1);
         }
     }
-    if (!ArrayEquals(tempFields, criteriaElements.get())) criteriaElements.set(tempFields);
+    if (!ArrayEquals(tempFields, criteriaElements.get()) || dark.change) criteriaElements.set(tempFields);
 
     resetCriteria(modfSearchFields);
+    if (dark.change) setDark({value: dark.value, change: false});
         
     return (
-        <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
+        <SafeAreaView style={(dark.value) ? styles.safeAreaDark : styles.safeArea}>
         <View style={styles.overlay}/>
         <ScrollView>
             <ScrollView horizontal={true}>
