@@ -198,7 +198,7 @@ const DataInput = ({route, navigation}) => {
                 'Your data has been submitted. Return to Home.',
                 [
                     {text: "OK", onPress: () => {
-                        // navigation.navigate('Home', route.params);
+                        navigation.navigate('Home', route.params);
                     }}
                 ],
                 {cancelable: false}
@@ -506,7 +506,7 @@ const DataInput = ({route, navigation}) => {
                     : 
                     <View style={styles.container2}>
                         <View style={styles.selectImage}>
-                            <TouchableOpacity onPress={ChoosePhoto}>
+                            <TouchableOpacity style={styles.selectImageButton} onPress={ChoosePhoto}>
                                 <Text style={styles.submitText}>Select Image</Text>
                             </TouchableOpacity>
                         </View>
@@ -580,7 +580,7 @@ const DataInput = ({route, navigation}) => {
                         
                         {(buttons.length > 0 && progress.display) ?
                         
-                        <View style={styles.overlay}>
+                        <View style={styles.progress}>
                              <Progress.Circle indeterminate={true} /> 
                         </View> : null}
                     
@@ -851,6 +851,18 @@ const styles = StyleSheet.create({
         backgroundColor: scalesColors.BlueRacer,
         borderRadius: 10,
         height: 200,
+    },
+
+    selectImageButton: {
+        width: '100%',
+        height: '100%',
+        textAlign: 'center',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+
+    progress: {
+        marginTop: 20,
     },
 
     commentInput: {
