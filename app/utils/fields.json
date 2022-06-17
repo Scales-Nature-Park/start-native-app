@@ -130,7 +130,7 @@
                 "dataValidation":  {
                     "isNumber": true,
                     "arguments": "input",
-                    "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 41 &&  input <= 46) ? true : false;",
+                    "body": "return (!isNaN(input) && input >= 41 &&  input <= 46) ? true : false;",
                     "error": "Latitude needs to be a number between 41 and 46."
                 }
             }, 
@@ -140,9 +140,13 @@
                 "dataValidation":  {
                     "isNumber": true,
                     "arguments": "input",
-                    "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= -84 &&  input <= -75) ? true : false;",
+                    "body": "return (!isNaN(input) && input >= -84 &&  input <= -75) ? true : false;",
                     "error": "Longitude needs to be a number between -84 and -75."
                 }
+            },
+            {
+                "name": "Image",
+                "image": true
             },
             {
                 "name": "Project",
@@ -796,8 +800,8 @@
                 "dataValidation":  {
                     "isNumber": true,
                     "arguments": "input",
-                    "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0);",
-                    "error": "# of Individuals needs to be a number bigger than or equal 0."
+                    "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                    "error": "# of Individuals needs to be a number greater than 0."
                 }
             },
             {
@@ -954,7 +958,13 @@
             },
             {
                 "name": "Temperature",
-                "dropDown": false
+                "dropDown": false,
+                "dataValidation": {
+                    "isNumber": true,
+                    "arguments": "input",
+                    "body": "return (!isNaN(input) && input > -90 && input < 60) ? true : false;",
+                    "error": "Temperature must be within -90 and 60 degrees celcius, unless you have witnessed a world record temperature!"
+                }
             },
             {
                 "name": "Age",
@@ -966,7 +976,13 @@
                     "Neonate",
                     "Sub-Adult",
                     "UNK"
-                ]
+                ],
+                "dataValidation": {
+                    "isNumber": true,
+                    "arguments": "input",
+                    "body":"return (!isNaN(input) && input >= 0) ? true : false;",
+                    "error": "Age cannot be a negative number."
+                }
             },
             {
                 "name": "Sex",
@@ -977,15 +993,139 @@
                     "UNK"
                 ]
             }
-
         ]
     },
-
     {
         "Category": "Turtle",
         "ConditionalFields": [
             {
-                "name": "Notch Code",
+                "name": "Species",
+                "dropDown": true,
+                "values": [
+                    "BLTU",
+                    "MATU",
+                    "PATU",
+                    "RSTU",
+                    "SNTU",
+                    "SPTU",
+                    "SSTU",
+                    "STIN",
+                    "WOTU",
+                    "BRSN",
+                    "EAGA",
+                    "EFSN",
+                    "HOSN",
+                    "LEWN",
+                    "MASS",
+                    "MISN",
+                    "NOWN",
+                    "RBSN",
+                    "RISN",
+                    "RNSN",
+                    "SGSN",
+                    "BLRC",
+                    "QUSN",
+                    "RASN",
+                    "AMTO",
+                    "BOCF",
+                    "BSSA",
+                    "BUFR",
+                    "DUSA",
+                    "EANE",
+                    "FLSK",
+                    "FOTO",
+                    "FTSA",
+                    "GRFR",
+                    "LEFR",
+                    "MICF",
+                    "MIFR",
+                    "PIFR",
+                    "RBSA",
+                    "SPPE",
+                    "TGTF",
+                    "TLSA",
+                    "UNISEX",
+                    "WOFR",
+                    "YSSA",
+                    "UNK- Frog",
+                    "UNK- Turtle",
+                    "UNK- Snake",
+                    "UNK-Salamander",
+                    "UNK-Toad"
+                ],
+                "conditionalFields": [
+                    {
+                        "condition": "SNTU",
+                        "name": "Post Plast Length",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (!isNaN(input) && input > 0) ? true : false;",
+                            "error": "Post Plast Length must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "SNTU",
+                        "name": "Post Plast Length Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01)"]
+                    },
+                    {
+                        "condition": "SNTU",
+                        "name": "Pre Loacal Length",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (!isNaN(input) && input > 0) ? true : false;",
+                            "error": "Pre loacal Length must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "SNTU",
+                        "name": "Pre Loacal Length Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01)"]
+                    },
+                    {
+                        "condition": "STIN",
+                        "name": "Post Plast Length",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (!isNaN(input) && input > 0) ? true : false;",
+                            "error": "Post Plast Length must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "STIN",
+                        "name": "Post Plast Length Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01)"]
+                    },
+                    {
+                        "condition": "STIN",
+                        "name": "Pre Loacal Length",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (!isNaN(input) && input > 0) ? true : false;",
+                            "error": "Pre loacal Length must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "STIN",
+                        "name": "Pre Loacal Length Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01)"]
+                    }
+                ]
+            },
+            {
+                "name": "Taxa",
                 "dropDown": false
             },
             {
@@ -1000,21 +1140,6 @@
                 ],
                 "conditionalFields": [
                     {
-                        "condition": "Observed",
-                        "name": "Observed",
-                        "dropDown": false
-                    },
-                    {
-                        "condition": "Field Euthenized",
-                        "name": "Field Euthenized",
-                        "dropDown": false,
-                        "conditionalFields": [
-                            {
-
-                            }
-                        ]
-                    },
-                    {
                         "condition": "Nest Found",
                         "name": "Nest Info",
                         "dropDown": true,
@@ -1024,16 +1149,6 @@
                             "NEST-Check"
                         ],
                         "conditionalFields": [
-                            {
-                                "condition": "Nest-Laid",
-                                "name": "Nest Info",
-                                "dropDown": true,
-                                "values": [
-                                    "NEST-Laid",
-                                    "NEST-Discovery",
-                                    "NEST-Check"
-                                ]
-                            },
                             {
                                 "condition": "NEST-Laid",                                
                                 "name": "Nest ID",
@@ -1054,9 +1169,9 @@
                                 ] 
                             },
                             {
+                                "condition": "NEST-Laid",
                                 "name": "Predator Evidence",
                                 "dropDown": true,
-                                "condition": "NEST-Laid",
                                 "values": [
                                     "Tracks",
                                     "Scat",
@@ -1065,9 +1180,351 @@
                                 ]
                             },
                             {
+                                "condition": "NEST-Laid",
                                 "name": "Predator Suspect",
                                 "dropDown": true,
+                                "values": [
+                                    "Skunk",
+                                    "Fox",
+                                    "Bear",
+                                    "Otter",
+                                    "Weasel",
+                                    "Squirrel",
+                                    "Badger",
+                                    "Fisher",
+                                    "Coyote",
+                                    "Wolf",
+                                    "Snake",
+                                    "Raccoon"
+                                ]
+                            },
+                            {
                                 "condition": "NEST-Laid",
+                                "name": "Nest Action",
+                                "dropDown": true,
+                                "values": [
+                                    "Excavated",
+                                    "Inspection Dig",
+                                    "Eggs Extracted from Dead Female",
+                                    "CAGE- Placed",
+                                    "CAGE- Checked"
+                                ],
+                                "conditionalFields": [
+                                    {
+                                        "condition": "Excavated",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "Excavated",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "Eggs Extracted from Dead Female",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "Eggs Extracted from Dead Female",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "Cage Type",
+                                        "dropDown": true,
+                                        "values": [
+                                            "Wire Sided",
+                                            "Wooden Sided",
+                                            "Other"
+                                        ]
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "Cage Type",
+                                        "dropDown": true,
+                                        "values": [
+                                            "Wire Sided",
+                                            "Wooden Sided",
+                                            "Other"
+                                        ]
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    }
+                                ]  
+                            },          
+                            {
+                                "condition": "NEST-Discovery",                                
+                                "name": "Nest ID",
+                                "dropDown": false
+                            },
+                            {
+                                "condition": "NEST-Discovery",
+                                "name": "Condition",
+                                "dropDown": true,
+                                "values": [
+                                    "Partially Predated",
+                                    "Predated",
+                                    "Predation Attempt",
+                                    "Emerged",
+                                    "Anthro Disturbance",
+                                    "Abandoned",
+                                    "Other: See Comments"
+                                ] 
+                            },
+                            {
+                                "condition": "NEST-Discovery",
+                                "name": "Predator Evidence",
+                                "dropDown": true,
+                                "values": [
+                                    "Tracks",
+                                    "Scat",
+                                    "Fur",
+                                    "Visual ID" 
+                                ]
+                            },
+                            {
+                                "condition": "NEST-Discovery",
+                                "name": "Predator Suspect",
+                                "dropDown": true,
+                                "values": [
+                                    "Skunk",
+                                    "Fox",
+                                    "Bear",
+                                    "Otter",
+                                    "Weasel",
+                                    "Squirrel",
+                                    "Badger",
+                                    "Fisher",
+                                    "Coyote",
+                                    "Wolf",
+                                    "Snake",
+                                    "Raccoon"
+                                ]
+                            },
+                            {
+                                "condition": "NEST-Discovery",
+                                "name": "Nest Action",
+                                "dropDown": true,
+                                "values": [
+                                    "Excavated",
+                                    "Inspection Dig",
+                                    "Eggs Extracted from Dead Female",
+                                    "CAGE- Placed",
+                                    "CAGE- Checked"
+                                ],
+                                "conditionalFields": [
+                                    {
+                                        "condition": "Excavated",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "Excavated",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "Eggs Extracted from Dead Female",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "Eggs Extracted from Dead Female",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "Cage Type",
+                                        "dropDown": true,
+                                        "values": [
+                                            "Wire Sided",
+                                            "Wooden Sided",
+                                            "Other"
+                                        ]
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "Cage Type",
+                                        "dropDown": true,
+                                        "values": [
+                                            "Wire Sided",
+                                            "Wooden Sided",
+                                            "Other"
+                                        ]
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "condition": "NEST-Check",                                
+                                "name": "Nest ID",
+                                "dropDown": false
+                            },
+                            {
+                                "condition": "NEST-Check",
+                                "name": "Condition",
+                                "dropDown": true,
+                                "values": [
+                                    "Partially Predated",
+                                    "Predated",
+                                    "Predation Attempt",
+                                    "Emerged",
+                                    "Anthro Disturbance",
+                                    "Abandoned",
+                                    "Other: See Comments"
+                                ] 
+                            },
+                            {
+                                "condition": "NEST-Check",
+                                "name": "Predator Evidence",
+                                "dropDown": true,
+                                "values": [
+                                    "Tracks",
+                                    "Scat",
+                                    "Fur",
+                                    "Visual ID" 
+                                ]
+                            },
+                            {
+                                "condition": "NEST-Check",
+                                "name": "Predator Suspect",
+                                "dropDown": true,
                                 "values": [
                                     "Skunk",
                                     "Fox",
@@ -1086,7 +1543,7 @@
                             {
                                 "name": "Nest Action",
                                 "dropDown": true,
-                                "condition": "Nest Only",
+                                "condition": "NEST-Check",
                                 "values": [
                                     "Excavated",
                                     "Inspection Dig",
@@ -1102,10 +1559,9 @@
                                         "dataValidation":  {
                                             "isNumber": true,
                                             "arguments": "input",
-                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of intact eggs can not be a negative number."
                                         }
-
                                     },
                                     {
                                         "condition": "Excavated",
@@ -1114,7 +1570,7 @@
                                         "dataValidation":  {
                                             "isNumber": true,
                                             "arguments": "input",
-                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of broken eggs can not be a negative number."
                                         }
                                     },
@@ -1125,10 +1581,9 @@
                                         "dataValidation":  {
                                             "isNumber": true,
                                             "arguments": "input",
-                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of intact eggs can not be a negative number."
                                         }
-
                                     },
                                     {
                                         "condition": "Eggs Extracted from Dead Female",
@@ -1137,7 +1592,7 @@
                                         "dataValidation":  {
                                             "isNumber": true,
                                             "arguments": "input",
-                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of broken eggs can not be a negative number."
                                         }
                                     },
@@ -1158,10 +1613,9 @@
                                         "dataValidation":  {
                                             "isNumber": true,
                                             "arguments": "input",
-                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of intact eggs can not be a negative number."
                                         }
-
                                     },
                                     {
                                         "condition": "CAGE-Placed",
@@ -1170,7 +1624,7 @@
                                         "dataValidation":  {
                                             "isNumber": true,
                                             "arguments": "input",
-                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of broken eggs can not be a negative number."
                                         }
                                     },
@@ -1191,10 +1645,9 @@
                                         "dataValidation":  {
                                             "isNumber": true,
                                             "arguments": "input",
-                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of intact eggs can not be a negative number."
                                         }
-
                                     },
                                     {
                                         "condition": "CAGE-Checked",
@@ -1203,21 +1656,13 @@
                                         "dataValidation":  {
                                             "isNumber": true,
                                             "arguments": "input",
-                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of broken eggs can not be a negative number."
                                         }
                                     }
-
                                 ]
                             }
                         ]
-                    },
-                    {
-                    
-                        "name": "New Capture",
-                        "dropDown": true,
-                        "values": ["Observed", "RECAP", "NEW"]
-                    
                     },
                     {
                         "condition": "Captured",
@@ -1343,6 +1788,12 @@
                     },
                     {
                         "condition": "Captured",
+                        "name": "Penis Visible",
+                        "dropDown": true,
+                        "values": ["Yes", "No", "Unknown"]
+                    },
+                    {
+                        "condition": "Captured",
                         "name": "GravGest",
                         "dropDown": true,
                         "values": [
@@ -1358,7 +1809,7 @@
                         "dataValidation": {
                             "isNumber": true,
                             "arguments": "input",
-                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input < 0 ? false : true;",
+                            "body": "return (!isNaN(input) && input > 0) ? true : false;",
                             "error": "Gross Mass must be a non negative number."
                         }   
                     },
@@ -1369,7 +1820,7 @@
                         "dataValidation": {
                             "isNumber": true,
                             "arguments": "input",
-                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input < 0 ? false : true;",
+                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
                             "error": "Bag Mass must be a non negative number."
                         }
                     },
@@ -1388,7 +1839,6 @@
                         "condition": "Captured",
                         "name": "Spec Mass",
                         "dropDown": false
-                        
                     },
                     {
                         "condition": "Captured",
@@ -1399,7 +1849,6 @@
                             "Blood Taken",
                             "Tissue Taken"
                         ]
-
                     },
                     {
                         "condition": "Captured",
@@ -1407,15 +1856,132 @@
                         "dropDown": false
                     },
                     {
+                        "condition": "Captured",
+                        "name": "Notch Code",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Notch Breakdown",
+                        "dropDown": false
 
-                    }
-                
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "New Capture",
+                        "dropDown": true,
+                        "values": ["Observed", "RECAP", "NEW"]
                     
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Turtle Name",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Car Mid Length",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (!isNaN(input) && input > 0) ? true : false;",
+                            "error": "Car Mid Length must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Car Mid Length Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01s"]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Car Max Length",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (!isNaN(input) && input > 0) ? true : false;",
+                            "error": "Car max Length must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Car Max Length Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01s"]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Car Max Width",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (!isNaN(input) && input > 0) ? true : false;",
+                            "error": "Car Max Width must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Car Max Width Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01s"]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Max Height",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (!isNaN(input) && input > 0) ? true : false;",
+                            "error": "Max Height must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Max Height Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01s"]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Plast Mid Length",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (!isNaN(input) && input > 0) ? true : false;",
+                            "error": "Plast Mid Length must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Plast Mid Length Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01s"]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Plast Max Length",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (!isNaN(input) && input > 0) ? true : false;",
+                            "error": "Plast Max Length must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Plast Max Length Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01s"]
+                    }
                 ]
             }
-            
-
-            
         ]
     },
 
@@ -1464,3 +2030,4 @@
         ]
     }
 ]
+
