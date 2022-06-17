@@ -130,7 +130,7 @@
                 "dataValidation":  {
                     "isNumber": true,
                     "arguments": "input",
-                    "body": "return (!isNaN(input) && input >= 41 &&  input <= 46) ? true : false;",
+                    "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 41 &&  input <= 46) ? true : false;",
                     "error": "Latitude needs to be a number between 41 and 46."
                 }
             }, 
@@ -140,13 +140,9 @@
                 "dataValidation":  {
                     "isNumber": true,
                     "arguments": "input",
-                    "body": "return (!isNaN(input) && input >= -84 &&  input <= -75) ? true : false;",
+                    "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= -84 &&  input <= -75) ? true : false;",
                     "error": "Longitude needs to be a number between -84 and -75."
                 }
-            },
-            {
-                "name": "Image",
-                "image": true
             },
             {
                 "name": "Project",
@@ -800,7 +796,7 @@
                 "dataValidation":  {
                     "isNumber": true,
                     "arguments": "input",
-                    "body": "return (!isNaN(input) && input < 0) ? false : true;",
+                    "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0);",
                     "error": "# of Individuals needs to be a number bigger than or equal 0."
                 }
             },
@@ -1106,7 +1102,7 @@
                                         "dataValidation":  {
                                             "isNumber": true,
                                             "arguments": "input",
-                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of intact eggs can not be a negative number."
                                         }
 
@@ -1118,7 +1114,7 @@
                                         "dataValidation":  {
                                             "isNumber": true,
                                             "arguments": "input",
-                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of broken eggs can not be a negative number."
                                         }
                                     },
@@ -1129,7 +1125,7 @@
                                         "dataValidation":  {
                                             "isNumber": true,
                                             "arguments": "input",
-                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of intact eggs can not be a negative number."
                                         }
 
@@ -1141,7 +1137,7 @@
                                         "dataValidation":  {
                                             "isNumber": true,
                                             "arguments": "input",
-                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of broken eggs can not be a negative number."
                                         }
                                     },
@@ -1162,7 +1158,7 @@
                                         "dataValidation":  {
                                             "isNumber": true,
                                             "arguments": "input",
-                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of intact eggs can not be a negative number."
                                         }
 
@@ -1174,7 +1170,7 @@
                                         "dataValidation":  {
                                             "isNumber": true,
                                             "arguments": "input",
-                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of broken eggs can not be a negative number."
                                         }
                                     },
@@ -1195,7 +1191,7 @@
                                         "dataValidation":  {
                                             "isNumber": true,
                                             "arguments": "input",
-                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of intact eggs can not be a negative number."
                                         }
 
@@ -1207,7 +1203,7 @@
                                         "dataValidation":  {
                                             "isNumber": true,
                                             "arguments": "input",
-                                            "body": "return (!isNaN(input) && input >= 0) ? true : false;",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
                                             "error": "Number of broken eggs can not be a negative number."
                                         }
                                     }
@@ -1362,7 +1358,7 @@
                         "dataValidation": {
                             "isNumber": true,
                             "arguments": "input",
-                            "body": "return (!isNaN(input) && input < 0 ? false : true;",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input < 0 ? false : true;",
                             "error": "Gross Mass must be a non negative number."
                         }   
                     },
@@ -1373,7 +1369,7 @@
                         "dataValidation": {
                             "isNumber": true,
                             "arguments": "input",
-                            "body": "return (!isNaN(input) && input < 0 ? false : true;",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input < 0 ? false : true;",
                             "error": "Bag Mass must be a non negative number."
                         }
                     },

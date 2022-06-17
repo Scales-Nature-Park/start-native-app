@@ -98,7 +98,7 @@ const DataInput = ({route, navigation}) => {
             
             // validate the data after states are set
             let validateData = new Function(state.dataValidation.arguments, state.dataValidation.body);
-            let value = (state.dataValidation.isNumber) ? Number(state.value) : state.value;
+            let value = (state.dataValidation.isNumber && state.value.toString().trim() != '') ? Number(state.value) : state.value;
             let response = validateData(value);
 
             console.log(state.dataValidation);
@@ -476,6 +476,7 @@ const DataInput = ({route, navigation}) => {
                     </ScrollView>
 
                     {(photos) ? (photos.length > 1) ?
+                        <View style={styles.container2}>
                         <Carousel
                             width={Dimensions.get('window').width}
                             ref={ref}
@@ -491,15 +492,24 @@ const DataInput = ({route, navigation}) => {
                                 <Image source={item} style={styles.image} />
                             </View>}
                         />
+                        <TouchableOpacity style={[styles.addImage, {marginTop: 0}]} onPress={ChoosePhoto}>
+                            <Text style={styles.submitText}>Add Image</Text>
+                        </TouchableOpacity>
+                        </View>
                     :
                     <View style={styles.container2}>
                         <Image source={photos[0]} style={[styles.imageSingle]} />
+                        <TouchableOpacity style={styles.addImage} onPress={ChoosePhoto}>
+                            <Text style={styles.submitText}>Add Image</Text>
+                        </TouchableOpacity>
                     </View>
                     : 
                     <View style={styles.container2}>
-                        <TouchableOpacity onPress={ChoosePhoto}>
-                            <Text>Select Image</Text>
-                        </TouchableOpacity>
+                        <View style={styles.selectImage}>
+                            <TouchableOpacity onPress={ChoosePhoto}>
+                                <Text style={styles.submitText}>Select Image</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>}
                     
                     {fields}
@@ -783,6 +793,16 @@ const styles = StyleSheet.create({
         backgroundColor: scalesColors.Peach,
     },
 
+    addImage: {
+        width: '95%',
+        borderRadius: 10,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10,
+        backgroundColor: scalesColors.Peach,
+    },
+
     submitText: {
         color: '#000000',
     },
@@ -822,6 +842,15 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         height: '100%',
         marginBottom: 20,
+    },
+
+    selectImage: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '95%',
+        backgroundColor: scalesColors.BlueRacer,
+        borderRadius: 10,
+        height: 200,
     },
 
     commentInput: {
