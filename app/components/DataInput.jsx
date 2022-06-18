@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Fragment } from 'react';
 import axios from 'axios';
 import storage, { url } from '../utils/Storage';
-import { launchImageLibrary } from 'react-native-image-picker';
 import Carousel from 'react-native-reanimated-carousel';
 import styles from '../styles/DataStyles';
+import Feather from 'react-native-vector-icons/Feather';
 import * as Progress from 'react-native-progress';
+import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
+import { launchImageLibrary } from 'react-native-image-picker';
 import {
     Text,
     View,
@@ -20,6 +22,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useNetInfo } from "@react-native-community/netinfo";
 
+Feather.loadFont();
 const scalesColors = require('../utils/colors.json');
 const dataFields = require('../utils/fields.json');
 
@@ -100,16 +103,11 @@ const DataInput = ({route, navigation}) => {
             let validateData = new Function(state.dataValidation.arguments, state.dataValidation.body);
             let value = (state.dataValidation.isNumber && state.value.toString().trim() != '') ? Number(state.value) : state.value;
             let response = validateData(value);
-
-            console.log(state.dataValidation);
-            console.log(' : ' + response);
-            console.log(value);
             
             // 1 wrong field will cause valid states to be false
             if (!response) {
                 validStates = false;
                 validityError = (state.dataValidation.error) ? state.dataValidation.error : validityError;
-                console.log(validityError);
             }
         });
         
@@ -165,12 +163,10 @@ const DataInput = ({route, navigation}) => {
                         'Content-Type': 'multipart/form-data',
                     },
                     onUploadProgress: (currProgress) => {
-                        console.log(currProgress);
                         setProgress({display: true, progress: progress.progress + (currProgress.loaded / currProgress.total * i / photos.length)});
                     }
                 }
                 ).catch((e) => {
-                    console.log(e);
                     imageForm = undefined;
                 });
     
@@ -218,6 +214,25 @@ const DataInput = ({route, navigation}) => {
             return;
         });
     }
+
+    const changeState = (field, item) => {
+        if (!item || !item.title) return;
+        let tempStates = states.slice();
+        let tempIndex = -1;
+        
+        // search for an existing state with the current field name and update its value
+        tempStates.forEach((curr, index) => {
+            if (curr.name.toLowerCase() != field.name.toLowerCase()) return;
+            curr.value = item.title;
+            tempIndex = index;
+        });
+        
+        // push a new state if an existing state wasnt found
+        if(tempIndex == -1) tempStates.push(
+            {"name": field.name.toLowerCase(), "value": item.title.toString(), "dataValidation": field.dataValidation}
+        ); console.log(tempStates);
+        setStates(tempStates);
+    };
 
     const displayField = (field, fields) => {
         if (field.name.toLowerCase() == 'date') {
@@ -323,38 +338,45 @@ const DataInput = ({route, navigation}) => {
         }
         
         if (field.dropDown) {
+            let dropVals = [];
+            let initId = -1;
+            let initValue = paramData?.inputFields?.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0];
+
+            // find initial value and use initId to refer to the initialValue
+            for (let i = 0; i < field.values.length; i++) {
+                dropVals.push({title: field.values[i], id: i});
+                if (initValue?.value && field.values[i].toString().toLowerCase() == initValue.value.toString().toLowerCase()) initId = i;
+            } 
+            console.log(initValue?.value);
+            console.log(initId);
+
             fields.push(
                 <View style={styles.container1}>
                     <View style={{width: '45%'}}>
                         <Text style={(dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
                     </View>
-                    <View style={styles.fieldInput}>
-                            <ModalDropdown 
-                            options={field.values}
-                            showsVerticalScrollIndicator={true}
-                            textStyle={styles.dropText}
-                            style={styles.dropButton}
-                            dropdownTextStyle={styles.dropText}
-                            dropdownStyle={styles.dropDown}
-                            dropdownTextHighlightStyle={styles.dropText}
-                            defaultValue={(paramData && paramData.inputFields && paramData.inputFields.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? paramData.inputFields.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : field.values[0].toString()}
-                            onSelect={(myVal) => {
-                                let tempStates = states.slice();
-                                let tempIndex = -1;
-    
-                                tempStates.forEach((curr, index) => {
-                                    if (curr.name.toLowerCase() != field.name.toLowerCase()) return;
-                                    curr.value = field.values[myVal];
-                                    tempIndex = index;
-                                });
-                                
-                                if(tempIndex == -1) tempStates.push(
-                                    {"name": field.name.toLowerCase(), "value": field.values[myVal].toString(), "dataValidation": field.dataValidation}
-                                );
-                                setStates(tempStates);
-                            }}
-                            />
-                        </View>
+                    
+                    <AutocompleteDropdown
+                        position='absolute'
+                        clearOnFocus={false}
+                        closeOnBlur={true}
+                        closeOnSubmit={false}
+                        dataSet={dropVals}
+                        direction={'up'}
+                        containerStyle={styles.fieldInput}
+                        inputContainerStyle={styles.dropButton2}
+                        textInputProps={{
+                            placeholder: 'Enter ' + field.name,
+                            style: {...styles.dropText}
+                        }}
+                        ChevronIconComponent={<Feather name="chevron-down" size={20} color="#000" />}
+                        ClearIconComponent={<Feather name="x-circle" size={18} color="#000" />}
+                        initialValue={{id: initId}}
+                        suggestionsListContainerStyle={styles.dropDown2}
+                        onClear={() => changeState({title: ''})}
+                        onSelectItem={(item) => changeState(field, item)}
+                        onChangeText={(text) => changeState(field, {title: text})}
+                    />
                 </ View>
             );
         } else {
@@ -463,7 +485,7 @@ const DataInput = ({route, navigation}) => {
                             text: "Cancel",
                             },
                             { 
-                                text: "OK", 
+                                text: "Proceed Anyway", 
                                 onPress: () => SubmitData()
                             }
                         ]
@@ -474,7 +496,7 @@ const DataInput = ({route, navigation}) => {
             </TouchableOpacity>
         );
     } 
-    
+        
     return (
         <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
             <View style={styles.overlay}/>

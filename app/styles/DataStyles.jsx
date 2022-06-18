@@ -42,6 +42,15 @@ const styles = StyleSheet.create({
         width: '100%',
     },
 
+    dropButton2: {
+        width: '100%',
+        backgroundColor: scalesColors.BlueRacer,
+        borderRadius: 10,
+        color: 'red',
+        height: '100%',
+        marginBottom: 20,
+    },
+
     dropDown: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -50,6 +59,12 @@ const styles = StyleSheet.create({
         backgroundColor: scalesColors.BlueRacer, 
         textAlign: 'center',
         width: '35%',
+    },
+
+    dropDown2: {
+        borderRadius: 10,
+        backgroundColor: scalesColors.BlueRacer, 
+        textAlign: 'center',
     },
 
     dropText: {
