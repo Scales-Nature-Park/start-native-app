@@ -24,6 +24,7 @@ module.exports = {
       new RegExp(`${rnwPath}/target/.*`),
       /.*\.ProjectImports\.zip/,
     ]),
+    sourceExts: ['js', 'json', 'ts', 'tsx', 'jsx']
   },
   transformer: {
     getTransformOptions: async () => ({

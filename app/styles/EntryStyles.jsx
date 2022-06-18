@@ -63,6 +63,6 @@ const styles = StyleSheet.create({
       color: '#fff',
       textAlign: 'center',
     }
-  });
+});
 
 export { styles, entryStyles };
