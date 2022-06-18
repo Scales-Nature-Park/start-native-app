@@ -1,10 +1,10 @@
 import React from 'react';
-import LoginForm from './Components/LoginForm'; 
-import DataInput from './Components/DataInput';
-import Signup from './Components/Signup';
-import Home from './Components/Home';
-import PrevEntries from './Components/PrevEntries';
-import Search from './Components/Search';
+import LoginForm from './components/LoginForm'; 
+import DataInput from './components/DataInput';
+import Signup from './components/Signup';
+import Home from './components/Home';
+import PrevEntries from './components/PrevEntries';
+import Search from './components/Search';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 

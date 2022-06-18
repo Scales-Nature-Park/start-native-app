@@ -2,19 +2,15 @@ import React, { useState } from 'react';
 import useSyncState from '../utils/SyncState';
 import storage from '../utils/Storage';
 import Entry from './Entry';
+import { styles } from '../styles/EntryStyles';
 import {
-    StatusBar,
-    StyleSheet,
     View,
     Text,
     ScrollView,
     SafeAreaView,
     Image,
     TouchableOpacity,
-    Dimensions,
 } from 'react-native';
-
-const scalesColors = require('../utils/colors.json');
 
 const PrevEntries = ({route, navigation}) => {
   const id = route.params.id;
@@ -62,49 +58,5 @@ const PrevEntries = ({route, navigation}) => {
     </SafeAreaView>
   );  
 };
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    paddingTop: StatusBar.currentHeight * 70 / 100,
-    paddingBottom: StatusBar.currentHeight * 70 / 100,
-    backgroundColor: '#fff',    
-  },
-
-  safeAreaDark: {
-    flex: 1,
-    paddingTop: StatusBar.currentHeight * 70 / 100,
-    paddingBottom: StatusBar.currentHeight * 70 / 100,
-    backgroundColor: '#121212',    
-  },
-
-  overlay: {
-    flex: 1,
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    opacity: 0.14,
-    backgroundColor: '#fff',
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height
-  },
-
-  iconImage: {
-    width: 40,
-    height: 40
-  },
-
-  emptyText: {
-    fontSize: 20,
-    color: '#000000',
-    textAlign: 'center',
-  },
-
-  emptyTextDark: {
-    fontSize: 20,
-    color: '#fff',
-    textAlign: 'center',
-  }
-});
 
 export default PrevEntries;
