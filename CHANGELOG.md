@@ -4,6 +4,12 @@ changes, please include a short explanation of what your changes are trying to a
 with the rest of the codebase and/or how to run and build up on them. You can treat this file as a more in depth
 commit log and place your changes over the previous changes, below this message.
 
+## Network Checks & Seperate Styles
+#### Changes:
+- Added network errors if a user attempts to perform server requests while disconnected from the internet.
+- Added a seperate `styles` folder for all the stylesheet objects.
+- Added support for multiple image uploads. [#6](https://github.com/Scales-Nature-Park/start-native-app/issues/6)
+
 ## Admin Windows App
 #### Changes:
 - Added react native boiler plate for windows admin app.

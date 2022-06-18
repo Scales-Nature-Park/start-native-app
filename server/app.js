@@ -40,23 +40,23 @@ DBConnect();
  * a success response if they exist.
  */
 app.get('/signin', (req, res) => {
-    if (!req.query || !req.query.email || !req.query.password)
-    return res.status(400).send('Invalid credentials. Please verify you have entered the correct email and password.');
+    if (!req.query || !req.query.username || !req.query.password)
+    return res.status(400).send('Invalid credentials. Please verify you have entered the correct username and password.');
     
-    const email = sanitize(req.query.email);
+    const username = sanitize(req.query.username);
     const password = sanitize(req.query.password);
 
     try {
         // search the credentials collection in the START-Project
-        // database for the passed email and password
+        // database for the passed username and password
         let db = client.db('START-Project');
         let credentials = db.collection('credentials');
-        let results = credentials.find({"email": email, "password": password});
+        let results = credentials.find({"username": username, "password": password});
         
         // retrieve the array of the account and respond with the id
         results.toArray().then((response) => {
             if (response.length <= 0) 
-            return res.status(500).send('Invalid credentials. Please verify you have entered the correct email and password.');
+            return res.status(500).send('Invalid credentials. Please verify you have entered the correct username and password.');
 
             return res.status(200).send(response[0]._id);
         }).catch((err) => {
@@ -111,29 +111,29 @@ app.get('/signin', (req, res) => {
  * them otherwise.
  */
 app.post('/signup', (req, res) => {
-    if (!req.query || !req.query.email || !req.query.password)
-    return res.status(400).send('Email and password were not sent to the server.');
+    if (!req.query || !req.query.username || !req.query.password)
+    return res.status(400).send('Username and password were not sent to the server.');
 
-    const email = sanitize(req.query.email);
+    const username = sanitize(req.query.username);
     const password = sanitize(req.query.password);
     
     try {
         // search the credentials collection in the START-Project
-        // database for the passed email and password
+        // database for the passed username and password
         let db = client.db('START-Project');
         let credentials = db.collection('credentials');
-        let results = credentials.find({"email": email});
+        let results = credentials.find({"username": username});
 
         // retrieve the array of the account and respond with the fail
         // if it has any elements
         results.toArray().then((response) => {
             if (response.length > 0) {
-                throw 'An account already exists with this email. Try to login or use a different email.';
+                throw 'An account already exists with this username. Try to login or use a different username.';
             }
             
-            // insert a new document with the email and password
+            // insert a new document with the username and password
             credentials.insertOne({
-                "email": email,
+                "username": username,
                 "password": password
             }).then((insertRes) => {
                 return res.status(200).send('');

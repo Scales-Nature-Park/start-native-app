@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useNetInfo } from "@react-native-community/netinfo";
 
 const scalesColors = require('../utils/colors.json');
 const dataFields = require('../utils/fields.json');
@@ -65,6 +66,7 @@ const DataInput = ({route, navigation}) => {
     const [photos, setPhotos] = useState((paramData && paramData.photos) ? [...paramData.photos] : null);
     const [dark, setDark] = useState(true);
     const [progress, setProgress] = useState({display: false, progress: 0});
+    const netInfo = useNetInfo();
     const ref = useRef(null);
 
     React.useLayoutEffect(() => {
@@ -139,9 +141,17 @@ const DataInput = ({route, navigation}) => {
     };
 
     const SubmitData = async (second = undefined) => {
+        // validate network connection
+        if (!netInfo.isConnected) {
+            Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
+            return;
+        }
+
         photoIds = [];
         setProgress({display: true, progress: progress.progress});
-
+        
+        // create image forms for each photo and upload them to the server and the retrieve
+        // the entry ids into the database to be linked to this data entry
         if (photos && photos.length > 0) {
             let i = 0;
             for (let photo of photos) {
@@ -166,7 +176,7 @@ const DataInput = ({route, navigation}) => {
     
                 // if image upload fails, try it again. give network error alert if on second attempt
                 if(!imageForm) {
-                    if (second) Alert.alert('Error', 'Failed to upload image.');
+                    if (second) Alert.alert('Error', 'Failed to upload images.');
                     else SubmitData(true);
                     return;
                 }
@@ -174,6 +184,7 @@ const DataInput = ({route, navigation}) => {
             }
         }
         
+        // upload the data entry to the database 
         axios({
             method: 'post',
             url: url + '/dataEntry',

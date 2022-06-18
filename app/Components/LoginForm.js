@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import styles from '../styles/LoginStyles';
 import storage, { url } from '../utils/Storage';
+import { useNetInfo } from "@react-native-community/netinfo";
 import {
     StatusBar,
     Text,
@@ -15,10 +16,11 @@ import {
 } from 'react-native';
 
 const LoginForm = ({ navigation }) => {
-    const [email, setEmail] = useState('');
+    const [username, setUser] = useState('');
     const [password, setPassword] = useState('');
     const [id, setID] = useState('');
     const [dark, setDark] = useState(true);
+    const netInfo = useNetInfo();
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -33,6 +35,42 @@ const LoginForm = ({ navigation }) => {
         });
     });
 
+    const AuthenticateCredentials = (username, password) => {
+      // validate network connection
+      if (!netInfo.isConnected) {
+        Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
+        return;
+      }
+
+      axios({
+        method: 'get',
+        url: url + '/signin',
+        params: {
+          "username": username,
+          "password": password
+        }
+      }).then((response) => {
+        setID(response.data);
+        storage.save({
+          key: 'loginState', 
+          data: {
+            "username": username,
+            "password": password,
+            "id": response.data
+          }
+        }); 
+        
+        navigation.navigate('Home', {
+          "id": response.data,
+          "onlineMode": true,
+        });
+      }).catch(function (error) {
+        Alert.alert('ERROR', error.response.data);
+        console.log(error);
+        return;
+      });
+    };
+
     return (
       <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
       <View style={styles.overlay} />
@@ -42,9 +80,9 @@ const LoginForm = ({ navigation }) => {
             <View style={styles.inputView}>
                 <TextInput
                 style={styles.TextInput}
-                placeholder="Email"
+                placeholder="Username"
                 placeholderTextColor="#000000"
-                onChangeText={(email) => setEmail(email)}
+                onChangeText={(username) => setUser(username)}
                 />
             </View>
         
@@ -63,7 +101,7 @@ const LoginForm = ({ navigation }) => {
             </TouchableOpacity>
         
             <TouchableOpacity style={styles.loginBtn}
-            onPress = {() => AuthenticateCredentials(email, password, navigation, id, setID)}>
+            onPress = {() => AuthenticateCredentials(username, password, id, setID)}>
                 <Text style={styles.loginText}>LOGIN</Text>
             </TouchableOpacity>
 
@@ -80,36 +118,6 @@ const LoginForm = ({ navigation }) => {
       </ScrollView>
       </SafeAreaView>
     );   
-};
-
-function AuthenticateCredentials(email, password, navigation, id, setID) {
-  axios({
-    method: 'get',
-    url: url + '/signin',
-    params: {
-      "email": email,
-      "password": password
-    }
-  }).then((response) => {
-    setID(response.data);
-    storage.save({
-      key: 'loginState', 
-      data: {
-        "email": email,
-        "password": password,
-        "id": response.data
-      }
-    }); 
-    
-    navigation.navigate('Home', {
-      "id": id,
-      "onlineMode": true,
-    });
-  }).catch(function (error) {
-    Alert.alert('ERROR', error.response.data);
-    console.log(error);
-    return;
-  });
 };
 
 export default LoginForm;

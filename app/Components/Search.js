@@ -3,6 +3,8 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import uuid from 'react-native-uuid';
 import Entry from './Entry';
 import styles from '../styles/SearchStyles';
+import useSyncState from '../utils/SyncState';
+import axios from 'axios';
 import {
     SafeAreaView,
     Text,
@@ -13,9 +15,8 @@ import {
     Image,
     Alert,
 } from 'react-native';
-import useSyncState from '../utils/SyncState';
 import { url } from '../utils/Storage';
-import axios from 'axios';
+import { useNetInfo } from "@react-native-community/netinfo";
 
 const scalesColors = require('../utils/colors.json');
 const searchFields = require('../utils/search.json');
@@ -26,6 +27,7 @@ function ArrayEquals (array1, array2) {
 }
 
 const Search = ({route, navigation}) => {
+    const netInfo = useNetInfo();
     const states = useSyncState([]);
     const criteriaElements = useSyncState([]);
     const selections = useSyncState([]);
@@ -322,6 +324,12 @@ const Search = ({route, navigation}) => {
                 </View>
 
                 <TouchableOpacity style={styles.search} onPress={() => {
+                    // validate network connection
+                    if (!netInfo.isConnected) {
+                        Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
+                        return;
+                    }
+                    
                     axios({
                         method: 'get',
                         url: url + '/search',

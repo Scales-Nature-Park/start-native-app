@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import styles from '../styles/SignupStyles';
+import { useNetInfo } from "@react-native-community/netinfo";
 import { url } from '../utils/Storage'
 import {
     StatusBar,
@@ -15,10 +16,11 @@ import {
 } from 'react-native';
 
 const Signup = ({ navigation }) => {
-    const [email, setEmail] = useState('');
+    const [username, setUser] = useState('');
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
     const [dark, setDark] = useState(true);
+    const netInfo = useNetInfo();
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -32,6 +34,46 @@ const Signup = ({ navigation }) => {
           ),
         });
     });
+
+    const RegisterUser = (username, password, password2) => {
+      // validate network connection
+      if (!netInfo.isConnected) {
+        Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
+        return;
+      }
+
+      // validate username and password to be of appropriate sizes
+      if (username.toString().length < 1) {
+        Alert.alert('ERROR', "Username needs to be at least 1 character.");
+        return;
+      }
+      
+      if (password.toString().length < 8) {
+        Alert.alert('ERROR', "Password needs to be at least 8 characters.");
+        return;
+      }
+      
+      // validate both passwords to match
+      if (password.toString() !== password2.toString()) {
+        Alert.alert('ERROR', "Entered passwords don't match.");
+        return;
+      }
+
+      axios({
+        method: 'post',
+        url: url + '/signup',
+        params: {
+          "username": username,
+          "password": password
+        }
+      }).then((response) => {
+        console.log(response.status);
+        navigation.navigate('Login');
+      }).catch(function (error) {
+        Alert.alert('ERROR', error.response.data);
+        return;
+      });
+    };
     
     return (
       <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
@@ -42,9 +84,9 @@ const Signup = ({ navigation }) => {
             <View style={styles.inputView}>
                 <TextInput
                 style={styles.TextInput}
-                placeholder="Email"
+                placeholder="Username"
                 placeholderTextColor="#000000"
-                onChangeText={(email) => setEmail(email)}
+                onChangeText={(username) => setUser(username)}
                 />
             </View>
         
@@ -69,45 +111,13 @@ const Signup = ({ navigation }) => {
             </View>
         
             <TouchableOpacity style={styles.loginBtn}
-            onPress = {() => RegisterUser(email, password, password2, navigation)}>
+            onPress = {() => RegisterUser(username, password, password2)}>
                 <Text style={styles.loginText}>REGISTER</Text>
             </TouchableOpacity>
         </View>
       </ScrollView>
       </SafeAreaView>
     );
-}
-
-function RegisterUser(email, password, password2, navigation) {
-    if (!email.toString().includes('@') || !email.toString().includes('.')) {
-      Alert.alert('ERROR', "Email needs to be in this format: 'uername@domain.com'.");
-      return;
-    }
-
-    if (password.toString() !== password2.toString()) {
-      Alert.alert('ERROR', "Entered passwords don't match.");
-      return;
-    }
-
-    if (password.toString().length < 8) {
-      Alert.alert('ERROR', "Password needs to be at least 8 characters.");
-      return;
-    }
-  
-    axios({
-      method: 'post',
-      url: url + '/signup',
-      params: {
-        "email": email,
-        "password": password
-      }
-    }).then((response) => {
-      console.log(response.status);
-      navigation.navigate('Login');
-    }).catch(function (error) {
-      Alert.alert('ERROR', error.response.data);
-      return;
-    });
 }
 
 export default Signup;
