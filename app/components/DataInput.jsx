@@ -3,8 +3,7 @@ import axios from 'axios';
 import storage, { url } from '../utils/Storage';
 import Carousel from 'react-native-reanimated-carousel';
 import styles from '../styles/DataStyles';
-import Feather, { sun } from 'react-native-vector-icons/Feather';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Feather from 'react-native-vector-icons/Feather';
 import * as Progress from 'react-native-progress';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -70,7 +69,6 @@ const DataInput = ({route, navigation}) => {
     const [photos, setPhotos] = useState((paramData && paramData.photos) ? [...paramData.photos] : null);
     const [dark, setDark] = useState(true);
     const [progress, setProgress] = useState({display: false, progress: 0});
-    const [scroll, setScroll] = useState(true);
     const netInfo = useNetInfo();
 
     React.useLayoutEffect(() => {
@@ -97,6 +95,8 @@ const DataInput = ({route, navigation}) => {
 
     useEffect(() => {
         let validStates = true;
+
+        // validate all the states with their dataValidation functions
         states.forEach((state) => {
             if (!state.dataValidation || !state.dataValidation.arguments) return;
             
@@ -111,6 +111,15 @@ const DataInput = ({route, navigation}) => {
                 validityError = (state.dataValidation.error) ? state.dataValidation.error : validityError;
             }
         });
+
+        // validate date
+        if (currDay.toString().length !== 2 || isNaN(currDay)) {
+            validStates = false;
+            validityError = 'Day needs to be a number in DD format.';
+        } else if (currYear.toString().length !== 4 || isNaN(currYear)) {
+            validStates = false;
+            validityError = 'Year needs to be a number in YYYY format.';
+        } 
         
         setValid(validStates);
     });
@@ -242,7 +251,8 @@ const DataInput = ({route, navigation}) => {
                     <View style={styles.inputView}>
                         <TextInput
                         style={styles.TextInput}
-                        placeholder={day.toString()}
+                        defaultValue={day.toString()}
+                        placeholder={'DD'}
                         placeholderTextColor='#000000'
                         onChangeText={(currDay) => setDay(currDay)}
                         />
@@ -265,7 +275,8 @@ const DataInput = ({route, navigation}) => {
                     <View style={styles.inputView}>
                         <TextInput
                         style={styles.TextInput}
-                        placeholder={year.toString()}
+                        defaultValue={year.toString()}
+                        placeholder={'YYYY'}
                         placeholderTextColor='#000000'
                         onChangeText={(currYear) => setYear(currYear)}
                         />
@@ -280,7 +291,8 @@ const DataInput = ({route, navigation}) => {
                     <View style={styles.inputView}>
                         <TextInput
                         style={styles.TextInput}
-                        placeholder={currHours.toString()}
+                        placeholder={'H'}
+                        defaultValue={currHours.toString()}
                         placeholderTextColor='#000000'
                         onChangeText={(inHours) => {
                                 if (inHours.trim() == '') setHours(currHours);
@@ -295,7 +307,8 @@ const DataInput = ({route, navigation}) => {
                     <View style={styles.inputView}>
                         <TextInput
                         style={styles.TextInput}
-                        placeholder={currMins.toString()}
+                        defaultValue={currMins.toString()}
+                        placeholder={'M'}
                         placeholderTextColor='#000000'
                         onChangeText={(inMins) => {
                                 if (inMins.trim() == '') setMins(currMins);
@@ -546,6 +559,7 @@ const DataInput = ({route, navigation}) => {
                             <TextInput
                                 multiline={true}
                                 style={styles.commentBox}
+                                defaultValue={paramData?.comment}
                                 placeholder={'Add Comments...'}
                                 placeholderTextColor='#000000'
                                 onChangeText={(value) => setComment(value)}
