@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         color: 'red',
         height: '100%',
-        marginBottom: 20,
     },
 
     dropDown: {
@@ -67,11 +66,26 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 
+    dropButton3: {
+        width: '50%',
+        borderRadius: 10,
+        height: '100%',
+        marginBottom: 20,
+    },
+
     dropText: {
         alignContent: 'center',
         color: '#000',
         backgroundColor: scalesColors.BlueRacer,
-        fontSize: 15,
+        fontSize: 16,
+    },
+
+    dropListText: {
+        alignContent: 'center',
+        color: '#000',
+        backgroundColor: scalesColors.BlueRacer,
+        fontSize: 16,
+        padding: 15
     },
 
     container1: {
@@ -246,7 +260,7 @@ const styles = StyleSheet.create({
         width: '95%',
         backgroundColor: scalesColors.BlueRacer,
         borderRadius: 10,
-        height: 200,
+        height: 180,
     },
 
     selectImageButton: {

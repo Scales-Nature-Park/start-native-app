@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import storage, { url } from '../utils/Storage';
 import Carousel from 'react-native-reanimated-carousel';
 import styles from '../styles/DataStyles';
-import Feather from 'react-native-vector-icons/Feather';
+import Feather, { sun } from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Progress from 'react-native-progress';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -69,8 +70,8 @@ const DataInput = ({route, navigation}) => {
     const [photos, setPhotos] = useState((paramData && paramData.photos) ? [...paramData.photos] : null);
     const [dark, setDark] = useState(true);
     const [progress, setProgress] = useState({display: false, progress: 0});
+    const [scroll, setScroll] = useState(true);
     const netInfo = useNetInfo();
-    const ref = useRef(null);
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -216,7 +217,7 @@ const DataInput = ({route, navigation}) => {
     }
 
     const changeState = (field, item) => {
-        if (!item || !item.title) return;
+        if (!item) return; console.log(item);
         let tempStates = states.slice();
         let tempIndex = -1;
         
@@ -230,7 +231,7 @@ const DataInput = ({route, navigation}) => {
         // push a new state if an existing state wasnt found
         if(tempIndex == -1) tempStates.push(
             {"name": field.name.toLowerCase(), "value": item.title.toString(), "dataValidation": field.dataValidation}
-        ); console.log(tempStates);
+        ); 
         setStates(tempStates);
     };
 
@@ -339,43 +340,39 @@ const DataInput = ({route, navigation}) => {
         
         if (field.dropDown) {
             let dropVals = [];
-            let initId = -1;
+            let initId = (paramData) ? -1 : 0;
             let initValue = paramData?.inputFields?.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0];
 
             // find initial value and use initId to refer to the initialValue
             for (let i = 0; i < field.values.length; i++) {
-                dropVals.push({title: field.values[i], id: i});
+                dropVals.push({id: i.toString(), title: field.values[i]});
                 if (initValue?.value && field.values[i].toString().toLowerCase() == initValue.value.toString().toLowerCase()) initId = i;
-            } 
-            console.log(initValue?.value);
-            console.log(initId);
-
+            } console.log(initId);
+            
             fields.push(
                 <View style={styles.container1}>
                     <View style={{width: '45%'}}>
                         <Text style={(dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
                     </View>
-                    
+
                     <AutocompleteDropdown
-                        position='absolute'
-                        clearOnFocus={false}
-                        closeOnBlur={true}
-                        closeOnSubmit={false}
-                        dataSet={dropVals}
-                        direction={'up'}
-                        containerStyle={styles.fieldInput}
-                        inputContainerStyle={styles.dropButton2}
-                        textInputProps={{
-                            placeholder: 'Enter ' + field.name,
-                            style: {...styles.dropText}
-                        }}
-                        ChevronIconComponent={<Feather name="chevron-down" size={20} color="#000" />}
-                        ClearIconComponent={<Feather name="x-circle" size={18} color="#000" />}
-                        initialValue={{id: initId}}
-                        suggestionsListContainerStyle={styles.dropDown2}
+                        clearOnFocus={true}
+                        closeOnBlur={false}
+                        closeOnSubmit={true}
+                        initialValue={{ id: initId.toString() }}
+                        showClear={false}
                         onClear={() => changeState({title: ''})}
                         onSelectItem={(item) => changeState(field, item)}
                         onChangeText={(text) => changeState(field, {title: text})}
+                        direction={'up'}
+                        initialNumToRender={5} 
+                        dataSet={dropVals}
+                        ItemSeparatorComponent={<View style={{ height: 1, width: '100%', backgroundColor: '#787177' }} />}
+                        ChevronIconComponent={<Feather name="chevron-down" size={20} color="#000" />}
+                        suggestionsListMaxHeight={200}
+                        containerStyle={styles.dropButton3}
+                        inputContainerStyle={styles.dropButton2}
+                        suggestionsListContainerStyle={styles.dropDown2}
                     />
                 </ View>
             );
@@ -510,7 +507,6 @@ const DataInput = ({route, navigation}) => {
                         <View style={styles.container2}>
                         <Carousel
                             width={Dimensions.get('window').width}
-                            ref={ref}
                             height={220}
                             mode="parallax"
                             modeConfig={{
