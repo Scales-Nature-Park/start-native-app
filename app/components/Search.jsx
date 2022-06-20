@@ -238,7 +238,8 @@ const Search = ({route, navigation}) => {
             if (curr.key == tempFields[j].key) tempIndex = index;
         });
         
-        if (!dark.change && (tempIndex == -1 || tempSelections[tempIndex].displayed)) continue;
+        if (tempIndex == -1) continue;
+        if (!dark.change && tempSelections[tempIndex].displayed) continue;
                 
         // remove previous subfields related to that dropbox
         console.log('Removing previous subfields.');
@@ -246,6 +247,7 @@ const Search = ({route, navigation}) => {
         tempFields.splice(j + 1, tempSelections[tempIndex].prevFields);
 
         tempSelections[tempIndex].displayed = true;
+        tempSelections[tempIndex].prevFields = tempSelections[tempIndex].Subfields?.length || 1;
         selections.set(tempSelections);
 
         // display criteria with no subfields
@@ -312,7 +314,7 @@ const Search = ({route, navigation}) => {
                         Subfields = modfSearchFields[1].ConditionalCriteria.filter((elem) => elem.name == criteria[0]);
                         
                         Subfields = (Subfields.length > 0) ? Subfields[0].Subfields : undefined;
-                        selections.set([...selections.get(), {"key": compId, "value": criteria[0], "displayed": false, Subfields, prevFields: (Subfields) ? Subfields.length : 0}]);
+                        selections.set([...selections.get(), {"key": compId, "value": criteria[0], "displayed": false, Subfields, prevFields: (Subfields) ? Subfields.length : 1}]);
                     } 
                     // resetCriteriaDrops(resetCriteria(modfSearchFields));
                 }}>
