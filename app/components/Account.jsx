@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import styles from '../styles/LoginStyles';
+import styles from '../styles/AccountStyles';
 import { url } from '../utils/Storage';
 import { useNetInfo } from "@react-native-community/netinfo";
 import {
@@ -118,24 +118,24 @@ const Account = ({ route, navigation }) => {
             Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
             return;
         }
-
+        
+        // verify the account id exists 
         if (!accountId) {
             Alert.alert('ERROR', 'Failed to retrieve your account information. This can be due to a lost internet connection, please login and try again.');
             return;
         }
-
-        Alert.prompt('Enter Password');
-
-        // axios({
-        //     method: 'delete',
-        //     url: url + '/user/' + accountId,
-        // }).then((response) => {
-        //     Alert.alert('Success', 'Deleted your account successfully. Return to login page.');
-        //     navigation.navigate('Login');
-        // }).catch(function (error) {
-        //     Alert.alert('ERROR', error.response.data);
-        //     return;
-        // });
+        
+        // request account deletion
+        axios({
+            method: 'delete',
+            url: url + '/user/' + accountId,
+        }).then((response) => {
+            Alert.alert('Success', 'Deleted your account successfully. Return to login page.');
+            navigation.navigate('Login');
+        }).catch(function (error) {
+            Alert.alert('ERROR', error.response.data);
+            return;
+        });
     };
 
     return (
@@ -144,7 +144,7 @@ const Account = ({ route, navigation }) => {
         <ScrollView>
             {(username)  ?
             <View style={styles.container2}>
-                <Text>Hi {username},</Text>
+                <Text style={(dark) ? styles.hiDark : styles.hi}>Hi {username}!</Text>
             </View> : null}
 
             <View style={styles.container}>
@@ -154,6 +154,7 @@ const Account = ({ route, navigation }) => {
                         style={styles.TextInput}
                         placeholder="Current Password"
                         placeholderTextColor="#000000"
+                        secureTextEntry={true}
                         onChangeText={(text) => setCurrPass(text)}
                     />
                 </View>

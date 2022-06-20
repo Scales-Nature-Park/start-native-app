@@ -50,13 +50,14 @@ const Home = ({route, navigation}) => {
                 }}>
                     <Text style={styles.buttonText}>Saved Entries</Text>
                 </TouchableOpacity>
-
+                
+                {(route?.params?.onlineMode) ? 
                 <TouchableOpacity style= {styles.buttonView}
                 onPress= {() => {
                     navigation.navigate('Account', route.params);
                 }}>
                     <Text style={styles.buttonText}>Account</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> : null}
             </View>
         </SafeAreaView>
     );

@@ -213,7 +213,33 @@ app.put('/password/:userid', (req, res) => {
             return res.status(200).send('Successful update.');
         });
     } catch(err) {
-        console.log(err);
+        res.status(500).send(err);
+    }
+});
+
+
+/**
+ * Delete user endpoint that takes in a userid parameter and 
+ * deletes the matching account document from the credentials collection
+ * in our START-Project database. Returns a success message or an error
+ * message if the query fails or a user id isn't provided 
+ */
+app.delete('/user/:userid', (req, res) => {
+    const params = req.params;
+    if (!params.userid) return res.status(400).send('Failed to retrieve your user information');
+
+    try {
+        // load the credentials collection from the START-Project db
+        let db = client.db('START-Project');
+        let credentials = db.collection('credentials');
+        
+        // delete the first document that matches the passed in id (there is only 1)
+        credentials.deleteOne({_id: ObjectID(params.userid)}, (err, response) => {
+            if (err) return res.status(400).send(err.message);
+            if (!response?.deletedCount) return res.status(500).send('Could not perform delete operation. Please try again at a later time.');
+            return res.status(200).send('Successfully deleted your account.');
+        });
+    } catch (error) {
         res.status(500).send(err);
     }
 });
