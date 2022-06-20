@@ -5,6 +5,7 @@ import Signup from './components/Signup';
 import Home from './components/Home';
 import PrevEntries from './components/PrevEntries';
 import Search from './components/Search';
+import Account from './components/Account';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -30,6 +31,9 @@ const App = () => {
         </Stack.Screen>
 
         <Stack.Screen name='Search' component={Search} options={{title: 'Search'}}>
+        </Stack.Screen>
+
+        <Stack.Screen name='Account' component={Account} options={{title: 'Account'}}>
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

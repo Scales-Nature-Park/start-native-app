@@ -146,8 +146,75 @@ app.post('/signup', (req, res) => {
             return res.status(400).send(err);
         });
     } catch (error) {
-        console.log(error);
         return res.status(500).send(error);
+    }
+});
+
+/**
+ * Username endpoint that retrieves the username of an account 
+ * in the database with the same ID as the passed in userId parameter.
+ * It responds with the username if the database query is successful, or an 
+ * error otherwise. 
+ */
+app.get('/username/:userId', (req, res) => {
+    const params = req.params;
+    if(!params.userId) return res.status(404).send('No user ID was sepcified.');
+    
+    try {
+        // load the credentials collection from the START-Project db
+        let db = client.db('START-Project');
+        let credentials = db.collection('credentials');
+
+        // search for a credentials document using the passed in userid
+        credentials.find({_id: ObjectID(params.userId)}).toArray((err, searchRes) => {
+            if (err) return res.status(400).send(err.message);
+            
+            if (searchRes.length == 0) return res.status(404).send('Could not find a user with the specified ID.');
+            else return res.status(200).send(searchRes[0].username);
+        });
+    } catch(err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+});
+
+/**
+ * Password update endpoint that verifies the passed in credentials
+ * for the account with the passed in userid parameter, then 
+ * it updates the password of that account if the credentials are valid.
+ * It responds with a success message or an error message if any of the
+ * queries failed.
+ */
+app.put('/password/:userid', (req, res) => {
+    const params = {...req.params, ...req.query};
+    if (!params.userid || !params.currentPassword || !params.newPassword)
+    return res.status(404).send('Failed to retrieve your user information.');
+
+    try {
+        // load the credentials collection from the START-Project db
+        let db = client.db('START-Project');
+        let credentials = db.collection('credentials');
+
+        // search for a credentials document using the passed in userid
+        credentials.find({_id: ObjectID(params.userid)}).toArray((err, searchRes) => {
+            if (err) return res.status(400).send(err.message);
+            if (searchRes.length == 0) return res.status(404).send('Could not find a user with the specified ID.');
+            if (searchRes[0].password !== params.currentPassword) return res.status(403).send('Invalid current password.');
+        });
+        
+        // update the password now that we know the credentials are valid
+        credentials.updateOne({_id: ObjectID(params.userid)}, 
+        {
+            $set: {
+                password: params.newPassword
+            }
+        }, (err, response) => {
+            if (err) return res.status(400).send(err.message);
+            return res.status(200).send('Successful update.');
+        });
+    } catch(err) {
+        console.log(err);
+        res.status(500).send(err);
     }
 });
 
@@ -203,6 +270,7 @@ app.get('/image/:photoId', (req, res) => {
         // search an image document using the passed in photoid
         images.find({_id: ObjectID(params.photoId)}).toArray((err, searchRes) => {
             if (err) return res.status(400).send(err.message);
+            if (searchRes.length == 0) return res.status(404).send('Could not find an image with the specified ID.');
 
             // get the name of the file we're looking for and search for it in /uploads
             let name = searchRes[0].name;

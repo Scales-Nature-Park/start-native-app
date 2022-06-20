@@ -53,6 +53,7 @@ const Home = ({route, navigation}) => {
 
                 <TouchableOpacity style= {styles.buttonView}
                 onPress= {() => {
+                    navigation.navigate('Account', route.params);
                 }}>
                     <Text style={styles.buttonText}>Account</Text>
                 </TouchableOpacity>
