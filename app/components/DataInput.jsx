@@ -56,11 +56,11 @@ const DataInput = ({route, navigation}) => {
 
     const initialFields = (paramData && paramData.inputFields) ? [...paramData.inputFields] : []; 
         
-    const [currDay, setDay] = useState(day);
+    const [currDay, setDay] = useState('0'.repeat(2 - day.toString().length) + day);
     const [currMonth, setMonth] = useState(month);
     const [currYear, setYear] = useState(year);
-    const [hours, setHours] = useState(currHours);
-    const [mins, setMins] = useState(currMins);
+    const [hours, setHours] = useState('0'.repeat(2 - currHours.toString().length) + currHours);
+    const [mins, setMins] = useState('0'.repeat(2 - currMins.toString().length) + currMins);
 
     const [category, setCategory] = useState((paramData && paramData.category) ? paramData.category : 'Turtle');
     const [comment, setComment] = useState((paramData && paramData.comment) ? paramData.comment : '');
@@ -112,14 +112,20 @@ const DataInput = ({route, navigation}) => {
             }
         });
 
-        // validate date
+        // validate date and time
         if (currDay.toString().length !== 2 || isNaN(currDay)) {
             validStates = false;
             validityError = 'Day needs to be a number in DD format.';
         } else if (currYear.toString().length !== 4 || isNaN(currYear)) {
             validStates = false;
             validityError = 'Year needs to be a number in YYYY format.';
-        } 
+        } else if (hours.toString().length !== 2 || isNaN(hours)) {
+            validStates = false;
+            validityError = 'Hours need to be a number in HH 24 hour format.';
+        } else if (mins.toString().length !== 2 || isNaN(mins)) {
+            validStates = false;
+            validityError = 'Minutes need to be a number in MM format.';
+        }
         
         setValid(validStates);
     });
@@ -149,6 +155,7 @@ const DataInput = ({route, navigation}) => {
     };
 
     const SubmitData = async (second = undefined) => {
+        dropDownAlertRef.alertWithType('success', 'Success', 'Finish fetch data');
         // validate network connection
         if (!netInfo.isConnected) {
             Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
@@ -226,7 +233,7 @@ const DataInput = ({route, navigation}) => {
     }
 
     const changeState = (field, item) => {
-        if (!item) return; console.log(item);
+        if (!item) return; 
         let tempStates = states.slice();
         let tempIndex = -1;
         
@@ -291,8 +298,8 @@ const DataInput = ({route, navigation}) => {
                     <View style={styles.inputView}>
                         <TextInput
                         style={styles.TextInput}
-                        placeholder={'H'}
-                        defaultValue={currHours.toString()}
+                        placeholder={'HH'}
+                        defaultValue={hours.toString()}
                         placeholderTextColor='#000000'
                         onChangeText={(inHours) => {
                                 if (inHours.trim() == '') setHours(currHours);
@@ -307,8 +314,8 @@ const DataInput = ({route, navigation}) => {
                     <View style={styles.inputView}>
                         <TextInput
                         style={styles.TextInput}
-                        defaultValue={currMins.toString()}
-                        placeholder={'M'}
+                        defaultValue={mins.toString()}
+                        placeholder={'MM'}
                         placeholderTextColor='#000000'
                         onChangeText={(inMins) => {
                                 if (inMins.trim() == '') setMins(currMins);
@@ -360,7 +367,7 @@ const DataInput = ({route, navigation}) => {
             for (let i = 0; i < field.values.length; i++) {
                 dropVals.push({id: i.toString(), title: field.values[i]});
                 if (initValue?.value && field.values[i].toString().toLowerCase() == initValue.value.toString().toLowerCase()) initId = i;
-            } console.log(initId);
+            } 
             
             fields.push(
                 <View style={styles.container1}>
