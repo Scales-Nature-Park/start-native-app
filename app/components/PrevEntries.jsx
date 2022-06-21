@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import useSyncState from '../utils/SyncState';
 import storage from '../utils/Storage';
 import Entry from './Entry';
@@ -17,7 +17,7 @@ const PrevEntries = ({route, navigation}) => {
   const entryElems = useSyncState([]);
   const [dark, setDark] = useState(true);
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
       navigation.setOptions({
         headerRight: () => (
           <TouchableOpacity onPress= {() => setDark(!dark)}>

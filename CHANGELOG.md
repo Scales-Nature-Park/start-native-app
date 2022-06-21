@@ -4,6 +4,21 @@ changes, please include a short explanation of what your changes are trying to a
 with the rest of the codebase and/or how to run and build up on them. You can treat this file as a more in depth
 commit log and place your changes over the previous changes, below this message.
 
+## Bug Fix
+#### Changes:
+Issue [#4](https://github.com/Scales-Nature-Park/start-native-app/issues/4) seemed to be resolved when you select something from the last dropdown in the search screen. From what I understand, the selections state had different values when accessed from different dropdown's onSelect function, so the current solution is to call the most recent onSelect to update the selections state making it include all dropdowns. 
+- Used refs to programmatically select the last dropdown before a new criteria is added and after any other dropdowns were selected.
+- This fixes the issue for now but further work may be needed on this in the future.
+
+## Account Screen
+#### Changes: 
+- Created an account screen that can only be accessed in online mode.
+- Added an update password feature and delet account feature in the account screen.
+- Created backend support for both features.
+
+#### Known Issues: 
+- Reopend issue [#4](https://github.com/Scales-Nature-Park/start-native-app/issues/4)
+
 ## Network Checks & Seperate Styles
 #### Changes:
 - Added network errors if a user attempts to perform server requests while disconnected from the internet.

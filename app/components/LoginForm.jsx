@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import axios from 'axios';
 import styles from '../styles/LoginStyles';
 import storage, { url } from '../utils/Storage';
@@ -22,7 +22,7 @@ const LoginForm = ({ navigation }) => {
     const [dark, setDark] = useState(true);
     const netInfo = useNetInfo();
 
-    React.useLayoutEffect(() => {
+    useLayoutEffect(() => {
         navigation.setOptions({
           headerRight: () => (
             <TouchableOpacity onPress= {() => setDark(!dark)}>

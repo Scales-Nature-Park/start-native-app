@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect, useRef } from 'react';
 import ModalDropdown from 'react-native-modal-dropdown';
 import uuid from 'react-native-uuid';
 import Entry from './Entry';
@@ -28,6 +28,7 @@ function ArrayEquals (array1, array2) {
 
 const Search = ({route, navigation}) => {
     const netInfo = useNetInfo();
+    const ref = useRef(null);
     const states = useSyncState([]);
     const criteriaElements = useSyncState([]);
     const selections = useSyncState([]);
@@ -36,7 +37,7 @@ const Search = ({route, navigation}) => {
     const [criteria, setCriteria] = useState([]);
     const [dark, setDark] = useState({value: true, change: false});
 
-    React.useLayoutEffect(() => {
+    useLayoutEffect(() => {
         navigation.setOptions({
           headerRight: () => (
             <TouchableOpacity onPress= {() => setDark({value: !dark.value, change: true})}>
@@ -191,6 +192,8 @@ const Search = ({route, navigation}) => {
             }
         }
         selections.set(tempSelections);
+        if (compId && ref?.current?._reactInternals?.alternate?.key && compId != ref?.current?._reactInternals?.alternate?.key) 
+            ref?.current?.props?.onSelect(0, ref.current.state.buttonText);
         // resetCriteriaDrops(resetCriteria(modfSearchFields));
     }
 
@@ -226,7 +229,7 @@ const Search = ({route, navigation}) => {
     
     // loop through all dropdowns and display their conditional subfields
     let tempFields = criteriaElements.get().slice();
-    for (let j = 0; j < tempFields.length; j++) {     
+    for (let j = 0; j < tempFields.length; j++) {    
         // skip subField elements by checking their keys
         if (!tempFields[j].key) continue;
 
@@ -265,7 +268,10 @@ const Search = ({route, navigation}) => {
     if (!ArrayEquals(tempFields, criteriaElements.get()) || dark.change) criteriaElements.set(tempFields);
 
     resetCriteria(modfSearchFields);
-    if (dark.change) setDark({value: dark.value, change: false});
+    if (dark.change) {
+        ref?.current?.props?.onSelect(0, ref.current.state.buttonText);
+        setDark({value: dark.value, change: false});
+    }
         
     return (
         <SafeAreaView style={(dark.value) ? styles.safeAreaDark : styles.safeArea}>
@@ -282,6 +288,7 @@ const Search = ({route, navigation}) => {
             <View style={styles.container}>
                 <TouchableOpacity style={styles.addCriteria}
                 onPress={() => {
+                    ref?.current?.props?.onSelect(0, ref.current.state.buttonText);
                     if (criteria.length == 0) return;
 
                     let compId = uuid.v4();
@@ -290,6 +297,7 @@ const Search = ({route, navigation}) => {
                             ...criteriaElements.get(),
                             <ModalDropdown 
                                 key={compId}
+                                ref={ref}
                                 options={criteria}
                                 showsVerticalScrollIndicator={true}
                                 textStyle={styles.dropText}
@@ -306,16 +314,14 @@ const Search = ({route, navigation}) => {
                     );
                     
                     // add new selection and Subfields to be displayed next render
-                    if (selections.get().length <= criteriaElements.get().length) {
-                        console.log('Setting selections of dropdowns.');
+                    console.log('Setting selections of dropdowns.');
 
-                        let Subfields = modfSearchFields[0].ConditionalCriteria.filter((elem) => elem.name == criteria[0]);
-                        if (Subfields.length == 0 && modfSearchFields[1].length > 0)
-                        Subfields = modfSearchFields[1].ConditionalCriteria.filter((elem) => elem.name == criteria[0]);
-                        
-                        Subfields = (Subfields.length > 0) ? Subfields[0].Subfields : undefined;
-                        selections.set([...selections.get(), {"key": compId, "value": criteria[0], "displayed": false, Subfields, prevFields: (Subfields) ? Subfields.length : 1}]);
-                    } 
+                    let Subfields = modfSearchFields[0].ConditionalCriteria.filter((elem) => elem.name == criteria[0]);
+                    if (Subfields.length == 0 && modfSearchFields[1].length > 0)
+                    Subfields = modfSearchFields[1].ConditionalCriteria.filter((elem) => elem.name == criteria[0]);
+                    
+                    Subfields = (Subfields.length > 0) ? Subfields[0].Subfields : undefined;
+                    selections.set([...selections.get(), {"key": compId, "value": criteria[0], "displayed": false, Subfields, prevFields: (Subfields) ? Subfields.length : 1}]);
                     // resetCriteriaDrops(resetCriteria(modfSearchFields));
                 }}>
                     <Text style={styles.emptyText}>ADD CRITERIA</Text>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import styles from '../styles/HomeStyles';
 import {
     Text,
@@ -12,7 +12,7 @@ const Home = ({route, navigation}) => {
     let id = (route && route.params && route.params.id) ? route.params.id : '';
     const [dark, setDark] = useState(true);
 
-    React.useLayoutEffect(() => {
+    useLayoutEffect(() => {
         navigation.setOptions({
           headerRight: () => (
             <TouchableOpacity onPress= {() => setDark(!dark)}>

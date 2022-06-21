@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import axios from 'axios';
 import styles from '../styles/AccountStyles';
 import { url } from '../utils/Storage';
@@ -24,7 +24,7 @@ const Account = ({ route, navigation }) => {
     const netInfo = useNetInfo();
     const accountId = route?.params?.id;
 
-    React.useLayoutEffect(() => {
+    useLayoutEffect(() => {
         navigation.setOptions({
           headerRight: () => (
             <TouchableOpacity onPress= {() => setDark(!dark)}>

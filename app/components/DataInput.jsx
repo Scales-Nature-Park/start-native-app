@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import axios from 'axios';
 import storage, { url } from '../utils/Storage';
 import Carousel from 'react-native-reanimated-carousel';
@@ -71,7 +71,7 @@ const DataInput = ({route, navigation}) => {
     const [progress, setProgress] = useState({display: false, progress: 0});
     const netInfo = useNetInfo();
 
-    React.useLayoutEffect(() => {
+    useLayoutEffect(() => {
         navigation.setOptions({
           headerRight: () => (
             <TouchableOpacity onPress= {() => setDark(!dark)}>
@@ -155,7 +155,6 @@ const DataInput = ({route, navigation}) => {
     };
 
     const SubmitData = async (second = undefined) => {
-        dropDownAlertRef.alertWithType('success', 'Success', 'Finish fetch data');
         // validate network connection
         if (!netInfo.isConnected) {
             Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');

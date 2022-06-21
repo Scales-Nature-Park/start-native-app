@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import axios from 'axios';
 import styles from '../styles/SignupStyles';
 import { useNetInfo } from "@react-native-community/netinfo";
@@ -22,7 +22,7 @@ const Signup = ({ navigation }) => {
     const [dark, setDark] = useState(true);
     const netInfo = useNetInfo();
 
-    React.useLayoutEffect(() => {
+    useLayoutEffect(() => {
         navigation.setOptions({
           headerRight: () => (
             <TouchableOpacity onPress= {() => setDark(!dark)}>
@@ -67,9 +67,8 @@ const Signup = ({ navigation }) => {
           "password": password
         }
       }).then((response) => {
-        console.log(response.status);
         navigation.navigate('Login');
-      }).catch(function (error) {
+      }).catch((error) => {
         Alert.alert('ERROR', error.response.data);
         return;
       });
