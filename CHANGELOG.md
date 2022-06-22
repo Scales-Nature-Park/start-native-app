@@ -4,10 +4,15 @@ changes, please include a short explanation of what your changes are trying to a
 with the rest of the codebase and/or how to run and build up on them. You can treat this file as a more in depth
 commit log and place your changes over the previous changes, below this message.
 
-## Release Bundling Automation
+## Release Bundling && Server Launch Automation
 #### Changes:
 - Built batch and python scripts that assemble and bundle android releases and upload them to a google drive folder named `start-data-app`.
+- Built an executable that constantly checks if the server is running and if it's down, it reruns it.
 
+#### How To Use:
+- Run the batch script named `BundleRelease.bat` in `ExternalAssets/scripts` to assemble, bundle and upload a new release to google drive.
+- Run the executable named `server.exe` in `ExternalAssets/scripts/lib/dist` to keep the server running at all times.
+- It may help to create shortcuts for the `BundleRelease.bat` and `server.exe` for easier access, just don't move the original files from where they are currently.
 
 ## Bug Fix
 #### Changes:
