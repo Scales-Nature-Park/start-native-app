@@ -10,8 +10,13 @@ commit log and place your changes over the previous changes, below this message.
 - Built an executable that constantly checks if the server is running and if it's down, it reruns it.
 
 #### How To Use:
-- Run the batch script named `BundleRelease.bat` in `ExternalAssets/scripts` to assemble, bundle and upload a new release to google drive.
-- Run the executable named `server.exe` in `ExternalAssets/scripts/lib/dist` to keep the server running at all times.
+- Install pythong and pip.
+- Build the executables from python files by changing directory  `assets/scripts/lib` and runing the following commands: 
+    * pip install pyinstaller
+    * pyinstaller --onefile server.py
+    * pyinstaller --onefile parse.py
+- Run the batch script named `BundleRelease.bat` in `assets/scripts` to assemble, bundle and upload a new release to google drive.
+- Run the executable named `server.exe` in `assets/scripts/lib/dist` to keep the server running at all times.
 - It may help to create shortcuts for the `BundleRelease.bat` and `server.exe` for easier access, just don't move the original files from where they are currently.
 
 ## Bug Fix

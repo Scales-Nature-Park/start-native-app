@@ -20,11 +20,6 @@ const uri = process.env.MONGODB;
 const client = new MongoClient(uri);
 const port = process.env.PORT || 5000;
 
-// write pid to a file to help keep track of server process
-fs.writeFile("../ExternalAssets/scripts/server.txt", process.pid.toString(), (err) => {
-    if (err) return console.log(err);
-}); 
-
 /**
  * Async function that attempts connecting to the database.
  */
