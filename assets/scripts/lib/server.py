@@ -31,7 +31,7 @@ while (1):
     except Exception as err:
         # Exception means server is down, attempt to releanch it
         print('Server not running. Launching server...')
-        subprocess.Popen([batchScript])
+        subprocess.Popen(batchScript, creationflags=subprocess.CREATE_NEW_CONSOLE)
 
     # Wait 5 seconds till the next check
     time.sleep(5)         

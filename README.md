@@ -9,7 +9,7 @@ A MERN based full stack mobile application for START project data entry.
 - Search functionality based on category and other criteria specified in a json file [`search.json`](##searchjson-format) where fields can be added or removed without any modification to the codebase. 
 
 ## Components
-![Project Chart](./ExternalAssets/projectchart.jpg "Project Chart")
+![Project Chart](./assets/images/projectchart.jpg)
 - React-native based front-end user interface, making axios calls to the server on user data entry submissions and searches. Check [app readme](./app/README.md) for more information.
 - Local Mongo Database storing collections of user login credentials, reptile information and images.
 - Node.js server with express.js endpoints querying the database and responding to the axios calls made by the react-native app. Check [server readme](./server/README.md) for more information.
