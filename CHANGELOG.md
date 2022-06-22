@@ -4,6 +4,11 @@ changes, please include a short explanation of what your changes are trying to a
 with the rest of the codebase and/or how to run and build up on them. You can treat this file as a more in depth
 commit log and place your changes over the previous changes, below this message.
 
+## Release Bundling Automation
+#### Changes:
+- Built batch and python scripts that assemble and bundle android releases and upload them to a google drive folder named `start-data-app`.
+
+
 ## Bug Fix
 #### Changes:
 Issue [#4](https://github.com/Scales-Nature-Park/start-native-app/issues/4) seemed to be resolved when you select something from the last dropdown in the search screen. From what I understand, the selections state had different values when accessed from different dropdown's onSelect function, so the current solution is to call the most recent onSelect to update the selections state making it include all dropdowns. 
