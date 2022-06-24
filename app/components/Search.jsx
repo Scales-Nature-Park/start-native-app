@@ -66,7 +66,7 @@ const Search = ({route, navigation}) => {
                         dropdownTextStyle={styles.dropText}
                         dropdownStyle={styles.dropDown}
                         dropdownTextHighlightStyle={styles.dropText}
-                        defaultValue={field.values[0]}
+                        defaultValue={(states.get().filter((state) => state.name == field.name)?.length > 0) ? states.get().filter((state) => state.name == field.name)[0].value : field.values[0]}
                         onSelect={(myVal) => {
                             let tempStates = states.get().slice();
                             let tempIndex = -1;
@@ -97,6 +97,7 @@ const Search = ({route, navigation}) => {
                             style={styles.TextInput}
                             placeholder={'Enter ' + field.name}
                             placeholderTextColor='#000000'
+                            defaultValue={(states.get().filter((state) => state.name == field.name)?.length > 0) ? states.get().filter((state) => state.name == field.name)[0].value : ''}
                             onChangeText={(value) => {
                                 let tempStates = states.get().slice();
                                 let tempIndex = -1;
