@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const url = 'http://10.0.0.227:5000';
+const url = 'http://localhost:5000';
 
 function useSyncState(init) {
    const [state, setState] = useState(init);
