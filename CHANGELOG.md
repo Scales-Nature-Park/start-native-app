@@ -4,6 +4,12 @@ changes, please include a short explanation of what your changes are trying to a
 with the rest of the codebase and/or how to run and build up on them. You can treat this file as a more in depth
 commit log and place your changes over the previous changes, below this message.
 
+## Admin App Dashboard Init
+#### Changes: 
+- Fixed [issue #5](https://github.com/Scales-Nature-Park/start-native-app/issues/5).
+- Created initial design of the dashboard.
+- Implemented display of recent entries submitted to the server and stored in the database.
+
 ## Release Bundling && Server Launch Automation
 #### Changes:
 - Built batch and python scripts that assemble and bundle android releases and upload them to a google drive folder named `start-data-app`.

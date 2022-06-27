@@ -13,12 +13,14 @@ import {
     Alert,
 } from 'react-native';
 
-const LoginForm = ({ setScreen }) => {
+const LoginForm = ({ params, setScreen }) => {
     const [username, setUser] = useState('');
     const [password, setPassword] = useState('');
     const [id, setID] = useState('');
 
     const AuthenticateCredentials = () => {
+      setScreen({val: 'Dashboard', params: {username, id}});
+
       axios({
         method: 'get',
         url: url + '/admin-signin',
@@ -27,7 +29,7 @@ const LoginForm = ({ setScreen }) => {
           "password": password
         }
       }).then((response) => {
-        setScreen('Dashboard');
+        setScreen({val: 'Dashboard', params: {username, id}});
       }).catch(function (error) {
         Alert.alert('ERROR', error.response.data);
         console.log(error);

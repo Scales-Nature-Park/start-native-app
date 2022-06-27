@@ -10,5 +10,7 @@
 	"beige1": "#F0CAA4",
     "Peach": "#F7997D",
     "BlueRacer": "#759F98",
-    "blandingsTurtle1": "#EBBF2B"
+    "blandingsTurtle1": "#EBBF2B",
+	"background": "#161e2b", 
+	"secondaryBackground": "#2c3a52"
 }

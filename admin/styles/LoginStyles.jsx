@@ -5,7 +5,7 @@ const scalesColors = require('../utils/colors.json');
 const styles = StyleSheet.create({
     safeArea: {
       flex: 1,
-      backgroundColor: '#fff',    
+      backgroundColor: scalesColors.background,    
       paddingTop: StatusBar.currentHeight * 70 / 100,
       paddingBottom: StatusBar.currentHeight * 70 / 100,
     },
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     },
 
     headText: {
-      color: '#000000',
+      color: '#fff',
       fontWeight: 'bold',
       textAlign: 'center',
       fontSize: 30,
