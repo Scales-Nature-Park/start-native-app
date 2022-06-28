@@ -31,14 +31,17 @@ const styles = StyleSheet.create({
     },
 
     mainContainer: {
-      flex: 1,
       width: '70%',
       marginLeft: '1.5%',
       height: '100%',
-      flexDirection:'row',
       borderRadius: 10,
       alignSelf: 'flex-start',
+    },
+
+    entryCountContainer: {
+      flexDirection:'row',
       justifyContent: 'space-evenly', 
+      height: '20%',
     },
 
     recentsContainer: {
@@ -53,11 +56,10 @@ const styles = StyleSheet.create({
     },
 
     recentActivity: {
-      marginTop: 10,
       borderRadius: 10,
       backgroundColor: scalesColors.secondaryBackground,
       width: '30%',
-      height: '20%',
+      height: '100%',
       minHeight: 120
     },
 
@@ -106,7 +108,50 @@ const styles = StyleSheet.create({
       marginLeft: '5%',
       width: '50%',
       height: '90%'
-    }
+    },
+
+    margin: {
+      marginTop: 30
+    },
+
+    accountContainer: {
+      borderRadius: 10,
+      marginTop: 7,
+      backgroundColor: scalesColors.secondaryBackground,
+      width: '95%',
+      alignSelf: 'center',
+      height: '10%',
+      justifyContent: 'center',
+    },
+
+    accountContent: {
+      flexDirection: 'row',
+      justifyContent: 'space-evenly',
+    },
+
+    accountName: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '40%'
+    },
+
+    updateButton: {
+      backgroundColor: '#f58442',
+      height: '100%',
+      width: '25%',
+      borderRadius: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    
+    deleteButton: {
+      backgroundColor: '#850d23',
+      height: '100%',
+      width: '25%',
+      borderRadius: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
 });
 
 export default styles;
