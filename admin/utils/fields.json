@@ -1,1 +1,2028 @@
-[]
+[
+    {
+        "Category": "All",
+        "conditionalFields": [
+            {
+                "name": "date"
+            },
+            {
+                "name": "time"
+            },
+            {
+                "name": "Initials",
+                "dropDown": true,
+                "values": [
+                    "ABC",
+                    "ACV",
+                    "ANL",
+                    "ARL",
+                    "AVB",
+                    "AWD",
+                    "BPM",
+                    "CJH",
+                    "CSH",
+                    "DKB",
+                    "DRW",
+                    "EAZ",
+                    "ELO",
+                    "ENT",
+                    "ESA",
+                    "ETU",
+                    "GEC",
+                    "HJH",
+                    "IFS",
+                    "IRS",
+                    "JAK",
+                    "JAR",
+                    "JAZ",
+                    "JBM",
+                    "JUL",
+                    "JUS",
+                    "KAM",
+                    "KCD",
+                    "KEC",
+                    "KGM",
+                    "KLR",
+                    "KVW",
+                    "LAS",
+                    "LMM",
+                    "MEB",
+                    "MFM",
+                    "MHB",
+                    "MHL",
+                    "MWX",
+                    "NAN",
+                    "NAT",
+                    "NMH",
+                    "RMI",
+                    "SED",
+                    "SES",
+                    "SIB",
+                    "SKF",
+                    "SMM",
+                    "STB",
+                    "TAK",
+                    "TDH",
+                    "TMM",
+                    "TSG",
+                    "ZOO",
+                    "OTHER"
+                ],
+                "conditionalFields": [
+                    {
+                        "condition": "OTHER",
+                        "name": "Other Initials",
+                        "dropDown": false 
+                    }
+                ]
+            },
+            {
+                "name": "Phone Location",
+                "dropDown": true,
+                "values": [
+                    "Phone 1",
+                    "Phone 2",
+                    "Phone 3",
+                    "Phone 4",
+                    "Phone 5",
+                    "Phone 6",
+                    "Phone 7",
+                    "Phone 8",
+                    "Phone 9",
+                    "Phone 10",
+                    "Phone 11",
+                    "Phone 12",
+                    "Phone 13",
+                    "Phone 14",
+                    "Phone 15",
+                    "Phone 16",
+                    "Phone 17",
+                    "Phone 18",
+                    "Phone 19",
+                    "Phone 20",
+                    "Tablet 1",
+                    "Tablet 2",
+                    "Tablet 3",
+                    "Tablet 4",
+                    "Tablet 5",
+                    "Tablet 6",
+                    "Tablet 7",
+                    "Tablet 8",
+                    "Tablet 9",
+                    "Tablet 10",
+                    "Tablet 11",
+                    "Tablet 12",
+                    "Jeff Personal",
+                    "Personal",
+                    "Other"
+                ],
+                "conditionalFields": [
+                    {
+                        "condition": "Other",
+                        "name": "Other Phone Location",
+                        "dropDown": false 
+                    }
+                ]
+            },
+            {
+                "name": "Latitude",
+                "dropDown": false,
+                "dataValidation":  {
+                    "isNumber": true,
+                    "arguments": "input",
+                    "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 41 &&  input <= 46) ? true : false;",
+                    "error": "Latitude needs to be a number between 41 and 46."
+                }
+            }, 
+            {
+                "name": "Longitude",
+                "dropDown": false,
+                "dataValidation":  {
+                    "isNumber": true,
+                    "arguments": "input",
+                    "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= -84 &&  input <= -75) ? true : false;",
+                    "error": "Longitude needs to be a number between -84 and -75."
+                }
+            },
+            {
+                "name": "Project",
+                "dropDown": true,
+                "values": ["Pembroke", "Pelee", "Long Point", "START/CARES", "OTHER"]
+            },
+            {
+                "name": "On Road",
+                "dropDown": true,
+                "values": ["No", "Yes, on road", "Yes, on shoulder"]
+            },
+            {
+                "name": "Walking Survey",
+                "dropDown": true,
+                "values": [
+                    "Bala - Camp Jackson",
+                    "Bala - Clear Lake",
+                    "Bala - Hwy 169",
+                    "Bala - Southwood",
+                    "Barkway - Barkway",
+                    "Barkway - Doe Lake",
+                    "Barkway - Frank Cooper",
+                    "Barkway - Lewisham",
+                    "CARES - Cranberry ",
+                    "CARES - Torpitt",
+                    "CARES - Torrance 1",
+                    "CARES - Torrance 2",
+                    "CARES - Upper Big, Chute 1",
+                    "CARES - Upper Big, Chute 2",
+                    "Ramara - Concession 7",
+                    "Ramara - County Rd 169",
+                    "Ramara - Lake Dalrymple",
+                    "Ramara - Monck",
+                    "Severn - Hwy 12",
+                    "Severn - Line 15",
+                    "Severn - Upper Big Chute",
+                    "NO"
+                ]
+            },
+            {
+                "name": "Road Name",
+                "dropDown": true,
+                "values": [
+                    "12 MILE BAY RD",
+                    "3RD LINE",
+                    "4TH AVE",
+                    "6 MILE CHANNEL RD",
+                    "9 MILE LAKE RD",
+                    "ACORN LANE",
+                    "AGNEW RD",
+                    "AIRPORT RD",
+                    "ALL SEASONS CRT",
+                    "ALMA ST",
+                    "ALMAGUIN DR",
+                    "ALVAR RD",
+                    "AMILIA DR",
+                    "ANCHOR DR",
+                    "APPIAN WAY",
+                    "ASH DR",
+                    "ASPDIN RD",
+                    "ATHERLEY RD",
+                    "ATLANTIS DR",
+                    "AUSTIN DR",
+                    "AXE LAKE RD",
+                    "BAKER LANE",
+                    "BALDWIN LANE",
+                    "BALKWILL LINE",
+                    "BALMER RD",
+                    "BALSAM LAKE DR",
+                    "BARKWAY RD",
+                    "BARLOCHAN RD",
+                    "BASS LAKE SIDERD E",
+                    "BAYOU RD",
+                    "BAYSHORE BLVD",
+                    "BAYSHORE DR",
+                    "BAYVIEW RD",
+                    "BEAR CAVE RD",
+                    "BEARD FARM TRAIL",
+                    "BEATRICE TOWNLINE RD",
+                    "BEAUMONT DR",
+                    "BEAVER MEADOW RD",
+                    "BEAVER RIDGE ESTATE",
+                    "BEAVER RIDGE RD",
+                    "BEDFORD LANE",
+                    "BEIERS RD",
+                    "BENZINGER RD",
+                    "BERGIE CRES",
+                    "BETHUNE DR N",
+                    "BIG BAY POINT RD",
+                    "BIRD HAVEN WAY",
+                    "BLACK RIVER RD",
+                    "BLACKFLY BLVD",
+                    "BLACKMORE RD",
+                    "BLACKSTONE CRANE LAKE RD",
+                    "BLACKWATER RD",
+                    "BLUEBERRY TRAIL",
+                    "BLUEBIRD ST",
+                    "BOBCAYGEON RD",
+                    "BONNIE LAKE RD",
+                    "BOYCE RD",
+                    "BRACKENRIG RD",
+                    "BRADY DR",
+                    "BRECHIN RD",
+                    "BRIDGE ST",
+                    "BRITANNIA RD",
+                    "BROCK ST",
+                    "BROOKS LANE",
+                    "BROWNS WAY",
+                    "BRUNEL RD",
+                    "BRYDONS BAY RD",
+                    "BUCKHORN RD",
+                    "BURGESS RD",
+                    "BURNSIDE LINE",
+                    "BUTTER & EGG RD",
+                    "CAMBRIAN RD",
+                    "CAMERON DR",
+                    "CAMP JACKSON RD",
+                    "CAMPBELLS RD",
+                    "CANAL RD",
+                    "CANNING RD",
+                    "CARLINGFORD RD",
+                    "CARLYON LINE",
+                    "CAROL ST",
+                    "CARRICK TRAIL",
+                    "CEDAR ISLAND RD",
+                    "CEDAR LANE",
+                    "CENTENNIAL PARK RD",
+                    "CHAMPLAIN RD",
+                    "CHICKADEE LANE",
+                    "CHISHOLM TRAIL",
+                    "CHURCH HILL RD",
+                    "CLEAR LAKE RD",
+                    "COLDWATER RD",
+                    "CON RD 11",
+                    "CON RD 12",
+                    "CON RD 13",
+                    "CON RD 5",
+                    "CON RD 7",
+                    "CON RD 8",
+                    "CON RD 9",
+                    "CON RD H I",
+                    "CON RD M N",
+                    "CONC 3 W",
+                    "CONSERVATION RD",
+                    "COOPERS FALLS RD",
+                    "COUNTY RD 121",
+                    "COUNTY RD 16",
+                    "COUNTY RD 169",
+                    "COUNTY RD 21",
+                    "COUNTY RD 36",
+                    "COUNTY RD 46",
+                    "COUNTY RD 48",
+                    "COUNTY RD 49",
+                    "COUNTY RD 503",
+                    "COUNTY RD 504",
+                    "COUNTY RD 507",
+                    "COURTLAND ST",
+                    "COWBELL LANE",
+                    "COWIES RD",
+                    "CRAIG RD",
+                    "CRANBERRY RD",
+                    "CROCKFORD RD",
+                    "CRONK SIDERD",
+                    "CROOKED BAY RD",
+                    "CUNNINGHAM CRES",
+                    "DAM LANE",
+                    "DAVIS LAKE RD",
+                    "DAVY DR",
+                    "DAWSON RD",
+                    "DEEP BAY RD",
+                    "DEERFLY DR",
+                    "DEVALADARES RD",
+                    "DEVLIN DR",
+                    "DIGBY LAXTON BOUNDARY RD",
+                    "DIVISION RD E",
+                    "DOE LAKE RD",
+                    "DOHERTY RD",
+                    "DOMTAR RD",
+                    "DONALD CARRICK LANE",
+                    "DONER DR",
+                    "DRINKWATER DR",
+                    "DRURY LANE S2",
+                    "DUCK BAY RD",
+                    "DUCK LAKE RD",
+                    "DUNSMORE LANE",
+                    "E BAY RD",
+                    "E RIVER RD",
+                    "ECHO LAKE RD",
+                    "ELANA DR",
+                    "ELLEN ST",
+                    "ELZNER RD",
+                    "ESSONVILLE LINE",
+                    "EUROPE LANE",
+                    "EVELEIGH RD",
+                    "EWART ST",
+                    "FAIRGROUNDS RD",
+                    "FAIRY FALLS RD",
+                    "FALKENBURG RD",
+                    "FAWCETT RD",
+                    "FENEL RD",
+                    "FERN RESORT RD",
+                    "FERNDALE RD",
+                    "FESSERTON SIDERD",
+                    "FIRE ACCESS RD",
+                    "FITZGERALD LANE",
+                    "FLOS ROAD 4 W",
+                    "FORBES RD",
+                    "FOREMAN RD",
+                    "FOREST AVE S",
+                    "FORESTVIEW RD",
+                    "FOX POINT RD",
+                    "FR 130",
+                    "FR 20G",
+                    "FR 298",
+                    "FR 6C",
+                    "FR 79",
+                    "FR 80",
+                    "FR 8A",
+                    "FR A3",
+                    "FR C1",
+                    "FRANK COOPER TRAIL",
+                    "FRANKLAND LANE",
+                    "FRASERBURG RD",
+                    "GAGNON RD",
+                    "GALWAY RD",
+                    "GARTERSNAKE LAKE RD",
+                    "GATEWAY DR",
+                    "GELERT RD",
+                    "GEORGE JOHNSTON RD",
+                    "GEORGIAN BAY RD",
+                    "GERMANIA RD",
+                    "GERVAIS RD",
+                    "GILBERT LANE",
+                    "GILFORD RD",
+                    "GLAMORGAN RD",
+                    "GLEN ELLEN DR",
+                    "GLENREST DR",
+                    "GO HOME LAKE RD",
+                    "GOLDEN BEACH RD",
+                    "GOLDSTEIN RD",
+                    "GOLF COURSE RD",
+                    "GOOSE BAY LANE",
+                    "GORDON BAY RD",
+                    "GORDON ST",
+                    "GRAHAM RD",
+                    "GRAVENHURST PKY",
+                    "GREEN LANE",
+                    "GREEN RIVER DR",
+                    "HALEWAY DR",
+                    "HALIBURTON LAKE RD",
+                    "HAMPSHIRE MILLS LINE",
+                    "HAPPY VALE DR",
+                    "HARDIES RD",
+                    "HARDY LAKE RD",
+                    "HARRISON RD",
+                    "HARRYS LANE",
+                    "HARTLEY RD",
+                    "HASKETTS DR",
+                    "HEALY LAKE RD",
+                    "HENDERSONS RD",
+                    "HIGH ST",
+                    "HILLS RD",
+                    "HODGSON DR",
+                    "HOLLOWAY LANE",
+                    "HONEY HARBOUR RD",
+                    "HORSESHOE LAKE RD",
+                    "HOUSEYS RAPIDS RD",
+                    "HOWLYN PINES TRAIL",
+                    "HUNGRY BAY RD",
+                    "HUNT CLUB RD",
+                    "HURDVILLE RD",
+                    "HURONIA RD",
+                    "HWY 11",
+                    "HWY 11 & 12",
+                    "HWY 400",
+                    "HWY 400 & 12",
+                    "HWY 400 & 69",
+                    "HWY 510",
+                    "HWY 518",
+                    "HWY 518 W",
+                    "HWY 522",
+                    "HWY 526",
+                    "HWY 529",
+                    "HWY 559",
+                    "HWY 632",
+                    "HWY 69",
+                    "IB O RAIL TRAIL",
+                    "INNISFIL BEACH RD",
+                    "IRETON ST",
+                    "IRISH LINE",
+                    "IROQUOIS RD",
+                    "ISLAND VIEW ST",
+                    "JAMES ST",
+                    "JAMES ST W",
+                    "JANES LANE",
+                    "JERMEY RD",
+                    "JIM WOOD LANE",
+                    "JOE RIVER RD",
+                    "JOHN MOON RD",
+                    "JONES RD",
+                    "JOSEPH ST",
+                    "JOY RD",
+                    "JUDDHAVEN RD",
+                    "JUNEAU RD",
+                    "KASHAGAWIGAMOG LAKE RD",
+                    "KAWAGAMA LAKE RD",
+                    "KC DAM RD",
+                    "KEELER RD",
+                    "KETT RD",
+                    "KILWORTHY RD",
+                    "KINGS RIVER RD",
+                    "KINNEAR SIDERD",
+                    "KIRK LINE E",
+                    "KIRKFIELD RD",
+                    "KITCHEN SIDERD",
+                    "LAIDLAW AVE",
+                    "LAKE DALRYMPLE RD",
+                    "LAKEHURST RD",
+                    "LANTERN BAY FERN BROOK",
+                    "LANTERN CRT",
+                    "LARROGER RD",
+                    "LAWSON LANE",
+                    "LAWSON LINE",
+                    "LAYCOX RD",
+                    "LEDUC LANE",
+                    "LEONARD LAKE 2 RD",
+                    "LEWISHAM RD",
+                    "LIDDARD ST",
+                    "LIGHTHOUSE CRES",
+                    "LIMBERLOST RD",
+                    "LINE 10 N",
+                    "LINE 11 N",
+                    "LINE 12 N",
+                    "LINE 14 N",
+                    "LINE 15 N",
+                    "LINE 15 S",
+                    "LINE 2 N",
+                    "LINE 5",
+                    "LINE 5 N",
+                    "LINE 6 N",
+                    "LINE 7 N",
+                    "LINE 7 S",
+                    "LINE 8 N",
+                    "LK JOSEPH RD",
+                    "LOG CABIN LANE",
+                    "LONG POINT DR",
+                    "LONG POINT RD",
+                    "LONGS LAKE RD",
+                    "LOON LAKE RD",
+                    "LOON LAKE ROAD N4",
+                    "LOOP RD",
+                    "LORNE RD",
+                    "LOST CHANNEL RD",
+                    "LUMBER RD",
+                    "MACHAR STRONG BOUNDARY RD W",
+                    "MACISAAC DR",
+                    "MANITOBA ST",
+                    "MANSON LANE",
+                    "MARGARET ST",
+                    "MARY LOU ST",
+                    "MATTHIASVILLE RD",
+                    "MAYHEW RD",
+                    "MCARTHUR SIDERD",
+                    "MCCANS RD",
+                    "MCCOMB POINT DR",
+                    "MCCRACKENS LANE",
+                    "MCDEVITT TRAIL",
+                    "MCDONALD BLVD",
+                    "MCDONALD RD",
+                    "MCDOUGALL RD",
+                    "MCKINNON RD",
+                    "MCMILLAN SIDERD",
+                    "MCNABB RD",
+                    "MEADOWVIEW CRT",
+                    "MEDORA LAKE RD",
+                    "MEDORA ST",
+                    "MEMORIAL AVE",
+                    "MERKLEY RD",
+                    "MINORS BAY RD",
+                    "MIRIAM DR",
+                    "MITCHELL LANE",
+                    "MONCK RD",
+                    "MOON POINT DR",
+                    "MOON RIVER RD",
+                    "MORROW DR",
+                    "MORTIMERS POINT RD",
+                    "MORTON LANE",
+                    "MOUNT STEPHEN RD",
+                    "MOYNES RD",
+                    "MULBERRY LANE",
+                    "MULEY POINT RD",
+                    "MULLIGAN LANE",
+                    "MURIEL CRES",
+                    "MURPHY RD",
+                    "MUSKOKA BEACH RD",
+                    "MUSKOKA RD N",
+                    "MUSKOKA ROAD 117",
+                    "MUSKOKA ROAD 118 W",
+                    "MUSKOKA ROAD 169",
+                    "MUSKOKA ROAD 38",
+                    "MUSKOKA ST",
+                    "N BURGESS AVE",
+                    "N MULDREW LAKE RD",
+                    "N SHORE RD",
+                    "NEILLY RD",
+                    "NEW BRAILEY LINE",
+                    "NEY AVE",
+                    "NICHOLS LINE",
+                    "NICHOLSON RD",
+                    "NIPISSING RD S",
+                    "OLD BARRIE RD E",
+                    "OLD MUSKOKA RD",
+                    "OLD NORTH RD",
+                    "OLD UDNEY SIDERD",
+                    "ONTARIO ST",
+                    "ORANGE VALLEY RD",
+                    "ORIMAT RD",
+                    "OSPREY LANE",
+                    "OXBY LANE",
+                    "PARK LANE CRES",
+                    "PATERSON RD",
+                    "PATTERSON RD",
+                    "PEACE VALLEY RD",
+                    "PENGALLY RD",
+                    "PENINSULA POINT RD",
+                    "PENINSULA RD",
+                    "PETERSON RD",
+                    "PINE LAKE RD",
+                    "PINECONE TRAIL",
+                    "PINERY RD",
+                    "PINETREE RD",
+                    "PINETREE ROAD S1",
+                    "PLAYFAIR DR",
+                    "PORTAGE RD",
+                    "PRINGLE RD",
+                    "PRISQUE RD",
+                    "PROSPECT LAKE RD",
+                    "PROSPECT RD",
+                    "PURBROOK RD",
+                    "QUARRY RD",
+                    "QUEEN ST",
+                    "RAGGED RAPIDS RD",
+                    "RAMA DALTON BOUNDARY RD",
+                    "RAMA RD",
+                    "RAMARA ROAD 46",
+                    "RATTLESNAKE RD",
+                    "RAVENSCLIFFE RD",
+                    "RAYMOND RD",
+                    "RD 1000",
+                    "RD 6000",
+                    "REAY RD",
+                    "REDWING DRIVE N3",
+                    "REG RD SCHELL",
+                    "REGIONAL HIGHWAY 48",
+                    "REPTILE MUSEUM RD",
+                    "RICHMOND ST W",
+                    "RIDGE RD",
+                    "RILEY LAKE RD",
+                    "RIPPLE & PALETTE LAKE RD",
+                    "RIVERDALE DR",
+                    "RIVERLEIGH DR",
+                    "ROCKCLIFFE CRT",
+                    "ROCKSIDE LANE",
+                    "ROHALLION RD",
+                    "ROSSEAU LAKE 1 RD",
+                    "ROSSEAUVIEW BLVD",
+                    "RUSNICK DR",
+                    "RUSSELL RD",
+                    "S BAY RD",
+                    "S BEAVER LAKE LANE",
+                    "S GIBSON LAKE RD",
+                    "S KAHSHE LAKE RD",
+                    "S KAPIKOG RD",
+                    "S LAKE RD",
+                    "S MONCK DR",
+                    "S MORRISON LAKE RD",
+                    "S MULDREW LAKE RD",
+                    "S PORTAGE RD",
+                    "S RIVER RD",
+                    "S SHORE RD",
+                    "S SPARROW LAKE RD",
+                    "S SUNSET BAY RD",
+                    "S WASEOSA LAKE RD",
+                    "SADOWA RD",
+                    "SAINT VINCENT ST",
+                    "SAM COOK RD",
+                    "SANDERSON RD",
+                    "SANDLEWOOD TRAIL",
+                    "SANDOR DR",
+                    "SANDY LAKE RD",
+                    "SANTAS VILLAGE RD",
+                    "SEDGWICK RD",
+                    "SEDORE RD",
+                    "SEEHAVER RD",
+                    "SEVERN PINES CRES",
+                    "SEVERN RIVER RD",
+                    "SEVERN ST",
+                    "SHADY LANE",
+                    "SHOREVIEW DR",
+                    "SIDERD 10",
+                    "SIDERD 15 & 16 W",
+                    "SIDERD 20",
+                    "SIDERD 5",
+                    "SIDERD 5 & 6",
+                    "SILK LINE",
+                    "SILVER LAKE RD",
+                    "SILVER SANDS LAKE RD",
+                    "SNIDERS BAY RD",
+                    "SNOWCREST TRAIL",
+                    "SOMERVILLE 11TH CONC",
+                    "SOMERVILLE 3RD CONC",
+                    "SOMERVILLE 6TH CONC",
+                    "SOUTHORN RD",
+                    "SOUTHWOOD BEACH BLVD",
+                    "SOUTHWOOD RD",
+                    "SPARROW LAKE ROUTE D",
+                    "STAUNTON RD",
+                    "STEPHENSON ROAD 2 W",
+                    "STEVENSON RD",
+                    "STISTED RD S",
+                    "STOCKDALE RD",
+                    "STONELEIGH RD",
+                    "STRATHDEE RD",
+                    "SUNNY LAKE RD",
+                    "SWALLOWDALE RD",
+                    "SWEETS PORTAGE RD",
+                    "SWIFT RAPIDS RD",
+                    "SWINSON RD",
+                    "SWITCH RD",
+                    "TALBOT RIVER RD",
+                    "TALLY HO SWORDS RD",
+                    "TAMARACK DR",
+                    "TAMARACK LANE",
+                    "TANNERS RD",
+                    "TARA LANE",
+                    "TAVERNER RD",
+                    "TAYLOR LINE",
+                    "TAYLOR RD",
+                    "TAYLORWOODS BLVD",
+                    "THOMPSON LANE",
+                    "THORAH CONCESSION ROAD 10",
+                    "THORBURN RD",
+                    "TINY FLOS TLINE",
+                    "TOMINGAS RD",
+                    "TORPITT RD",
+                    "TORRANCE RD",
+                    "TOWBRIDGE RD",
+                    "TRAFALGAR BAY RD",
+                    "TRANSFER STATION ENTRANCE RD",
+                    "TUCKER LANE",
+                    "UFFINGTON RD",
+                    "UHTHOFF LINE",
+                    "UPPER BIG CHUTE RD",
+                    "VICTORIA CRES",
+                    "VICTORIA RD",
+                    "VICTORIA ST E",
+                    "VIKING MARINA RD",
+                    "VILLAGE 2 RD",
+                    "VOLLICKS RD",
+                    "W BEAR LAKE RD",
+                    "W BROWNS RD",
+                    "W LIONSHEAD RD",
+                    "WAGNER ST",
+                    "WAHTA ROAD 1",
+                    "WAINMAN LINE",
+                    "WALKERS POINT RD",
+                    "WASDELL FALLS RD",
+                    "WATERS RD",
+                    "WATSON DR",
+                    "WATT LANE",
+                    "WESTSHORE CRES",
+                    "WHITE PINES RD",
+                    "WHITEHEAD RD",
+                    "WHITES FALLS RD",
+                    "WHITES RD",
+                    "WILCOX RD",
+                    "WILSONS FALLS RD",
+                    "WINCHESTER DR",
+                    "WINDERMERE RD",
+                    "WINHARA RD",
+                    "WITBECK RD",
+                    "WOODLAND DR",
+                    "WOODROW RD",
+                    "WOODWORTH DR",
+                    "WYLIE RD",
+                    "YEARLEY RD",
+                    "YELLOW ROCK DR",
+                    "YOUNG ST",
+                    "ZISKA RD",
+                    "Other"
+                ],
+                "conditionalFields": [
+                    {
+                        "condition": "Other",
+                        "name": "Other Road Name",
+                        "dropDown": false 
+                    }
+                ]
+            },
+            {
+                "name": "HotlineCall",
+                "dropDown": true,
+                "values": ["No", "Yes"],
+                "conditionalFields": [
+                    {
+                        "condition": "Yes",
+                        "name": "CallerName",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Yes",
+                        "name": "CallerContact",
+                        "dropDown": false
+                    }
+                ]
+            },
+            {
+                "name": "Status",
+                "dropDown": true,
+                "values": ["Alive", "Dead", "Injured"]
+            },
+            {
+                "name": "Behaviour",
+                "dropDown": true,
+                "values": [
+                    "SWIM",
+                    "BASK",
+                    "AB",
+                    "FLEE",
+                    "MATE",
+                    "NSEA",
+                    "NDIG",
+                    "NLAY",
+                    "NCOV",
+                    "SLEEP",
+                    "MO",
+                    "EA",
+                    "COURT",
+                    "UC",
+                    "FI",
+                    "TRAP",
+                    "HCALL",
+                    "SCALL",
+                    "OTH: IN COMMENTS",
+                    "UNK: IN COMMENTS"
+                ]
+            },
+            {
+                "name": "# of Individuals",
+                "dropDown": false,
+                "dataValidation":  {
+                    "isNumber": true,
+                    "arguments": "input",
+                    "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                    "error": "# of Individuals needs to be a number greater than 0."
+                }
+            },
+            {
+                "name": "Habitat",
+                "dropDown": true,
+                "values": [
+                    "Bog",
+                    "Fen", 
+                    "Marsh",
+                    "Swamp",
+                    "Pond",
+                    "Lake",
+                    "Ditch",
+                    "Floodplain",
+                    "Rock Barren",
+                    "Forest",
+                    "Stream",
+                    "Vernal Pool",
+                    "Residential",
+                    "Agricultural",
+                    "Grassland",
+                    "Savannah",
+                    "Beach",
+                    "Other Anthropogenic",
+                    "Other"
+                ]
+            },
+            {
+                "name": "Dominant Vegetation",
+                "dropDown": true,
+                "values": [
+                    "Herbs",
+                    "Mosses",
+                    "Lichen",
+                    "Shrubs-Tall",
+                    "Shrubs-Low",
+                    "Shrubs-Dead",
+                    "Emergent-Robust",
+                    "Emergent-NarrowLeaved",
+                    "Emergent-Broad Leaved",
+                    "Floating Plants-Rooted",
+                    "Floating PLants-Free Floating",
+                    "Plants-Submerged",
+                    "Algae",
+                    "Trees-Deciduous",
+                    "Trees-Coniferous",
+                    "Trees-Dead",
+                    "Grasses-Natural",
+                    "Anthro-Lawn",
+                    "Anthro-Garden",
+                    "Anthro-Other",
+                    "Unvegetated"
+                ]                
+            },
+            {
+                "name": "Secondary Vegetation",
+                "dropDown": true,
+                "values": [
+                    "Herbs",
+                    "Mosses",
+                    "Lichen",
+                    "Shrubs-Tall",
+                    "Shrubs-Low",
+                    "Shrubs-Dead",
+                    "Emergent-Robust",
+                    "Emergent-NarrowLeaved",
+                    "Emergent-Broad Leaved",
+                    "Floating Plants-Rooted",
+                    "Floating PLants-Free Floating",
+                    "Plants-Submerged",
+                    "Algae",
+                    "Trees-Deciduous",
+                    "Trees-Coniferous",
+                    "Trees-Dead",
+                    "Grasses-Natural",
+                    "Anthro-Lawn",
+                    "Anthro-Garden",
+                    "Anthro-Other",
+                    "Unvegetated"
+                ]                
+            },
+            {
+                "name": "Tertiary Vegetation",
+                "dropDown": true,
+                "values": [
+                    "Herbs",
+                    "Mosses",
+                    "Lichen",
+                    "Shrubs-Tall",
+                    "Shrubs-Low",
+                    "Shrubs-Dead",
+                    "Emergent-Robust",
+                    "Emergent-NarrowLeaved",
+                    "Emergent-Broad Leaved",
+                    "Floating Plants-Rooted",
+                    "Floating PLants-Free Floating",
+                    "Plants-Submerged",
+                    "Algae",
+                    "Trees-Deciduous",
+                    "Trees-Coniferous",
+                    "Trees-Dead",
+                    "Grasses-Natural",
+                    "Anthro-Lawn",
+                    "Anthro-Garden",
+                    "Anthro-Other",
+                    "Unvegetated"
+                ]                
+            },
+            {
+                "name": "Other Vegetation",
+                "dropDown": true,
+                "values": [
+                    "Herbs",
+                    "Mosses",
+                    "Lichen",
+                    "Shrubs-Tall",
+                    "Shrubs-Low",
+                    "Shrubs-Dead",
+                    "Emergent-Robust",
+                    "Emergent-NarrowLeaved",
+                    "Emergent-Broad Leaved",
+                    "Floating Plants-Rooted",
+                    "Floating PLants-Free Floating",
+                    "Plants-Submerged",
+                    "Algae",
+                    "Trees-Deciduous",
+                    "Trees-Coniferous",
+                    "Trees-Dead",
+                    "Grasses-Natural",
+                    "Anthro-Lawn",
+                    "Anthro-Garden",
+                    "Anthro-Other",
+                    "Unvegetated"
+                ]                
+            },
+            {
+                "name": "Weather",
+                "dropDown": true,
+                "values": [
+                    "Sunny/Clear",
+                    "Partly Cloudy",
+                    "Overcast",
+                    "Light Rain",
+                    "Heavy Rain",
+                    "Other"
+                ],
+                "conditionalFields": [
+                    {
+                        "condition": "Other",
+                        "name": "Other Weather",
+                        "dropDown": false
+                    }
+                ]
+            },
+            {
+                "name": "Temperature",
+                "dropDown": false,
+                "dataValidation": {
+                    "isNumber": true,
+                    "arguments": "input",
+                    "body": "return (input.toString().trim() != '' && !isNaN(input) && input > -90 && input < 60) ? true : false;",
+                    "error": "Temperature must be within -90 and 60 degrees celcius, unless you have witnessed a world record temperature!"
+                }
+            },
+            {
+                "name": "Age",
+                "dropDown": false,
+                "values": [
+                    "Hatchling",
+                    "Juvenile",
+                    "Adult",
+                    "Neonate",
+                    "Sub-Adult",
+                    "UNK"
+                ],
+                "dataValidation": {
+                    "isNumber": true,
+                    "arguments": "input",
+                    "body":"return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                    "error": "Age needs to be a number greater than or equal to 0."
+                }
+            },
+            {
+                "name": "Sex",
+                "dropDown": true,
+                "values": [
+                    "M",
+                    "F",
+                    "UNK"
+                ]
+            }
+        ]
+    },
+    {
+        "Category": "Turtle",
+        "conditionalFields": [
+            {
+                "name": "Species",
+                "dropDown": true,
+                "values": [
+                    "BLTU",
+                    "MATU",
+                    "PATU",
+                    "RSTU",
+                    "SNTU",
+                    "SPTU",
+                    "SSTU",
+                    "STIN",
+                    "WOTU",
+                    "BRSN",
+                    "EAGA",
+                    "EFSN",
+                    "HOSN",
+                    "LEWN",
+                    "MASS",
+                    "MISN",
+                    "NOWN",
+                    "RBSN",
+                    "RISN",
+                    "RNSN",
+                    "SGSN",
+                    "BLRC",
+                    "QUSN",
+                    "RASN",
+                    "AMTO",
+                    "BOCF",
+                    "BSSA",
+                    "BUFR",
+                    "DUSA",
+                    "EANE",
+                    "FLSK",
+                    "FOTO",
+                    "FTSA",
+                    "GRFR",
+                    "LEFR",
+                    "MICF",
+                    "MIFR",
+                    "PIFR",
+                    "RBSA",
+                    "SPPE",
+                    "TGTF",
+                    "TLSA",
+                    "UNISEX",
+                    "WOFR",
+                    "YSSA",
+                    "UNK- Frog",
+                    "UNK- Turtle",
+                    "UNK- Snake",
+                    "UNK-Salamander",
+                    "UNK-Toad"
+                ],
+                "conditionalFields": [
+                    {
+                        "condition": "SNTU",
+                        "name": "Post Plast Length",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input > 0) ? true : false;",
+                            "error": "Post Plast Length must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "SNTU",
+                        "name": "Post Plast Length Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01)"]
+                    },
+                    {
+                        "condition": "SNTU",
+                        "name": "Pre Loacal Length",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input > 0) ? true : false;",
+                            "error": "Pre loacal Length must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "SNTU",
+                        "name": "Pre Loacal Length Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01)"]
+                    },
+                    {
+                        "condition": "STIN",
+                        "name": "Post Plast Length",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input > 0) ? true : false;",
+                            "error": "Post Plast Length must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "STIN",
+                        "name": "Post Plast Length Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01)"]
+                    },
+                    {
+                        "condition": "STIN",
+                        "name": "Pre Loacal Length",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input > 0) ? true : false;",
+                            "error": "Pre loacal Length must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "STIN",
+                        "name": "Pre Loacal Length Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01)"]
+                    }
+                ]
+            },
+            {
+                "name": "Taxa",
+                "dropDown": false
+            },
+            {
+                "name": "Action",
+                "dropDown": true,
+                "values": [
+                    "Captured",
+                    "Observed",
+                    "Nest Found",
+                    "Injured-Collected for Rehab",
+                    "Field Euthenized"
+                ],
+                "conditionalFields": [
+                    {
+                        "condition": "Nest Found",
+                        "name": "Nest Info",
+                        "dropDown": true,
+                        "values": [
+                            "NEST-Laid",
+                            "NEST-Discovery",
+                            "NEST-Check"
+                        ],
+                        "conditionalFields": [
+                            {
+                                "condition": "NEST-Laid",                                
+                                "name": "Nest ID",
+                                "dropDown": false
+                            },
+                            {
+                                "condition": "NEST-Laid",
+                                "name": "Condition",
+                                "dropDown": true,
+                                "values": [
+                                    "Partially Predated",
+                                    "Predated",
+                                    "Predation Attempt",
+                                    "Emerged",
+                                    "Anthro Disturbance",
+                                    "Abandoned",
+                                    "Other: See Comments"
+                                ] 
+                            },
+                            {
+                                "condition": "NEST-Laid",
+                                "name": "Predator Evidence",
+                                "dropDown": true,
+                                "values": [
+                                    "Tracks",
+                                    "Scat",
+                                    "Fur",
+                                    "Visual ID" 
+                                ]
+                            },
+                            {
+                                "condition": "NEST-Laid",
+                                "name": "Predator Suspect",
+                                "dropDown": true,
+                                "values": [
+                                    "Skunk",
+                                    "Fox",
+                                    "Bear",
+                                    "Otter",
+                                    "Weasel",
+                                    "Squirrel",
+                                    "Badger",
+                                    "Fisher",
+                                    "Coyote",
+                                    "Wolf",
+                                    "Snake",
+                                    "Raccoon"
+                                ]
+                            },
+                            {
+                                "condition": "NEST-Laid",
+                                "name": "Nest Action",
+                                "dropDown": true,
+                                "values": [
+                                    "Excavated",
+                                    "Inspection Dig",
+                                    "Eggs Extracted from Dead Female",
+                                    "CAGE- Placed",
+                                    "CAGE- Checked"
+                                ],
+                                "conditionalFields": [
+                                    {
+                                        "condition": "Excavated",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "Excavated",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "Eggs Extracted from Dead Female",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "Eggs Extracted from Dead Female",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "Cage Type",
+                                        "dropDown": true,
+                                        "values": [
+                                            "Wire Sided",
+                                            "Wooden Sided",
+                                            "Other"
+                                        ]
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "Cage Type",
+                                        "dropDown": true,
+                                        "values": [
+                                            "Wire Sided",
+                                            "Wooden Sided",
+                                            "Other"
+                                        ]
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    }
+                                ]  
+                            },          
+                            {
+                                "condition": "NEST-Discovery",                                
+                                "name": "Nest ID",
+                                "dropDown": false
+                            },
+                            {
+                                "condition": "NEST-Discovery",
+                                "name": "Condition",
+                                "dropDown": true,
+                                "values": [
+                                    "Partially Predated",
+                                    "Predated",
+                                    "Predation Attempt",
+                                    "Emerged",
+                                    "Anthro Disturbance",
+                                    "Abandoned",
+                                    "Other: See Comments"
+                                ] 
+                            },
+                            {
+                                "condition": "NEST-Discovery",
+                                "name": "Predator Evidence",
+                                "dropDown": true,
+                                "values": [
+                                    "Tracks",
+                                    "Scat",
+                                    "Fur",
+                                    "Visual ID" 
+                                ]
+                            },
+                            {
+                                "condition": "NEST-Discovery",
+                                "name": "Predator Suspect",
+                                "dropDown": true,
+                                "values": [
+                                    "Skunk",
+                                    "Fox",
+                                    "Bear",
+                                    "Otter",
+                                    "Weasel",
+                                    "Squirrel",
+                                    "Badger",
+                                    "Fisher",
+                                    "Coyote",
+                                    "Wolf",
+                                    "Snake",
+                                    "Raccoon"
+                                ]
+                            },
+                            {
+                                "condition": "NEST-Discovery",
+                                "name": "Nest Action",
+                                "dropDown": true,
+                                "values": [
+                                    "Excavated",
+                                    "Inspection Dig",
+                                    "Eggs Extracted from Dead Female",
+                                    "CAGE- Placed",
+                                    "CAGE- Checked"
+                                ],
+                                "conditionalFields": [
+                                    {
+                                        "condition": "Excavated",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "Excavated",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "Eggs Extracted from Dead Female",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "Eggs Extracted from Dead Female",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "Cage Type",
+                                        "dropDown": true,
+                                        "values": [
+                                            "Wire Sided",
+                                            "Wooden Sided",
+                                            "Other"
+                                        ]
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "Cage Type",
+                                        "dropDown": true,
+                                        "values": [
+                                            "Wire Sided",
+                                            "Wooden Sided",
+                                            "Other"
+                                        ]
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "condition": "NEST-Check",                                
+                                "name": "Nest ID",
+                                "dropDown": false
+                            },
+                            {
+                                "condition": "NEST-Check",
+                                "name": "Condition",
+                                "dropDown": true,
+                                "values": [
+                                    "Partially Predated",
+                                    "Predated",
+                                    "Predation Attempt",
+                                    "Emerged",
+                                    "Anthro Disturbance",
+                                    "Abandoned",
+                                    "Other: See Comments"
+                                ] 
+                            },
+                            {
+                                "condition": "NEST-Check",
+                                "name": "Predator Evidence",
+                                "dropDown": true,
+                                "values": [
+                                    "Tracks",
+                                    "Scat",
+                                    "Fur",
+                                    "Visual ID" 
+                                ]
+                            },
+                            {
+                                "condition": "NEST-Check",
+                                "name": "Predator Suspect",
+                                "dropDown": true,
+                                "values": [
+                                    "Skunk",
+                                    "Fox",
+                                    "Bear",
+                                    "Otter",
+                                    "Weasel",
+                                    "Squirrel",
+                                    "Badger",
+                                    "Fisher",
+                                    "Coyote",
+                                    "Wolf",
+                                    "Snake",
+                                    "Raccoon"
+                                ]
+                            },
+                            {
+                                "name": "Nest Action",
+                                "dropDown": true,
+                                "condition": "NEST-Check",
+                                "values": [
+                                    "Excavated",
+                                    "Inspection Dig",
+                                    "Eggs Extracted from Dead Female",
+                                    "CAGE- Placed",
+                                    "CAGE- Checked"
+                                ],
+                                "conditionalFields": [
+                                    {
+                                        "condition": "Excavated",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "Excavated",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "Eggs Extracted from Dead Female",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "Eggs Extracted from Dead Female",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "Cage Type",
+                                        "dropDown": true,
+                                        "values": [
+                                            "Wire Sided",
+                                            "Wooden Sided",
+                                            "Other"
+                                        ]
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Placed",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "Cage Type",
+                                        "dropDown": true,
+                                        "values": [
+                                            "Wire Sided",
+                                            "Wooden Sided",
+                                            "Other"
+                                        ]
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "# of Intact Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of intact eggs can not be a negative number."
+                                        }
+                                    },
+                                    {
+                                        "condition": "CAGE-Checked",
+                                        "name": "# of Broken Eggs",
+                                        "dropDown": false,
+                                        "dataValidation":  {
+                                            "isNumber": true,
+                                            "arguments": "input",
+                                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                                            "error": "Number of broken eggs can not be a negative number."
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Measurer Initials",
+                        "dropDown": true,
+                        "values": [
+                            "ACV",
+                            "ANL",
+                            "ARL",
+                            "AVB",
+                            "AWD",
+                            "BPM",
+                            "CJH",
+                            "CSH",
+                            "DKB",
+                            "DRW",
+                            "EAZ",
+                            "ELO",
+                            "ENT",
+                            "ESA",
+                            "ETU",
+                            "GEC",
+                            "HJH",
+                            "IFS",
+                            "IRS",
+                            "JAK",
+                            "ABC",
+                            "JAR",
+                            "JAZ",
+                            "JBM",
+                            "JUL",
+                            "JUS",
+                            "KAM",
+                            "KCD",
+                            "KEC",
+                            "KGM",
+                            "KLR",
+                            "KVW",
+                            "LAS",
+                            "LMM",
+                            "MEB",
+                            "MFM",
+                            "MHB",
+                            "MHL",
+                            "MWX",
+                            "NAN",
+                            "NAT",
+                            "NMH",
+                            "RMI",
+                            "SED",
+                            "SES",
+                            "SIB",
+                            "SKF",
+                            "SMM",
+                            "STB",
+                            "TAK",
+                            "TDH",
+                            "TMM",
+                            "TSG",
+                            "ZOO"
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Scribe Initials",
+                        "dropDown": true,
+                        "values": [
+                            "ACV",
+                            "ANL",
+                            "ARL",
+                            "AVB",
+                            "AWD",
+                            "BPM",
+                            "CJH",
+                            "CSH",
+                            "DKB",
+                            "DRW",
+                            "EAZ",
+                            "ELO",
+                            "ENT",
+                            "ESA",
+                            "ETU",
+                            "GEC",
+                            "HJH",
+                            "IFS",
+                            "IRS",
+                            "JAK",
+                            "ABC",
+                            "JAR",
+                            "JAZ",
+                            "JBM",
+                            "JUL",
+                            "JUS",
+                            "KAM",
+                            "KCD",
+                            "KEC",
+                            "KGM",
+                            "KLR",
+                            "KVW",
+                            "LAS",
+                            "LMM",
+                            "MEB",
+                            "MFM",
+                            "MHB",
+                            "MHL",
+                            "MWX",
+                            "NAN",
+                            "NAT",
+                            "NMH",
+                            "RMI",
+                            "SED",
+                            "SES",
+                            "SIB",
+                            "SKF",
+                            "SMM",
+                            "STB",
+                            "TAK",
+                            "TDH",
+                            "TMM",
+                            "TSG",
+                            "ZOO"
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Penis Visible",
+                        "dropDown": true,
+                        "values": ["Yes", "No", "Unknown"]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "GravGest",
+                        "dropDown": true,
+                        "values": [
+                            "Yes", 
+                            "No",
+                            "Unknown"
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Gross Mass",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input > 0) ? true : false;",
+                            "error": "Gross Mass must be a non negative number."
+                        }   
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Bag Mass",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                            "error": "Bag Mass must be a non negative number."
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Mass Accuracy",
+                        "dropDown": true,
+                        "values": [
+                            "300g",
+                            "1000g",
+                            "2500g",
+                            "25kg"
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Spec Mass",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Bio Sample",
+                        "dropDown": true,
+                        "values": [
+                            "No",
+                            "Blood Taken",
+                            "Tissue Taken"
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Blood Vial ID",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Notch Code",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Notch Breakdown",
+                        "dropDown": false
+
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "New Capture",
+                        "dropDown": true,
+                        "values": ["Observed", "RECAP", "NEW"]
+                    
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Turtle Name",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Car Mid Length",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input > 0) ? true : false;",
+                            "error": "Car Mid Length must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Car Mid Length Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01s"]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Car Max Length",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input > 0) ? true : false;",
+                            "error": "Car max Length must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Car Max Length Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01s"]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Car Max Width",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input > 0) ? true : false;",
+                            "error": "Car Max Width must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Car Max Width Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01s"]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Max Height",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input > 0) ? true : false;",
+                            "error": "Max Height must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Max Height Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01s"]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Plast Mid Length",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input > 0) ? true : false;",
+                            "error": "Plast Mid Length must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Plast Mid Length Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01s"]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Plast Max Length",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input > 0) ? true : false;",
+                            "error": "Plast Max Length must be a number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Plast Max Length Accuracy",
+                        "dropDown": true,
+                        "values": ["Large (0.1s)", "Small (0.01s"]
+                    }
+                ]
+            }
+        ]
+    },
+
+    {
+        "Category": "Snake",
+        "conditionalFields": [
+            {
+                "name": "Duplicate",
+                "dropDown": true,
+                "values": ["True", "False"]
+            },
+            {
+                "name": "Action",
+                "dropDown": true,
+                "values": [
+                    "Captured",
+                    "Observed",
+                    "Injured-Collected for Rehab",
+                    "Field Euthenized"
+                ],
+                "conditionalFields": []
+            }
+        ]
+    },
+
+    {
+        "Category": "Lizard",
+        "conditionalFields": [
+            {
+                "name": "Duplicate",
+                "dropDown": true,
+                "values": ["True", "False"]
+            },
+            {
+                "name": "Action",
+                "dropDown": true,
+                "values": [
+                    "Captured",
+                    "Observed",
+                    "Nest Only",
+                    "Injured-Collected for Rehab",
+                    "Field Euthenized"
+                ],
+                "conditionalFields": []
+            }
+        ]
+    }
+]

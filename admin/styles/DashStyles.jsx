@@ -1,12 +1,10 @@
-import { StyleSheet, StatusBar, Dimensions, useWindowDimensions } from 'react-native';
+import { StyleSheet, StatusBar, Dimensions } from 'react-native';
 
 const scalesColors = require('../utils/colors.json');
 
 const styles = StyleSheet.create({
     safeArea: {
-      flex: 1,
-      paddingTop: StatusBar.currentHeight * 70 / 100,
-      paddingBottom: StatusBar.currentHeight * 70 / 100,
+      flex: 1, 
       backgroundColor: scalesColors.background,    
     },
   
@@ -16,18 +14,43 @@ const styles = StyleSheet.create({
       backgroundColor: '#121221'
     },
 
+    header: {
+      flex: 1,
+      flexDirection: 'row',
+      width: '100%',
+      alignItems: 'center'
+    },
+
     headText: {
       color: '#fff',
       fontWeight: 'bold',
       textAlign: 'left',
       margin: '2%',
       fontSize: 30,
+      alignSelf: 'flex-start'
+    },
+
+    logout: {
+      position: 'absolute',
+      right: 0,
+      marginRight: '1.5%',
+      width: '5.5%',
+      height: '40%',
+      justifyContent: 'center',
+      backgroundColor: '#d90019',
+      borderRadius: 10,
+      minHeight: 40,
+      minWidth: 100,
+    },
+
+    logoutText: {
+      textAlign: 'center',
+      fontSize: 16
     },
 
     container: {
-      flex: 1,
       width: '98.5%',
-      height: Dimensions.get('window').height
+      marginBottom: '3%'
     },
 
     mainContainer: {
@@ -42,6 +65,7 @@ const styles = StyleSheet.create({
       flexDirection:'row',
       justifyContent: 'space-evenly', 
       height: '20%',
+      maxHeight: 190 
     },
 
     recentsContainer: {
@@ -114,13 +138,18 @@ const styles = StyleSheet.create({
       marginTop: 30
     },
 
+    accounts: {
+      width: '70%',
+      alignItems: 'center'
+    },
+
     accountContainer: {
       borderRadius: 10,
       marginTop: 7,
       backgroundColor: scalesColors.secondaryBackground,
       width: '95%',
       alignSelf: 'center',
-      height: '10%',
+      height: 100,
       justifyContent: 'center',
     },
 

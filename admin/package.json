@@ -11,9 +11,14 @@
     "windows": "react-native run-windows"
   },
   "dependencies": {
+    "@react-native-community/netinfo": "^9.2.0",
     "axios": "^0.27.2",
     "react": "17.0.2",
     "react-native": "0.68.2",
+    "react-native-autocomplete-dropdown": "^2.0.6",
+    "react-native-modal-dropdown": "^1.0.2",
+    "react-native-progress": "^5.0.0",
+    "react-native-reanimated-carousel": "^3.0.3",
     "react-native-windows": "0.68.7"
   },
   "devDependencies": {

@@ -5,7 +5,7 @@ import useSyncState, { url } from '../utils/SyncState';
 import { styles } from '../styles/EntryStyles';
 import { Text } from 'react-native';
 
-const PrevEntries = () => {
+const PrevEntries = ({ params, setScreen }) => {
   const entryElems = useSyncState([]);
 
   // load all entries from the database and display them in recent entries part
@@ -16,12 +16,12 @@ const PrevEntries = () => {
       url: url + '/search',
       params: {}
     }).then((response) => {
-        let entries = [];
-        // display list of entries 
-        for (let i = response.data.length - 1; i >= 0; i--) {
+      // display list of entries 
+      let entries = [];
+      for (let i = response.data.length - 1; i >= 0; i--) {
+          console.log(response.data[i]);
             entries = [...entries, <Entry data={response.data[i]} onPress={() => {
-                // navigation.navigate('DataEntry', {...route.params, data: response.data[i], search: true});
-                console.log(entryElems.get());
+                setScreen({val: 'DataEntry', params: response.data[i]});
             }}/>];
         }
 

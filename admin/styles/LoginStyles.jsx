@@ -49,12 +49,13 @@ const styles = StyleSheet.create({
     },
 
     loginBtn: {
-      width: "60%",
+      width: "40%",
       borderRadius: 25,
       height: 50,
       alignItems: "center",
       justifyContent: "center",
       marginTop: 40,
+      maxWidth: 500,
       backgroundColor: scalesColors.DeepGreen,
     },
 
