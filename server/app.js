@@ -60,11 +60,9 @@ app.get('/signin', (req, res) => {
 
             return res.status(200).send(response[0]._id);
         }).catch((err) => {
-            console.log(err.message);
             return res.status(500).send(err.message);
         });
     } catch (error) {
-        console.log(error.message);
         return res.status(400).send(error.message);
     }
 });
@@ -95,11 +93,9 @@ app.get('/signin', (req, res) => {
 
             return res.status(200).send(response[0]._id);
         }).catch((err) => {
-            console.log(err.message);
             return res.status(500).send(err.message);
         });
     } catch (error) {
-        console.log(error.message);
         return res.status(400).send(error.message);
     }
 });
@@ -138,11 +134,9 @@ app.post('/signup', (req, res) => {
             }).then((insertRes) => {
                 return res.status(200).send('');
             }).catch((insertError) => {
-                console.log(insertError);
                 return res.status(500).send(insertError);
             });
         }).catch((err) => {
-            console.log(err);
             return res.status(400).send(err);
         });
     } catch (error) {
@@ -173,7 +167,6 @@ app.get('/username', (req, res) => {
             return res.status(200).send(users);
         });
     } catch(err) {
-        console.log(err);
         res.status(500).send(err);
     }
 });
@@ -201,7 +194,6 @@ app.get('/username/:userId', (req, res) => {
             else return res.status(200).send(searchRes[0].username);
         });
     } catch(err) {
-        console.log(err);
         res.status(500).send(err);
     }
 });
@@ -268,7 +260,7 @@ app.delete('/user/:userid', (req, res) => {
             return res.status(200).send('Successfully deleted your account.');
         });
     } catch (error) {
-        res.status(500).send(err);
+        res.status(500).send(error.message);
     }
 });
 
@@ -300,7 +292,6 @@ app.post('/imageUpload', async (req, res) => {
         images.insertOne({ name, mimetype, size }).then((response) => {
             return res.status(200).send(response.insertedId);
         }).catch((err)   => {
-            console.log(err);
             return res.status(400).send(err);
         });
     } catch (err) {
@@ -373,11 +364,9 @@ app.post('/dataEntry', (req, res) => {
         reptiles.insertOne(data).then((response) => {
             return res.status(200).send('');
         }).catch((err)   => {
-            console.log(err);
             return res.status(400).send(err);
         });
     } catch(error) {
-        console.log(error);
         return res.status(500).send(error);
     }
 });
@@ -441,11 +430,9 @@ app.get('/search', (req, res) => {
         reptiles.find(queryObj).toArray((err, searchRes) => {
             if (err) return res.status(400).send(err.message);
             
-            console.log(searchRes);
             return res.status(200).send(searchRes);
         });
     } catch(error) {
-        console.log(error);
         return res.status(500).send(error);
     }  
 });

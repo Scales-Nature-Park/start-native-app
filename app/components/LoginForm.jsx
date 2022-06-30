@@ -66,7 +66,6 @@ const LoginForm = ({ navigation }) => {
         });
       }).catch(function (error) {
         Alert.alert('ERROR', error.response.data);
-        console.log(error);
         return;
       });
     };

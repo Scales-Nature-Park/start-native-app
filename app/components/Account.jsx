@@ -45,7 +45,6 @@ const Account = ({ route, navigation }) => {
             setUser(response.data);
         }).catch((error) => {
             Alert.alert('ERROR', error.message);
-            console.log(error.response.data);
             return;
         });
     } 

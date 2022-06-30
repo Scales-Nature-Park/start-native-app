@@ -35,7 +35,7 @@ const FetchStats = async (stats) => {
     });
     if (stats.get()?.turtEntries != response.data.length) stats.set({...stats.get(), turtEntries: response.data.length});
   } catch(err) {
-    let message = typeof err.response !== "undefined" ? err?.response?.data?.message : err.message;
+    let message = err?.response?.data ? err?.response?.data : err.message;
     Alert.alert('ERROR', message);
   }
 
@@ -47,7 +47,7 @@ const FetchStats = async (stats) => {
     });
     if (stats.get()?.snakeEntries != response.data.length) stats.set({...stats.get(), snakeEntries: response.data.length});
   } catch(err) {
-    let message = typeof err.response !== "undefined" ? err?.response?.data?.message : err.message;
+    let message = err?.response?.data ? err?.response?.data : err.message;
     Alert.alert('ERROR', message);
   }
 
@@ -59,7 +59,7 @@ const FetchStats = async (stats) => {
     });
     if (stats.get()?.lizardEntries != response.data.length) stats.set({...stats.get(), lizardEntries: response.data.length});
   } catch(err) {
-    let message = typeof err.response !== "undefined" ? err?.response?.data?.message : err.message;
+    let message = err?.response?.data ? err?.response?.data : err.message;
     Alert.alert('ERROR', message);
   }
 
@@ -71,9 +71,32 @@ const FetchStats = async (stats) => {
     });
     if (!ArrayEquals(response.data, stats?.get()?.accounts, true)) stats?.set({...stats.get(), accounts: response.data});
   } catch(err) {
-    let message = typeof err.response !== "undefined" ? err?.response?.data?.message : err.message;
+    let message = err?.response?.data ? err?.response?.data : err.message;
     Alert.alert('ERROR', message);
   }
+};
+
+const UpdatePassword = (id, password) => {
+  axios({
+    method: 'put',
+    url: url + '/password/' + id 
+  }).catch((err) => {
+    let message = err?.response?.data ? err?.response?.data : err.message;
+    Alert.alert('ERROR', message);
+  });
+};
+
+const DeleteAccount = (id, stats) => {
+  axios({
+    method: 'delete',
+    url: url + '/user/' + id
+  }).then(() => {
+    FetchStats(stats);
+  }).catch((err) => {
+    let message = err?.response?.data ? err?.response?.data : err.message;
+    console.log(err.response.data);
+    Alert.alert('ERROR', message);
+  });
 };
 
 const Dashboard = ({ params, setScreen }) => {
@@ -136,7 +159,7 @@ const Dashboard = ({ params, setScreen }) => {
                     <TouchableOpacity style={styles.updateButton}>
                       <Text>Update Password</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.deleteButton}>
+                    <TouchableOpacity onPress={() => DeleteAccount(acc._id, stats)} style={styles.deleteButton}>
                       <Text>Delete Account</Text>
                     </TouchableOpacity>
                   </View>
