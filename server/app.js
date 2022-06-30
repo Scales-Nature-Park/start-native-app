@@ -151,6 +151,34 @@ app.post('/signup', (req, res) => {
 });
 
 /**
+ * Username endpoint without parameters that retrieves all the non-admin
+ * user data from the credentials collection in our START-Project database.
+ * It responds with an array of usernames or an error message if it fails.
+ */
+app.get('/username', (req, res) => {
+    try {
+        // load the credentials collection from the START-Project db
+        let db = client.db('START-Project');
+        let credentials = db.collection('credentials');
+
+        // respond with an array of all usernames
+        credentials.find({}).toArray((err, searchRes) => {
+            if (err) return res.status(400).send(err.message);
+            
+            let users = [];
+            for (let user of searchRes) {
+                let {username, _id} = user;
+                users.push({username, _id});
+            }
+            return res.status(200).send(users);
+        });
+    } catch(err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+});
+
+/**
  * Username endpoint that retrieves the username of an account 
  * in the database with the same ID as the passed in userId parameter.
  * It responds with the username if the database query is successful, or an 

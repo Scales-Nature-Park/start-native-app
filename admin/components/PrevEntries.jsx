@@ -19,7 +19,6 @@ const PrevEntries = ({ params, setScreen }) => {
       // display list of entries 
       let entries = [];
       for (let i = response.data.length - 1; i >= 0; i--) {
-          console.log(response.data[i]);
             entries = [...entries, <Entry data={response.data[i]} onPress={() => {
                 setScreen({val: 'DataEntry', params: response.data[i]});
             }}/>];
@@ -27,7 +26,6 @@ const PrevEntries = ({ params, setScreen }) => {
 
         (entries.length > 0) ? entryElems.set(entries) : entryElems.set([<Text style={styles.emptyTextDark}>No Entries Found.</Text>]);;
     }).catch((error) => {
-        console.log(error.message);
         Alert.alert('ERROR', error.message);
     });
   }

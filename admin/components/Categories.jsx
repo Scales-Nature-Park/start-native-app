@@ -9,7 +9,6 @@ const Categories = ({ params, setScreen }) => {
 
     const onDelete = (name) => {
         let tempFields = fields.filter((field) => field.Category != name);
-        console.log(tempFields);
     };
     
     // add elements with all category names to the list

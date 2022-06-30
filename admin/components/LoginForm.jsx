@@ -21,20 +21,20 @@ const LoginForm = ({ params, setScreen }) => {
     const AuthenticateCredentials = () => {
       setScreen({val: 'Dashboard', params: {username, id}});
 
-      axios({
-        method: 'get',
-        url: url + '/admin-signin',
-        params: {
-          "username": username,
-          "password": password
-        }
-      }).then((response) => {
-        setScreen({val: 'Dashboard', params: {username, id}});
-      }).catch(function (error) {
-        Alert.alert('ERROR', error.response.data);
-        console.log(error);
-        return;
-      });
+      // axios({
+      //   method: 'get',
+      //   url: url + '/admin-signin',
+      //   params: {
+      //     "username": username,
+      //     "password": password
+      //   }
+      // }).then((response) => {
+      //   setScreen({val: 'Dashboard', params: {username, id}});
+      // }).catch(function (error) {
+      //   Alert.alert('ERROR', error.response.data);
+      //   console.log(error);
+      //   return;
+      // });
     };
     
     return (
