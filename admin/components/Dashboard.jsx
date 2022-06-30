@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import styles from '../styles/DashStyles';
 import PrevEntries from './PrevEntries';
+import Categories from './Categories';
 import { url } from '../utils/SyncState';
 import {
     Text,
@@ -58,7 +59,7 @@ const Dashboard = ({ params, setScreen }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView style={{height: layout.height}}>
+      <ScrollView nestedScrollEnabled={true} style={{height: layout.height}}>
           <View style={styles.header}>
             <Text style={styles.headText}>Hi {params?.username},</Text>
             <TouchableOpacity style={styles.logout} onPress={() => setScreen({params, val: 'Login'})}>
@@ -116,16 +117,29 @@ const Dashboard = ({ params, setScreen }) => {
               <View style={styles.margin} />
             </View>
             
-            <View style={styles.recentsContainer}>
-              <Text style={styles.recentText}>Recent Entries</Text>
-              <ScrollView>
-                <PrevEntries params={params} setScreen={setScreen} />
-              </ScrollView>
+            <View style={styles.sideContainer}>
+              <View style={styles.recentsContainer}>
+                <Text style={styles.recentText}>Recent Entries</Text>
+                <ScrollView nestedScrollEnabled={true}>
+                  <PrevEntries params={params} setScreen={setScreen} />
+                </ScrollView>
+              </View>
+
+              <View style={styles.categoryContainer}>
+                <Text style={styles.recentText}>Categories</Text>
+                <ScrollView nestedScrollEnabled={true}>
+                  <Categories params={params} setScreen={setScreen} />
+                  <View style={styles.categories}/>
+                </ScrollView>
+                <TouchableOpacity style={styles.addButton}>
+                  <Text>Add Category</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
       </ScrollView>
     </SafeAreaView>
-    );
+  );
 }
 
 export default Dashboard;

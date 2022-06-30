@@ -61,6 +61,14 @@ const styles = StyleSheet.create({
       alignSelf: 'flex-start',
     },
 
+    sideContainer: {
+      height: '100%',
+      width: '100%',
+      flexDirection: 'column', 
+      position: 'absolute',
+      alignItems: 'flex-end',
+    },
+
     entryCountContainer: {
       flexDirection:'row',
       justifyContent: 'space-evenly', 
@@ -69,14 +77,39 @@ const styles = StyleSheet.create({
     },
 
     recentsContainer: {
-      maxHeight: 600,
+      maxHeight: '45%' > 600 ? 600 : '45%',
       backgroundColor: scalesColors.secondaryBackground,
       marginLeft: '1.5%',
-      marginRight: '1.5%',
-      position: 'absolute',
       alignSelf: 'flex-end',
-      width: '22%',
+      width: '28%',
       borderRadius: 10,
+      paddingBottom: 10
+    },
+
+    categoryContainer: {
+      maxHeight: '45%' > 600 ? 600 : '45%',
+      marginTop: 30,
+      backgroundColor: scalesColors.secondaryBackground,
+      marginLeft: '1.5%',
+      alignSelf: 'flex-end',
+      width: '28%',
+      borderRadius: 10,
+      paddingBottom: 10,
+    },
+
+    categories: {
+      marginBottom: '17%',
+    },
+
+    addButton: {
+      backgroundColor: '#0b4c7d',
+      width: '40%',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginVertical: 10,
+      borderRadius: 5,
+      height: 40,
+      alignSelf: 'center'  
     },
 
     recentActivity: {
