@@ -4,6 +4,17 @@ changes, please include a short explanation of what your changes are trying to a
 with the rest of the codebase and/or how to run and build up on them. You can treat this file as a more in depth
 commit log and place your changes over the previous changes, below this message.
 
+## Half Populated Dashboard
+#### Changes: 
+- Added a category menu that displays all the current categories of reptiles and amphibians in `fiellds.json`.
+    * User can update category name or delete it.
+- Added user non-admin account list where the user can delete account or update password for an account.
+
+#### Known Issues: 
+- [Issue #9](https://github.com/Scales-Nature-Park/start-native-app/issues/9).
+- Edit & Delete functionalities aren't working yet for the category menu.
+- Update Password isn't working yet for the account menu.
+
 ## Admin App Dashboard Init
 #### Changes: 
 - Fixed [issue #5](https://github.com/Scales-Nature-Park/start-native-app/issues/5).

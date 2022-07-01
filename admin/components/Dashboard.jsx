@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import axios from 'axios';
 import styles from '../styles/DashStyles';
 import PrevEntries from './PrevEntries';
 import Categories from './Categories';
+import Prompt from './Prompt';
 import useSyncState, { url } from '../utils/SyncState';
 import {
     Text,
@@ -76,27 +77,47 @@ const FetchStats = async (stats) => {
   }
 };
 
-const UpdatePassword = (id, password) => {
-  axios({
-    method: 'put',
-    url: url + '/password/' + id 
-  }).catch((err) => {
-    let message = err?.response?.data ? err?.response?.data : err.message;
-    Alert.alert('ERROR', message);
-  });
+const UpdatePassword = (id, stats) => {
+  let password = '';
+  let listeners = {cancel: () => {stats.set({...stats.get(), prompt: undefined})}, submit: () => {
+    axios({
+      method: 'put',
+      url: url + '/password/' + id,
+      params: {admin: true, newPassword: password} 
+    }).catch((err) => {
+      let message = err?.response?.data ? err?.response?.data : err.message;
+      Alert.alert('ERROR', message);
+    });
+
+    stats.set({...stats.get(), prompt: undefined})
+  }, inputs: [(pass) => password = pass]};
+
+  let prompt = <Prompt title={'Enter Password'} inputs={['Password']} listeners={listeners} />;
+  stats.set({...stats.get(), prompt});
 };
 
 const DeleteAccount = (id, stats) => {
-  axios({
-    method: 'delete',
-    url: url + '/user/' + id
-  }).then(() => {
-    FetchStats(stats);
-  }).catch((err) => {
-    let message = err?.response?.data ? err?.response?.data : err.message;
-    console.log(err.response.data);
-    Alert.alert('ERROR', message);
-  });
+  Alert.alert('Confirm Delete', 'Are you sure you want to delete account?', [
+    {
+      text: 'Confirm',
+      onPress: () => {
+        axios({
+          method: 'delete',
+          url: url + '/user/' + id
+        }).then(() => {
+          FetchStats(stats);
+        }).catch((err) => {
+          let message = err?.response?.data ? err?.response?.data : err.message;
+          console.log(err.response.data);
+          Alert.alert('ERROR', message);
+        });
+      }
+    },
+    {
+      text: 'Cancel',
+      onPress: () => {}
+    }
+  ]);
 };
 
 const Dashboard = ({ params, setScreen }) => {
@@ -156,7 +177,7 @@ const Dashboard = ({ params, setScreen }) => {
                     <View style={styles.accountName}>
                       <Text>{acc.username}</Text>
                     </View>
-                    <TouchableOpacity style={styles.updateButton}>
+                    <TouchableOpacity onPress={() => UpdatePassword(acc._id, stats)} style={styles.updateButton}>
                       <Text>Update Password</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => DeleteAccount(acc._id, stats)} style={styles.deleteButton}>
@@ -167,6 +188,8 @@ const Dashboard = ({ params, setScreen }) => {
               )}
               <View style={styles.margin} />
             </View>
+
+            {(stats.get().prompt) ? stats.get().prompt : null}
             
             <View style={styles.sideContainer}>
               <View style={styles.recentsContainer}>

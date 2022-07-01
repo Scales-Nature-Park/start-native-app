@@ -207,7 +207,7 @@ app.get('/username/:userId', (req, res) => {
  */
 app.put('/password/:userid', (req, res) => {
     const params = {...req.params, ...req.query};
-    if (!params.userid || !params.currentPassword || !params.newPassword)
+    if (!params.userid || (!params.currentPassword && !params.admin) || !params.newPassword)
     return res.status(404).send('Failed to retrieve your user information.');
 
     try {
@@ -216,11 +216,13 @@ app.put('/password/:userid', (req, res) => {
         let credentials = db.collection('credentials');
 
         // search for a credentials document using the passed in userid
-        credentials.find({_id: ObjectID(params.userid)}).toArray((err, searchRes) => {
-            if (err) return res.status(400).send(err.message);
-            if (searchRes.length == 0) return res.status(404).send('Could not find a user with the specified ID.');
-            if (searchRes[0].password !== params.currentPassword) return res.status(403).send('Invalid current password.');
-        });
+        if (!params.admin) {
+            credentials.find({_id: ObjectID(params.userid)}).toArray((err, searchRes) => {
+                if (err) return res.status(400).send(err.message);
+                if (searchRes.length == 0) return res.status(404).send('Could not find a user with the specified ID.');
+                if (searchRes[0].password !== params.currentPassword) return res.status(403).send('Invalid current password.');
+            });
+        }
         
         // update the password now that we know the credentials are valid
         credentials.updateOne({_id: ObjectID(params.userid)}, 
