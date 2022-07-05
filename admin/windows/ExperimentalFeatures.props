@@ -35,4 +35,10 @@
   
   </PropertyGroup>
 
+  <PropertyGroup Label="React Native WinRT properties"> 
+      <RnWinRTParameters> 
+          -include Windows.UI.Notifications  
+          -include Windows.Data.Xml.Dom 
+      </RnWinRTParameters> 
+  </PropertyGroup> 
 </Project>

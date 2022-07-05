@@ -29,7 +29,7 @@ const categoryStyles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         width: '25%',
-        backgroundColor: '#f58442',
+        backgroundColor: scalesColors.secondaryBackground,
     },
 
     deleteButton: {

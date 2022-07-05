@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import styles from '../styles/DashStyles';
 import PrevEntries from './PrevEntries';
@@ -14,6 +14,7 @@ import {
     Alert,
     ScrollView,
     useWindowDimensions,
+    NativeModules,
 } from 'react-native';
 
 const ArrayEquals = (array1, array2, json) => {
@@ -128,6 +129,18 @@ const Dashboard = ({ params, setScreen }) => {
   const lizard = require('../assets/lizard.png');
 
   FetchStats(stats);
+
+  NativeModules.FancyMath.add(
+    /* arg a */ NativeModules.FancyMath.Pi,
+    /* arg b */ NativeModules.FancyMath.E,
+    /* callback */ function (result) {
+    Alert.alert(
+        'FancyMath',
+        `FancyMath says ${NativeModules.FancyMath.Pi} + ${NativeModules.FancyMath.E} = ${result}`,
+        [{ text: 'OK' }],
+        {cancelable: false}
+    );
+  });
 
   return (
     <SafeAreaView style={styles.safeArea}>

@@ -5,7 +5,6 @@ const scalesColors = require('../utils/colors.json');
 const entryStyles = StyleSheet.create({
     container: {
         width: '95%',
-        backgroundColor: '#fff',
         borderColor: '#E6EAF0',
         borderWidth: 2.5,
         borderRadius: 10,
@@ -17,7 +16,7 @@ const entryStyles = StyleSheet.create({
     
     panelText: {
         fontSize: 20,
-        color: '#000000',
+        color: '#000',
         textAlign: 'center',
     }
 });

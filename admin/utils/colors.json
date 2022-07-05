@@ -12,5 +12,6 @@
     "BlueRacer": "#759F98",
     "blandingsTurtle1": "#EBBF2B",
 	"background": "#161e2b", 
-	"secondaryBackground": "#2c3a52"
+	"secondaryBackground": "#2c3a52",
+	"tertiaryBackground": "#DSDCDC"
 }

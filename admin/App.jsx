@@ -10,7 +10,7 @@ const App = () => {
     <>
       { 
         (screen.val == 'Dashboard') ? 
-            <Dashboard params={screen.params} setScreen={setScreen}/> : 
+        <Dashboard params={screen.params} setScreen={setScreen}/> : 
         // (screen.val == 'DataEntry') ?
         //     <DataInput params={screen.params} setScreen={setScreen} /> :
             <LoginForm params={screen.params} setScreen={setScreen}/>

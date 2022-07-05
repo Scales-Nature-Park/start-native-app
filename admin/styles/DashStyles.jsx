@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
       marginLeft: '1.5%',
       alignSelf: 'flex-end',
       width: '28%',
-      borderRadius: 10,
+      borderRadius: 10, 
       paddingBottom: 10,
     },
 
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     },
 
     updateButton: {
-      backgroundColor: '#f58442',
+      backgroundColor: scalesColors.DeepGreen,
       height: '100%',
       width: '25%',
       borderRadius: 10,
