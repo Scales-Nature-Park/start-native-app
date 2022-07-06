@@ -8,7 +8,8 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "windows": "react-native run-windows"
+    "windows": "react-native run-windows",
+    "windows-release": "react-native run-windows --release"
   },
   "dependencies": {
     "@react-native-community/netinfo": "^9.2.0",
