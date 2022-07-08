@@ -50,7 +50,6 @@ const PrevEntries = ({route, navigation}) => {
 
   return (
     <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
-      <View style={styles.overlay}/>
       <ScrollView>
         {(entryElems.get()) ? entryElems.get() : 
         <Text style={(dark) ? styles.emptyTextDark : styles.emptyText}>No Entries Found.</Text>}

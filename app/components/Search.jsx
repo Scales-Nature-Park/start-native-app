@@ -276,7 +276,6 @@ const Search = ({route, navigation}) => {
         
     return (
         <SafeAreaView style={(dark.value) ? styles.safeAreaDark : styles.safeArea}>
-        <View style={styles.overlay}/>
         <ScrollView>
             <ScrollView horizontal={true}>
                 {categoryButtons}

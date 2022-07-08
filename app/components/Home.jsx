@@ -27,7 +27,6 @@ const Home = ({route, navigation}) => {
     
     return (
         <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
-            <View style={styles.overlay}/>
             <View style={(dark) ? styles.containerDark : styles.container}>
                 <TouchableOpacity style={styles.buttonView}
                 onPress= {() => {

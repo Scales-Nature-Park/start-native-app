@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
       flex: 1,
       paddingTop: StatusBar.currentHeight * 70 / 100,
       paddingBottom: StatusBar.currentHeight * 70 / 100,
-      backgroundColor: '#121212',    
+      backgroundColor: scalesColors.background,    
     },
   
     overlay: {

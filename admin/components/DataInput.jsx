@@ -500,7 +500,6 @@ const DataInput = ({ params }) => {
         
     return (
         <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
-            <View style={styles.overlay}/>
                 <ScrollView>
                     <ScrollView horizontal={true}>
                             {categoryButtons}

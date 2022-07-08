@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     safeAreaDark: {
         flex: 1,
         padding: StatusBar.currentHeight * 70 / 100,
-        backgroundColor: '#121212',
+        backgroundColor: scalesColors.background,
     },
 
     overlay: {

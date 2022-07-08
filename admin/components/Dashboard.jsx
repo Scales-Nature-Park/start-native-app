@@ -14,7 +14,6 @@ import {
     Alert,
     ScrollView,
     useWindowDimensions,
-    NativeModules,
 } from 'react-native';
 
 const ArrayEquals = (array1, array2, json) => {
@@ -129,9 +128,6 @@ const Dashboard = ({ params, setScreen }) => {
   const lizard = require('../assets/lizard.png');
 
   FetchStats(stats);
-  
-  try {NativeModules.AdminUtils.CheckDev();}
-  catch (e) {}
   
   return (
     <SafeAreaView style={styles.safeArea}>

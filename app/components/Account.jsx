@@ -139,7 +139,6 @@ const Account = ({ route, navigation }) => {
 
     return (
         <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
-        <View style={styles.overlay} />
         <ScrollView>
             {(username)  ?
             <View style={styles.container2}>

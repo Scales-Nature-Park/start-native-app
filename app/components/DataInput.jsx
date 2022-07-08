@@ -515,7 +515,6 @@ const DataInput = ({route, navigation}) => {
         
     return (
         <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
-            <View style={styles.overlay}/>
             <GestureHandlerRootView>
                 <ScrollView>
                     <ScrollView horizontal={true}>
