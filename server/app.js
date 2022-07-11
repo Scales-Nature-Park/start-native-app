@@ -339,6 +339,27 @@ app.get('/image/:photoId', (req, res) => {
 });
 
 /**
+ * Fields endpoint that retrieves all the data entry fields for all the categories
+ * on the fields collection in the START-Project database. Returns an array of all the 
+ * categories if the query was successful, an error otherwise.
+ */
+app.get('/fields', (req, res) => {
+    try {
+        // load the fields collection from the START-Project db
+        let db = client.db('START-Project');
+        let fields = db.collection('fields');
+
+        // return all field documents in response
+        fields.find({}).toArray((err, searchRes) => {
+            if (err) return res.status(400).send(err.message);
+            return res.send(searchRes);
+        });
+    } catch(err) {
+        res.status(500).send(err.message);
+    }
+});
+
+/**
  * Data Entry endpoint that sends in passed data to the reptiles
  * collection in the START-Project database. Returns a success or fail
  * based on the database response.

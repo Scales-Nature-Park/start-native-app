@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     inputView: {
       backgroundColor: scalesColors.BlueRacer,
       borderRadius: 30,
-      width: "70%",
+      width: '70%',
       height: 45,
       marginBottom: 20,
       alignItems: 'center',

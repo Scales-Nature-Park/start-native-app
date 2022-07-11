@@ -24,7 +24,6 @@ import { useNetInfo } from "@react-native-community/netinfo";
 
 Feather.loadFont();
 const scalesColors = require('../utils/colors.json');
-const dataFields = require('../utils/fields.json');
 
 // recursive function that display conditional fields of a field
 // and their conditionals
@@ -40,6 +39,10 @@ const displayConditionals = (jsObj, displayField, fields, states) => {
             displayConditionals(field, displayField, fields, states);
         }
     }
+}
+
+const FetchFields = async (setFields) => {
+    storage.load({key: 'fields'}).then(fields => setFields(fields)).catch(() => {});
 }
 
 const DataInput = ({route, navigation}) => {
@@ -69,7 +72,10 @@ const DataInput = ({route, navigation}) => {
     const [photos, setPhotos] = useState((paramData && paramData.photos) ? [...paramData.photos] : null);
     const [dark, setDark] = useState(true);
     const [progress, setProgress] = useState({display: false, progress: 0});
+    const [dataFields, setFields] = useState(require('../utils/fields.json'));
     const netInfo = useNetInfo();
+
+    FetchFields(setFields);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -326,37 +332,8 @@ const DataInput = ({route, navigation}) => {
                 </ View>
             );
             return;
-        } else if (field.image) {
-            fields.push(
-                <View style={styles.container1}>
-                    <View style={{width: '45%'}}>
-                        <Text style={(dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
-                    </View>
-                    <View style={styles.fieldInput}>
-                        {photos && (
-                            <>
-                                <TouchableOpacity style={styles.buttonView}
-                                onPress={ChoosePhoto}>
-                                    <Text style={{color: '#000000'}}>Image Selected</Text>
-                                </TouchableOpacity>
-                            </>
-                        )}
-
-                        {!photos && (
-                            <>
-                                <TouchableOpacity style={styles.buttonView}
-                                onPress= {ChoosePhoto}>
-                                    <Text style={{color: '#000000'}}>Select Image</Text>
-                                </TouchableOpacity>
-                            </>
-                        )}
-                    </View>
-                </View>
-            );
-            
-            return;
         }
-        
+
         if (field.dropDown) {
             let dropVals = [];
             let initId = (paramData) ? -1 : 0;
@@ -382,7 +359,6 @@ const DataInput = ({route, navigation}) => {
                         showClear={false}
                         onClear={() => changeState({title: ''})}
                         onSelectItem={(item) => changeState(field, item)}
-                        onChangeText={(text) => changeState(field, {title: text})}
                         direction={'up'}
                         initialNumToRender={5} 
                         dataSet={dropVals}
