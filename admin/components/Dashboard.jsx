@@ -96,25 +96,6 @@ const UpdatePassword = (id, stats) => {
   stats.set({...stats.get(), prompt});
 };
 
-const PushRelease = (stats) => {
-  // check if there is a fields list in the stats state
-  if (!stats?.get()?.fields) {
-    Alert.alert('ERROR', 'Failed to push new release due to fields');
-    return;
-  }
-  
-  // request to replace the old fields with the new ones
-  axios({
-    method: 'put',
-    url: url + '/addFields',
-    data: {fields: stats.get().fields}
-  }).then((response) => {
-    Alert.alert('Update Released', response.data);
-  }).catch(err => {
-    Alert.alert('ERROR', err.response.data || err.message);
-  });
-};
-
 const DeleteAccount = (id, stats) => {
   Alert.alert('Confirm Delete', 'Are you sure you want to delete account?', [
     {
@@ -137,6 +118,37 @@ const DeleteAccount = (id, stats) => {
       onPress: () => {}
     }
   ]);
+};
+
+const AddCategory = (stats) => {
+  let Category = '';
+  let listeners = {cancel: () => {stats.set({...stats.get(), prompt: undefined})}, submit: () => {
+    // 
+    stats?.set({...stats?.get(), fields: [...stats?.get()?.fields, {Category, conditionalFields: []}], prompt: undefined})
+  }, inputs: [(cat) => Category = cat]};
+  
+  // prompt user for entering a category name
+  let prompt = <Prompt title={'Enter Category'} inputs={['Category']} listeners={listeners} />;
+  stats.set({...stats.get(), prompt});
+};
+
+const PushRelease = (stats) => {
+  // check if there is a fields list in the stats state
+  if (!stats?.get()?.fields) {
+    Alert.alert('ERROR', 'Failed to push new release due to fields');
+    return;
+  }
+  
+  // request to replace the old fields with the new ones
+  axios({
+    method: 'put',
+    url: url + '/addFields',
+    data: {fields: stats.get().fields}
+  }).then((response) => {
+    Alert.alert('Update Released', response.data);
+  }).catch(err => {
+    Alert.alert('ERROR', err.response.data || err.message);
+  });
 };
 
 const Dashboard = ({ params, setScreen }) => {
@@ -235,9 +247,8 @@ const Dashboard = ({ params, setScreen }) => {
                 <Text style={styles.recentText}>Categories</Text>
                 <ScrollView nestedScrollEnabled={true}>
                   <Categories params={{...params, stats}} setScreen={setScreen} />
-                  <View style={styles.categories}/>
                 </ScrollView>
-                <TouchableOpacity style={styles.addButton}>
+                <TouchableOpacity style={styles.addButton} onPress={() => AddCategory(stats)}>
                   <Text>Add Category</Text>
                 </TouchableOpacity>
               </View>

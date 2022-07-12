@@ -25,6 +25,7 @@ const categoryStyles = StyleSheet.create({
     
     editButton: {
         height: '100%',
+        maxHeight: 60,
         borderRadius: 5,
         alignItems: 'center',
         justifyContent: 'center',
@@ -34,6 +35,7 @@ const categoryStyles = StyleSheet.create({
 
     deleteButton: {
         height: '100%',
+        maxHeight: 60,
         borderRadius: 5,
         alignItems: 'center',
         justifyContent: 'center',

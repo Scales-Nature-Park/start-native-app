@@ -1,5 +1,6 @@
 import React from 'react';
 import Category from './Category';
+import Prompt from './Prompt';
 import { styles } from '../styles/CategoryStyles';
 import { Text } from 'react-native';
 
@@ -11,15 +12,28 @@ const Categories = ({ params, setScreen }) => {
         params?.stats?.set({...params?.stats?.get(), fields: params?.stats?.get()?.fields?.filter(field => field.Category != name)});
     };
 
-    // const onEdit = (old, new) => {
-    //     // fields
-    // };
+    const onEdit = (name) => {
+        let Category = '', stats = params.stats;
+        let listeners = {cancel: () => {stats.set({...stats.get(), prompt: undefined})}, submit: () => {
+            let fields = [...stats?.get()?.fields];
+            if (!fields) return;
+            
+            fields.forEach(elem => {
+                if (elem.Category == name) elem.Category = Category;
+            });
+
+            stats.set({...stats.get(), fields, prompt: undefined})
+        }, inputs: [(cat) => Category = cat]};
+        
+        let prompt = <Prompt title={'Enter Category'} inputs={['Category']} listeners={listeners} />;
+        stats.set({...stats.get(), prompt});
+    };
     
     // add elements with all category names to the list
     for (let field of params?.stats?.get()?.fields) {
         if (field.Category == 'All') continue;
         categories.push(
-            <Category data={field.Category}  onDelete={onDelete} />
+            <Category data={field.Category}  onEdit={onEdit} onDelete={onDelete} />
         );
     }
     if (categories.length <= 0) categories.push(<Text style={styles.emptyTextDark}>No Categories Found.</Text>);

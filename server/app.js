@@ -378,6 +378,10 @@ app.put('/addFields', (req, res) => {
         
         // delete old fields then insert the new ones
         fields.deleteMany({}).then(() => {
+            req.body.fields.forEach(element => {
+                element._id = ObjectID(element._id);
+            });
+
             fields.insertMany(req.body.fields).then(() => {
                 return res.status(200).send('Successfuly pushed the new release version.');
             });
