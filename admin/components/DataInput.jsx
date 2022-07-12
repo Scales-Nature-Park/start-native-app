@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Carousel from 'react-native-reanimated-carousel';
 import styles from '../styles/DataStyles';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Progress from 'react-native-progress';
-import useSyncState, { url } from '../utils/SyncState';
-import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
+import { url } from '../utils/SyncState';
 import {
     Text,
     View,
@@ -13,12 +11,9 @@ import {
     TouchableOpacity,
     ScrollView,
     SafeAreaView,
-    Dimensions,
     Alert,
     Image,
 } from 'react-native';
-import ModalDropdown from 'react-native-modal-dropdown';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useNetInfo } from "@react-native-community/netinfo";
 
 Feather.loadFont();
@@ -44,13 +39,11 @@ const displayConditionals = (jsObj, displayField, fields, states) => {
 const DataInput = ({ params, setScreen }) => {
     const id = (params?.id) ? params?.id : '';
 
-    const months = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'Novemeber', 'December'];
-    const dateObj = new Date(),
-        day = (params && params?.day) ? params?.day : dateObj.getDate(), 
-        month = (params && params?.month) ? params?.month : months[dateObj.getMonth()],
-        year = (params && params?.year) ? params?.year : dateObj.getFullYear(),
-        currHours = (params && params?.hours) ? params?.hours : dateObj.getHours(),
-        currMins = (params && params?.mins) ? params?.mins : dateObj.getMinutes();
+    const day = (params && params?.day) ? params?.day : '', 
+        month = (params && params?.month) ? params?.month : '',
+        year = (params && params?.year) ? params?.year : '',
+        currHours = (params && params?.hours) ? params?.hours : '',
+        currMins = (params && params?.mins) ? params?.mins : '';
 
     const initialFields = (params && params?.inputFields) ? [...params?.inputFields] : []; 
         
@@ -70,7 +63,7 @@ const DataInput = ({ params, setScreen }) => {
     
     // append image uris to photos from existing photoids passed in params
     let validityError = '';
-    let photoIds = (params && params?.photoIds && !photos) ? [...params?.photoIds] : null;
+    let photoIds = (params?.photoIds) ? [...params.photoIds] : undefined;
     if (photoIds && photoIds.length > 0 && !photos) {
         let tempPhotos = [];
         for (let id of photoIds) (!tempPhotos.includes({uri: url + '/image/' + id})) ? tempPhotos.push({uri: url + '/image/' + id}) : null;
@@ -337,12 +330,14 @@ const DataInput = ({ params, setScreen }) => {
             if (field.conditionalFields) displayConditionals(field, displayField, fields, states);
         }
     }
+
+    console.log(photoIds);
         
     return (
         <SafeAreaView style={styles.safeAreaDark}>
             <ScrollView>
                 <ScrollView horizontal={true}>
-                        {categoryButtons}
+                    {categoryButtons}
                 </ScrollView>
 
                 {(photos) ? 
