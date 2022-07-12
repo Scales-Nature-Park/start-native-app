@@ -96,6 +96,25 @@ const UpdatePassword = (id, stats) => {
   stats.set({...stats.get(), prompt});
 };
 
+const PushRelease = (stats) => {
+  // check if there is a fields list in the stats state
+  if (!stats?.get()?.fields) {
+    Alert.alert('ERROR', 'Failed to push new release due to fields');
+    return;
+  }
+  
+  // request to replace the old fields with the new ones
+  axios({
+    method: 'put',
+    url: url + '/addFields',
+    data: {fields: stats.get().fields}
+  }).then((response) => {
+    Alert.alert('Update Released', response.data);
+  }).catch(err => {
+    Alert.alert('ERROR', err.response.data || err.message);
+  });
+};
+
 const DeleteAccount = (id, stats) => {
   Alert.alert('Confirm Delete', 'Are you sure you want to delete account?', [
     {
@@ -121,7 +140,7 @@ const DeleteAccount = (id, stats) => {
 };
 
 const Dashboard = ({ params, setScreen }) => {
-  const stats = useSyncState({historicDays: 7});
+  const stats = useSyncState({historicDays: 7, fetchedFields: false});
   const layout = useWindowDimensions();
   const turtle = require('../assets/turtle.png');
   const snake = require('../assets/snake.png');
@@ -129,6 +148,16 @@ const Dashboard = ({ params, setScreen }) => {
 
   FetchStats(stats);
   
+  // set fields to the latest updated data fields in the database
+  if (!stats?.get()?.fetchedFields) {
+    axios({
+      method: 'get',
+      url: url + '/fields'
+    }).then(fields => {
+      stats.set({...stats.get(), fields: fields.data, fetchedFields: true});
+    }).catch(err => {});
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView nestedScrollEnabled={true} style={{height: layout.height}}>
@@ -136,6 +165,9 @@ const Dashboard = ({ params, setScreen }) => {
             <Text style={styles.headText}>Hi {params?.username},</Text>
             <TouchableOpacity style={styles.logout} onPress={() => setScreen({params, val: 'Login'})}>
               <Text style={styles.logoutText}>Logout</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.release} onPress={() => PushRelease(stats)}>
+              <Text style={styles.logoutText}>Push Release</Text>
             </TouchableOpacity>
           </View>
 
@@ -195,14 +227,14 @@ const Dashboard = ({ params, setScreen }) => {
               <View style={styles.recentsContainer}>
                 <Text style={styles.recentText}>Recent Entries</Text>
                 <ScrollView nestedScrollEnabled={true}>
-                  <PrevEntries params={params} setScreen={setScreen} />
+                  <PrevEntries params={{...params, fields:stats?.get()?.fields}} setScreen={setScreen} />
                 </ScrollView>
               </View>
 
               <View style={styles.categoryContainer}>
                 <Text style={styles.recentText}>Categories</Text>
                 <ScrollView nestedScrollEnabled={true}>
-                  <Categories params={params} setScreen={setScreen} />
+                  <Categories params={{...params, stats}} setScreen={setScreen} />
                   <View style={styles.categories}/>
                 </ScrollView>
                 <TouchableOpacity style={styles.addButton}>

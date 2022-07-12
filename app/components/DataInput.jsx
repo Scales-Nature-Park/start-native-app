@@ -20,7 +20,7 @@ import {
 } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useNetInfo } from "@react-native-community/netinfo";
+import { useNetInfo } from '@react-native-community/netinfo';
 
 Feather.loadFont();
 const scalesColors = require('../utils/colors.json');

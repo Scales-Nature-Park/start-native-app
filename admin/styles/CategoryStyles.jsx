@@ -5,7 +5,7 @@ const scalesColors = require('../utils/colors.json');
 const categoryStyles = StyleSheet.create({
     container: {
         width: '95%',
-        height: '35%',
+        height: 120,
         maxHeight: 120,
         flexDirection: 'row',
         borderWidth: 2.5,

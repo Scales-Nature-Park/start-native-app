@@ -8,9 +8,11 @@ import PrevEntries from './components/PrevEntries';
 import Search from './components/Search';
 import Account from './components/Account';
 import storage, { url } from './utils/Storage';
+import { useNetInfo } from '@react-native-community/netinfo';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Alert } from 'react-native';
+
 
 const dataFields = require('./utils/fields.json');
 
@@ -78,7 +80,9 @@ const FetchFields = async () => {
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-  FetchFields();
+  const netInfo = useNetInfo();
+
+  if (netInfo?.isConnected) FetchFields();
 
   return (
     <NavigationContainer>

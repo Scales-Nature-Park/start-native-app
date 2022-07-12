@@ -43,6 +43,17 @@ const styles = StyleSheet.create({
       minWidth: 100,
     },
 
+    release: {
+      position: 'absolute', 
+      right: '19.1%',
+      width: '10%',
+      height: '40%',
+      justifyContent: 'center',
+      backgroundColor: '#0b4c7d',
+      borderRadius: 10,
+      minHeight: 40,
+    },
+
     logoutText: {
       textAlign: 'center',
       fontSize: 16

@@ -4,18 +4,22 @@ import { styles } from '../styles/CategoryStyles';
 import { Text } from 'react-native';
 
 const Categories = ({ params, setScreen }) => {
-    const fields = require('../utils/fields.json');
     let categories = [];
+    if (!params?.stats?.get()?.fields) params?.stats?.set({...params?.stats?.get(), fields: require('../utils/fields.json')});
 
     const onDelete = (name) => {
-        let tempFields = fields.filter((field) => field.Category != name);
+        params?.stats?.set({...params?.stats?.get(), fields: params?.stats?.get()?.fields?.filter(field => field.Category != name)});
     };
+
+    // const onEdit = (old, new) => {
+    //     // fields
+    // };
     
     // add elements with all category names to the list
-    for (let field of fields) {
+    for (let field of params?.stats?.get()?.fields) {
         if (field.Category == 'All') continue;
         categories.push(
-            <Category data={field.Category} onDelete={onDelete} />
+            <Category data={field.Category}  onDelete={onDelete} />
         );
     }
     if (categories.length <= 0) categories.push(<Text style={styles.emptyTextDark}>No Categories Found.</Text>);

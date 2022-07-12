@@ -6,12 +6,15 @@ const fs = require('fs');
 const cors = require('cors');
 const path = require('path');
 const sanitize = require('mongo-sanitize');
+const bodyParser = require('body-parser');  
 const fileUpload = require('express-fileupload');
 
 const app = express();
 
 app.use(cors());
 app.use(fileUpload());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // DB client
 const { MongoClient } = require('mongodb');
@@ -355,6 +358,31 @@ app.get('/fields', (req, res) => {
             return res.send(searchRes);
         });
     } catch(err) {
+        res.status(500).send(err.message);
+    }
+});
+
+/**
+ * Put endpoint that updates all the field documents in the fields collections.
+ * It takes in a request body with an array of objects, deletes the old documents and
+ * pushes the new fields to the collection. It responds with a success message or
+ * an error message on failure.
+ */
+app.put('/addFields', (req, res) => {
+    if (!req?.body?.fields) return res.status(400).send('Failed to push new release due to insufficient fields.');
+
+    try {
+        // load the fields collection from the START-Project db
+        let db = client.db('START-Project');
+        let fields = db.collection('fields');
+        
+        // delete old fields then insert the new ones
+        fields.deleteMany({}).then(() => {
+            fields.insertMany(req.body.fields).then(() => {
+                return res.status(200).send('Successfuly pushed the new release version.');
+            });
+        });
+    } catch (err) {
         res.status(500).send(err.message);
     }
 });
