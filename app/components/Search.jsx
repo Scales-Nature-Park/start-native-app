@@ -246,7 +246,6 @@ const Search = ({route, navigation}) => {
         if (!dark.change && tempSelections[tempIndex].displayed) continue;
                 
         // remove previous subfields related to that dropbox
-        console.log('Removing previous subfields.');
         if (tempSelections[tempIndex].prevFields)
         tempFields.splice(j + 1, tempSelections[tempIndex].prevFields);
 
@@ -256,8 +255,6 @@ const Search = ({route, navigation}) => {
 
         // display criteria with no subfields
         if (!tempSelections[tempIndex].Subfields) {
-            console.log('Creating a subfield for ' + tempSelections[tempIndex].value);
-
             tempFields = displayField({"name": tempSelections[tempIndex].value, value: ''}, tempFields, j + 1);
             continue;
         } 
@@ -314,8 +311,6 @@ const Search = ({route, navigation}) => {
                     );
                     
                     // add new selection and Subfields to be displayed next render
-                    console.log('Setting selections of dropdowns.');
-
                     let Subfields = modfSearchFields[0].ConditionalCriteria.filter((elem) => elem.name == criteria[0]);
                     if (Subfields.length == 0 && modfSearchFields[1].length > 0)
                     Subfields = modfSearchFields[1].ConditionalCriteria.filter((elem) => elem.name == criteria[0]);
@@ -357,7 +352,6 @@ const Search = ({route, navigation}) => {
                         setEntries(entries);
                         if (entries.length == 0) Alert.alert('Response', 'No entries found that match the specified criteria.');
                     }).catch((error) => {
-                        console.log(error.message);
                         Alert.alert('ERROR', error.message);
                     });
                 }}>

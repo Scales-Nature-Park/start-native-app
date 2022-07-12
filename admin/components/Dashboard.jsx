@@ -108,7 +108,6 @@ const DeleteAccount = (id, stats) => {
           FetchStats(stats);
         }).catch((err) => {
           let message = err?.response?.data ? err?.response?.data : err.message;
-          console.log(err.response.data);
           Alert.alert('ERROR', message);
         });
       }

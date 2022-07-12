@@ -632,7 +632,6 @@ const SaveDataEntry = (dataObj, navigation, params) => {
 
         navigation.navigate('Home', params);     
     }).catch((err) => {
-        console.log(err.message);
         // store the entry into entries as the only element
         storage.save({
             key: 'entries',

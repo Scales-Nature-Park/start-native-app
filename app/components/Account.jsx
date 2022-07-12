@@ -102,7 +102,6 @@ const Account = ({ route, navigation }) => {
                 newPassword: password
             }
         }).then((response) => {
-            console.log(response);
             Alert.alert('Success', 'Updated your password successfully.');
             return;
         }).catch((error) => {
