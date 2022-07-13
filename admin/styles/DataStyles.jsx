@@ -50,7 +50,24 @@ const styles = StyleSheet.create({
 
     mainView: {
         width: '70%',
+        marginVertical: 20,
         alignSelf: 'center'
+    },
+
+    sideButtons: {
+        position: 'absolute',
+        width: '15%',
+        alignItems: 'center',
+        marginTop: 20,
+    },
+
+    dash: {
+        width: '70%',
+        alignItems:'center',
+        justifyContent: 'center',
+        height: 45,
+        borderRadius: 10,
+        backgroundColor: '#0b4c7d',
     },
 
     buttonView: {
@@ -78,7 +95,7 @@ const styles = StyleSheet.create({
         borderColor: scalesColors.BlueRacer,
         borderWidth: 1.5,
     },
-    
+
     TextInput: {
       height: 50,
       flex: 1,

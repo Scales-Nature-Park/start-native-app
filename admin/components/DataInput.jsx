@@ -345,6 +345,11 @@ const DataInput = ({ params, setScreen }) => {
     return (
         <SafeAreaView style={styles.safeAreaDark}>
             <ScrollView>
+                <View style={styles.sideButtons}>
+                    <TouchableOpacity style={styles.dash} onPress={() => setScreen({val: 'Dashboard', params: {}})}>
+                        <Text>Back to Dashboard</Text>
+                    </TouchableOpacity>
+                </View>
                 <View style={styles.mainView}>
                     <ScrollView horizontal={true}>
                         {categoryButtons}
@@ -375,7 +380,7 @@ const DataInput = ({ params, setScreen }) => {
                         {(progress.display) ?
                         
                         <View style={styles.progress}>
-                                <Progress.Circle indeterminate={true} /> 
+                            <Progress.Circle indeterminate={true} /> 
                         </View> : null}
                     
                         <TouchableOpacity style={styles.submitBtn}
