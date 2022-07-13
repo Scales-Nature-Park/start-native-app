@@ -4,6 +4,7 @@ import styles from '../styles/DashStyles';
 import PrevEntries from './PrevEntries';
 import Categories from './Categories';
 import Prompt from './Prompt';
+import Fields from './Fields';
 import useSyncState, { url } from '../utils/SyncState';
 import {
     Text,
@@ -27,6 +28,11 @@ const ArrayEquals = (array1, array2, json) => {
 };
 
 const FetchStats = async (stats) => {
+  // copy stats and perform changes on the temp object
+  let newChange = false;
+  let tempStats = {...stats?.get()};
+  if (!tempStats) tempStats = {};
+
   // fetch the amount of entries for turtles, snakes and lizards
   try {
     let response = await axios({
@@ -34,7 +40,11 @@ const FetchStats = async (stats) => {
       url: url + '/search',
       params: {category: 'Turtle'},
     });
-    if (stats.get()?.turtEntries != response.data.length) stats.set({...stats.get(), turtEntries: response.data.length});
+
+    if (tempStats.turtEntries != response.data.length) {
+      newChange = true;
+      tempStats = {...tempStats, turtEntries: response.data.length};
+    } 
   } catch(err) {
     let message = err?.response?.data ? err?.response?.data : err.message;
     Alert.alert('ERROR', message);
@@ -46,7 +56,11 @@ const FetchStats = async (stats) => {
       url: url + '/search',
       params: {category: 'Snake'},
     });
-    if (stats.get()?.snakeEntries != response.data.length) stats.set({...stats.get(), snakeEntries: response.data.length});
+
+    if (tempStats.snakeEntries != response.data.length) {
+      newChange = true;
+      tempStats = {...tempStats, snakeEntries: response.data.length};
+    }
   } catch(err) {
     let message = err?.response?.data ? err?.response?.data : err.message;
     Alert.alert('ERROR', message);
@@ -58,7 +72,11 @@ const FetchStats = async (stats) => {
       url: url + '/search',
       params: {category: 'Lizard'},
     });
-    if (stats.get()?.lizardEntries != response.data.length) stats.set({...stats.get(), lizardEntries: response.data.length});
+
+    if (tempStats.lizardEntries != response.data.length) {
+      newChange = true;
+      tempStats = {...tempStats, lizardEntries: response.data.length};
+    }
   } catch(err) {
     let message = err?.response?.data ? err?.response?.data : err.message;
     Alert.alert('ERROR', message);
@@ -70,11 +88,18 @@ const FetchStats = async (stats) => {
       method: 'get',
       url: url + '/username',
     });
-    if (!ArrayEquals(response.data, stats?.get()?.accounts, true)) stats?.set({...stats.get(), accounts: response.data});
+
+    if (!ArrayEquals(response.data, tempStats.accounts, true)) {
+      newChange = true;
+      tempStats = {...tempStats, accounts: [...response.data]};
+    }
   } catch(err) {
     let message = err?.response?.data ? err?.response?.data : err.message;
     Alert.alert('ERROR', message);
   }
+
+  // set stats to the updated tempStats
+  if (newChange) stats.set({...tempStats});
 };
 
 const UpdatePassword = (id, stats) => {
@@ -229,6 +254,9 @@ const Dashboard = ({ params, setScreen }) => {
                   </View>
                 </View>
               )}
+              <View style={styles.margin} />
+
+              <Fields params={{...params, stats}} setScreen={setScreen} />
               <View style={styles.margin} />
             </View>
 
