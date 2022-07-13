@@ -427,6 +427,31 @@ app.post('/dataEntry', (req, res) => {
 });
 
 /**
+ * Delete entry endpoint that takes in an entry id parameter and 
+ * deletes the matching reptile entry document from the reptiles collection
+ * in our START-Project database. Returns a success message or an error
+ * message if the query fails or an entry id isn't provided 
+ */
+app.delete('/entry/:entryId', (req, res) => {
+    if (!req?.params?.entryId) return res.status(400).send('Failed to delete data entry due to unprovided entry id.');
+
+    try {
+        // load the reptiles collection from the START-Project db
+        let db = client.db('START-Project');
+        let reptiles = db.collection('reptiles');
+        
+        // delete the first document that matches the passed in id (there is only 1)
+        reptiles.deleteOne({_id: ObjectID(req.params.entryId)}, (err, response) => {
+            if (err) return res.status(400).send(err.message);
+            if (!response?.deletedCount) return res.status(500).send('Could not perform delete operation. Please try again at a later time.');
+            return res.status(200).send('Successfully deleted entry.');
+        });
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
+/**
  * Search endpoint that searches the reptiles collection in the
  * START-Project database for the values specified in the selections 
  * and states. 

@@ -2,14 +2,25 @@ import React from 'react';
 import Category from './Category';
 import Prompt from './Prompt';
 import { styles } from '../styles/CategoryStyles';
-import { Text } from 'react-native';
+import { Text, Alert } from 'react-native';
 
 const Categories = ({ params, setScreen }) => {
     let categories = [];
     if (!params?.stats?.get()?.fields) params?.stats?.set({...params?.stats?.get(), fields: require('../utils/fields.json')});
 
     const onDelete = (name) => {
-        params?.stats?.set({...params?.stats?.get(), fields: params?.stats?.get()?.fields?.filter(field => field.Category != name)});
+        Alert.alert('Confirm Delete', 'Are you sure you want to delete category?', [
+            {
+              text: 'Confirm',
+              onPress: () => {
+                params?.stats?.set({...params?.stats?.get(), fields: params?.stats?.get()?.fields?.filter(field => field.Category != name)});
+              }
+            },
+            {
+              text: 'Cancel',
+              onPress: () => {}
+            }
+        ]);
     };
 
     const onEdit = (name) => {
@@ -17,7 +28,7 @@ const Categories = ({ params, setScreen }) => {
         let listeners = {cancel: () => {stats.set({...stats.get(), prompt: undefined})}, submit: () => {
             let fields = [...stats?.get()?.fields];
             if (!fields) return;
-            
+
             fields.forEach(elem => {
                 if (elem.Category == name) elem.Category = Category;
             });

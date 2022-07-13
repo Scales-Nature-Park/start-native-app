@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
 
     release: {
       position: 'absolute', 
-      right: '19.1%',
+      right: '10%',
       width: '10%',
       height: '40%',
       justifyContent: 'center',

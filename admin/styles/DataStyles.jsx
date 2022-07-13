@@ -3,13 +3,6 @@ import { StatusBar, StyleSheet, Dimensions } from "react-native";
 const scalesColors = require('../utils/colors.json');
 
 const styles = StyleSheet.create({
-    safeArea: {
-        flex: 1,
-        paddingTop: StatusBar.currentHeight * 35 / 100,
-        paddingBottom: StatusBar.currentHeight * 70 / 100,
-        backgroundColor: '#fff',    
-    },
-
     safeAreaDark: {
         flex: 1,
         paddingTop: StatusBar.currentHeight * 35 / 100,
@@ -17,75 +10,9 @@ const styles = StyleSheet.create({
         backgroundColor: scalesColors.background,
     },
 
-    overlay: {
-        flex: 1,
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        opacity: 0.14,
-        backgroundColor: '#fff',
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height
-    },
-
     iconImage: {
         width: 40,
         height: 40
-    },
-
-    dropButton: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 10,
-        textAlign: 'center',
-        height: '100%', 
-        width: '100%',
-    },
-
-    dropButton2: {
-        width: '100%',
-        backgroundColor: scalesColors.BlueRacer,
-        borderRadius: 10,
-        color: 'red',
-        height: '100%',
-    },
-
-    dropDown: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: scalesColors.BlueRacer,
-        borderRadius: 10,
-        backgroundColor: scalesColors.BlueRacer, 
-        textAlign: 'center',
-        width: '35%',
-    },
-
-    dropDown2: {
-        borderRadius: 10,
-        backgroundColor: scalesColors.BlueRacer, 
-        textAlign: 'center',
-    },
-
-    dropButton3: {
-        width: '50%',
-        borderRadius: 10,
-        height: '100%',
-        marginBottom: 20,
-    },
-
-    dropText: {
-        alignContent: 'center',
-        color: '#000',
-        backgroundColor: scalesColors.BlueRacer,
-        fontSize: 16,
-    },
-
-    dropListText: {
-        alignContent: 'center',
-        color: '#000',
-        backgroundColor: scalesColors.BlueRacer,
-        fontSize: 16,
-        padding: 15
     },
 
     container1: {
@@ -93,7 +20,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'space-evenly',   
       flexDirection:'row',
-      width: Dimensions.get('window').width,
+      width: '100%',
       height: 50,
       marginTop: 20,
     },
@@ -105,17 +32,10 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
    
-    image: {
-        position: 'absolute',
-        width: '100%',
-        height: 200,
-        borderRadius: 10,
-    },
-
     imageSingle: {
         position: 'relative',
         width: '95%',
-        height: 200,
+        height: 500,
         borderRadius: 10,
     },
    
@@ -128,10 +48,32 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     },
 
+    mainView: {
+        width: '70%',
+        marginVertical: 20,
+        alignSelf: 'center'
+    },
+
+    sideButtons: {
+        position: 'absolute',
+        width: '15%',
+        alignItems: 'center',
+        marginTop: 20,
+    },
+
+    dash: {
+        width: '70%',
+        alignItems:'center',
+        justifyContent: 'center',
+        height: 45,
+        borderRadius: 10,
+        backgroundColor: '#0b4c7d',
+    },
+
     buttonView: {
-        width: Dimensions.get('window').width * 0.28,
-        marginRight: Dimensions.get('window').width * 0.03,
-        marginLeft: Dimensions.get('window').width * 0.025,
+        width: Dimensions.get('window').width * 0.7 * 0.28,
+        marginRight: Dimensions.get('window').width * 0.7 * 0.03,
+        marginLeft: Dimensions.get('window').width * 0.7 * 0.025,
         borderRadius: 10,
         height: 50,
         alignItems: 'center',
@@ -141,9 +83,9 @@ const styles = StyleSheet.create({
     },
    
     buttonView2: {
-        width: Dimensions.get('window').width * 0.28,
-        marginRight: Dimensions.get('window').width * 0.025,
-        marginLeft: Dimensions.get('window').width * 0.025,
+        width: Dimensions.get('window').width * 0.7 * 0.28,
+        marginRight: Dimensions.get('window').width * 0.7 * 0.028,
+        marginLeft: Dimensions.get('window').width * 0.7 * 0.025,
         borderRadius: 10,
         height: 50,
         alignItems: 'center',
@@ -153,7 +95,7 @@ const styles = StyleSheet.create({
         borderColor: scalesColors.BlueRacer,
         borderWidth: 1.5,
     },
-    
+
     TextInput: {
       height: 50,
       flex: 1,
@@ -182,6 +124,16 @@ const styles = StyleSheet.create({
       marginTop: 30,
       backgroundColor: scalesColors.DeepGreen,
     },
+
+    deleteBtn: {
+        width: '90%',
+        borderRadius: 25,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 30,
+        backgroundColor: '#850d23',
+      },
 
     save: {
         width: '90%',
@@ -217,23 +169,9 @@ const styles = StyleSheet.create({
         color: '#000000',
     },
 
-    timeField: {
-        fontSize: 20,
-        color: '#000000',
-        marginBottom: 20,
-        textAlign: 'left',
-    },
-
     timeFieldDark: {
         fontSize: 20,
         color: '#fff',
-        marginBottom: 20,
-        textAlign: 'left',
-    },
-
-    field: {
-        fontSize: 16,
-        color: '#000000',
         marginBottom: 20,
         textAlign: 'left',
     },
@@ -252,23 +190,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         height: '100%',
         marginBottom: 20,
-    },
-
-    selectImage: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '95%',
-        backgroundColor: scalesColors.BlueRacer,
-        borderRadius: 10,
-        height: 180,
-    },
-
-    selectImageButton: {
-        width: '100%',
-        height: '100%',
-        textAlign: 'center',
-        alignItems: 'center',
-        justifyContent: 'center'
     },
 
     progress: {

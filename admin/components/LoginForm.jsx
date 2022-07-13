@@ -32,7 +32,6 @@ const LoginForm = ({ params, setScreen }) => {
       //   setScreen({val: 'Dashboard', params: {username, id}});
       // }).catch(function (error) {
       //   Alert.alert('ERROR', error.response.data);
-      //   console.log(error);
       //   return;
       // });
     };

@@ -108,7 +108,6 @@ const DeleteAccount = (id, stats) => {
           FetchStats(stats);
         }).catch((err) => {
           let message = err?.response?.data ? err?.response?.data : err.message;
-          console.log(err.response.data);
           Alert.alert('ERROR', message);
         });
       }
@@ -179,7 +178,7 @@ const Dashboard = ({ params, setScreen }) => {
               <Text style={styles.logoutText}>Logout</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.release} onPress={() => PushRelease(stats)}>
-              <Text style={styles.logoutText}>Push Release</Text>
+              <Text style={styles.logoutText}>Save Changes</Text>
             </TouchableOpacity>
           </View>
 
