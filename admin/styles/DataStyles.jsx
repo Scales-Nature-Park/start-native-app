@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'space-evenly',   
       flexDirection:'row',
-      width: Dimensions.get('window').width,
+      width: '100%',
       height: 50,
       marginTop: 20,
     },
@@ -48,10 +48,15 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     },
 
+    mainView: {
+        width: '70%',
+        alignSelf: 'center'
+    },
+
     buttonView: {
-        width: Dimensions.get('window').width * 0.28,
-        marginRight: Dimensions.get('window').width * 0.03,
-        marginLeft: Dimensions.get('window').width * 0.025,
+        width: Dimensions.get('window').width * 0.7 * 0.28,
+        marginRight: Dimensions.get('window').width * 0.7 * 0.03,
+        marginLeft: Dimensions.get('window').width * 0.7 * 0.025,
         borderRadius: 10,
         height: 50,
         alignItems: 'center',
@@ -61,9 +66,9 @@ const styles = StyleSheet.create({
     },
    
     buttonView2: {
-        width: Dimensions.get('window').width * 0.28,
-        marginRight: Dimensions.get('window').width * 0.025,
-        marginLeft: Dimensions.get('window').width * 0.025,
+        width: Dimensions.get('window').width * 0.7 * 0.28,
+        marginRight: Dimensions.get('window').width * 0.7 * 0.028,
+        marginLeft: Dimensions.get('window').width * 0.7 * 0.025,
         borderRadius: 10,
         height: 50,
         alignItems: 'center',

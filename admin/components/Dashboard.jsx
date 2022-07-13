@@ -178,7 +178,7 @@ const Dashboard = ({ params, setScreen }) => {
               <Text style={styles.logoutText}>Logout</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.release} onPress={() => PushRelease(stats)}>
-              <Text style={styles.logoutText}>Push Release</Text>
+              <Text style={styles.logoutText}>Save Changes</Text>
             </TouchableOpacity>
           </View>
 

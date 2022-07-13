@@ -18,7 +18,6 @@ import { useNetInfo } from "@react-native-community/netinfo";
 
 Feather.loadFont();
 const scalesColors = require('../utils/colors.json');
-const dataFields = require('../utils/fields.json');
 
 // recursive function that display conditional fields of a field
 // and their conditionals
@@ -35,6 +34,15 @@ const displayConditionals = (jsObj, displayField, fields, states) => {
         }
     }
 }
+
+const FetchFields = (setFields) => {
+    axios({
+        method: 'get',
+        url: url + '/fields'
+    }).then(response => {
+        setFields(response.data);
+    }).catch(error => {});
+};
 
 const DataInput = ({ params, setScreen }) => {
     const id = (params?.id) ? params?.id : '';
@@ -58,6 +66,7 @@ const DataInput = ({ params, setScreen }) => {
     const [states, setStates] = useState(initialFields);
     const [valid, setValid] = useState(false);
     const [photos, setPhotos] = useState((params && params?.photos) ? [...params?.photos] : null);
+    const [dataFields, setFields] = useState(require('../utils/fields.json'));
     const [progress, setProgress] = useState({display: false, progress: 0});
     const netInfo = useNetInfo();
     
@@ -69,6 +78,8 @@ const DataInput = ({ params, setScreen }) => {
         for (let id of photoIds) (!tempPhotos.includes({uri: url + '/image/' + id})) ? tempPhotos.push({uri: url + '/image/' + id}) : null;
         setPhotos(tempPhotos);
     } 
+    
+    if (!dataFields) FetchFields(setFields);
 
     useEffect(() => {
         let validStates = true;
@@ -150,7 +161,7 @@ const DataInput = ({ params, setScreen }) => {
                 {cancelable: false}
             );
             
-        } catch(error) {
+        } catch(err) {
             setProgress({progress: 0, display: false});
             Alert.alert('ERROR', err?.response?.data || error?.message);
             return;
@@ -330,54 +341,53 @@ const DataInput = ({ params, setScreen }) => {
             if (field.conditionalFields) displayConditionals(field, displayField, fields, states);
         }
     }
-
-    console.log(photoIds);
         
     return (
         <SafeAreaView style={styles.safeAreaDark}>
             <ScrollView>
-                <ScrollView horizontal={true}>
-                    {categoryButtons}
-                </ScrollView>
+                <View style={styles.mainView}>
+                    <ScrollView horizontal={true}>
+                        {categoryButtons}
+                    </ScrollView>
 
-                {(photos) ? 
-                <View style={styles.container2}>
-                    <Image source={photos[0]} style={styles.imageSingle} />
-                </View>
-                : 
-                null}
-                
-                {fields}
-
-                <View style={[styles.container1, {height: 150}]}>
-                    <View style={styles.commentInput}>
-                        <TextInput
-                            multiline={true}
-                            style={styles.commentBox}
-                            defaultValue={params?.comment}
-                            placeholder={'Add Comments...'}
-                            placeholderTextColor='#000000'
-                            onChangeText={(value) => setComment(value)}
-                        />
+                    {(photos) ? 
+                    <View style={styles.container2}>
+                        <Image source={photos[0]} style={styles.imageSingle} />
                     </View>
-                </View>
-                
-                <View style={styles.container2}>
-                    {(progress.display) ?
+                    : null}
                     
-                    <View style={styles.progress}>
-                            <Progress.Circle indeterminate={true} /> 
-                    </View> : null}
-                
-                    <TouchableOpacity style={styles.submitBtn}
-                    onPress={() => SubmitData(params._id)}>
-                        <Text style={styles.submitText}>UPDATE ENTRY</Text>
-                    </TouchableOpacity>
+                    {fields}
 
-                    <TouchableOpacity style={styles.deleteBtn}
-                    onPress={() => DeleteEntry(params._id)}>
-                        <Text style={styles.submitText}>DELETE ENTRY</Text>
-                    </TouchableOpacity>
+                    <View style={[styles.container1, {height: 150}]}>
+                        <View style={styles.commentInput}>
+                            <TextInput
+                                multiline={true}
+                                style={styles.commentBox}
+                                defaultValue={params?.comment}
+                                placeholder={'Add Comments...'}
+                                placeholderTextColor='#000000'
+                                onChangeText={(value) => setComment(value)}
+                            />
+                        </View>
+                    </View>
+                    
+                    <View style={styles.container2}>
+                        {(progress.display) ?
+                        
+                        <View style={styles.progress}>
+                                <Progress.Circle indeterminate={true} /> 
+                        </View> : null}
+                    
+                        <TouchableOpacity style={styles.submitBtn}
+                        onPress={() => SubmitData(params._id)}>
+                            <Text style={styles.submitText}>UPDATE ENTRY</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.deleteBtn}
+                        onPress={() => DeleteEntry(params._id)}>
+                            <Text style={styles.submitText}>DELETE ENTRY</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </ScrollView>
         </SafeAreaView>
