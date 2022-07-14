@@ -28,7 +28,11 @@ const Fields = ({ params, setScreen }) => {
             {
                 text: 'Confirm',
                 onPress: () => {
-                    
+                    let filteredFields = stats.get().filter(obj => obj.Category == category);
+                    console.log(filteredFields);
+
+
+                    let deleteField = filteredFields.filter(field => field.name == name);
                 }
             },
             {

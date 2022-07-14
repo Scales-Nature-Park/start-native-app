@@ -347,7 +347,7 @@ const DataInput = ({route, navigation}) => {
             
             fields.push(
                 <View style={styles.container1}>
-                    <View style={{width: '45%'}}>
+                    <View style={styles.fieldContainer}>
                         <Text style={(dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
                     </View>
 
@@ -374,7 +374,7 @@ const DataInput = ({route, navigation}) => {
         } else {
             fields.push(
                 <View style={styles.container1}>
-                    <View style={{width: '45%'}}>
+                    <View style={styles.fieldContainer}>
                         <Text style={(dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
                     </View>
                     <View style={styles.fieldInput}>
