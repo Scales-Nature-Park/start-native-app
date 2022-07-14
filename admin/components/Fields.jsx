@@ -22,13 +22,13 @@ const Fields = ({ params, setScreen }) => {
     // use fields.json if no fields were passed as a parameter
     if (!params?.stats?.get()?.fields) params?.stats?.set({...params?.stats?.get(), fields: require('../utils/fields.json')});
 
-    const onDelete = (name) => {
+    const onDelete = (name, category) => {
         Alert.alert('Confirm Delete', `Are you sure you want to delete field? 
         \rDoing so will delete the field and all its conditional fields.`, [
             {
                 text: 'Confirm',
                 onPress: () => {
-                
+                    
                 }
             },
             {
@@ -67,7 +67,7 @@ const Fields = ({ params, setScreen }) => {
                         <TouchableOpacity onPress={() => onEdit(field.name)} style={styles.updateButton}>
                             <Text>Edit Field</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => onDelete(field.name)} style={styles.deleteButton}>
+                        <TouchableOpacity onPress={() => onDelete(field.name, category)} style={styles.deleteButton}>
                             <Text>Delete Field</Text>
                         </TouchableOpacity>
                         </View>

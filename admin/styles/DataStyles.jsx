@@ -34,8 +34,9 @@ const styles = StyleSheet.create({
    
     imageSingle: {
         position: 'relative',
-        width: '95%',
+        width: '100%',
         height: 500,
+        alignSelf: 'center',
         borderRadius: 10,
     },
    
