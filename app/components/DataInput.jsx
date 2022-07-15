@@ -33,7 +33,12 @@ const displayConditionals = (jsObj, displayField, fields, states) => {
 
     if (jsObj.conditionalFields) {
         for (let field of jsObj.conditionalFields) {
-            if (state.value != field.condition) continue;
+            
+            let cond = field.condition.toString().toLowerCase();
+            let val = state.value.toString().toLowerCase();
+           
+            if (!cond.includes(val)) continue;
+            
 
             displayField(field, fields);
             displayConditionals(field, displayField, fields, states);
