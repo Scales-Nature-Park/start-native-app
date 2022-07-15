@@ -23,7 +23,7 @@ const Categories = ({ params, setScreen }) => {
         ]);
     };
 
-    const onEdit = (name) => {
+    const onEdit = (name, scrollRef) => {
         let Category = '', stats = params.stats;
         let listeners = {cancel: () => {stats.set({...stats.get(), prompt: undefined})}, submit: () => {
             let fields = [...stats?.get()?.fields];
@@ -36,15 +36,17 @@ const Categories = ({ params, setScreen }) => {
             stats.set({...stats.get(), fields, prompt: undefined})
         }, inputs: [(cat) => Category = cat]};
         
-        let prompt = <Prompt title={'Enter Category'} inputs={['Category']} listeners={listeners} />;
-        stats.set({...stats.get(), prompt});
+        scrollRef?.current?.measure((width, height, px, py, fx, fy)  => {
+            let prompt = <Prompt title={'Enter Category'} yOffset={fy} inputs={['Category']} listeners={listeners} />;
+            stats.set({...stats.get(), prompt});
+        });
     };
     
     // add elements with all category names to the list
     for (let field of params?.stats?.get()?.fields) {
         if (field.Category == 'All') continue;
         categories.push(
-            <Category data={field.Category}  onEdit={onEdit} onDelete={onDelete} />
+            <Category data={field.Category} scrollRef={params?.scrollRef}  onEdit={onEdit} onDelete={onDelete} />
         );
     }
     if (categories.length <= 0) categories.push(<Text style={styles.emptyTextDark}>No Categories Found.</Text>);

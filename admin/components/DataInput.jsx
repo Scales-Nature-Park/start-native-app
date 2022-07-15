@@ -341,6 +341,8 @@ const DataInput = ({ params, setScreen }) => {
             if (field.conditionalFields) displayConditionals(field, displayField, fields, states);
         }
     }
+
+    console.log(photos);
         
     return (
         <SafeAreaView style={styles.safeAreaDark}>
@@ -356,9 +358,18 @@ const DataInput = ({ params, setScreen }) => {
                     </ScrollView>
 
                     {(photos) ? 
-                    <View style={styles.container2}>
-                        <Image source={photos[0]} style={styles.imageSingle} />
-                    </View>
+                        <View style={styles.container2}>
+                            <ScrollView horizontal={true}
+                                contentContainerStyle={{ width: `${100 * photos.length}%` }}
+                                scrollEventThrottle={500}
+                                decelerationRate="fast"
+                                pagingEnabled
+                            >
+                                {photos.map(currPhoto => 
+                                    <Image source={currPhoto} style={[styles.imageSingle, {width: `${100 * 1 / photos.length}%`}]} />
+                                )}
+                            </ScrollView>
+                        </View>
                     : null}
                     
                     {fields}

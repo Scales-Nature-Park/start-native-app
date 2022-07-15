@@ -234,15 +234,22 @@ const styles = StyleSheet.create({
     field: {
         fontSize: 16,
         color: '#000000',
-        marginBottom: 20,
         textAlign: 'left',
+        position: 'absolute'
     },
 
     fieldDark: {
         fontSize: 16,
         color: '#fff',
-        marginBottom: 20,
         textAlign: 'left',
+        position: 'absolute'
+    },
+
+    fieldContainer: {
+        width: '45%',
+        height: '100%',
+        justifyContent: 'flex-start',
+        marginBottom: '4%',
     },
 
     fieldInput: {
