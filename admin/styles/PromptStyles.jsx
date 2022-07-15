@@ -1,7 +1,5 @@
 import { StyleSheet } from 'react-native';
 
-const scalesColors = require('../utils/colors.json');
-
 const styles = StyleSheet.create({
     promptContainer: {
         position: 'absolute',

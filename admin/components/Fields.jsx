@@ -59,10 +59,11 @@ const Fields = ({ params, setScreen }) => {
     }
 
     return (
+        (categoryFields) ?
         categoryFields.map(category => 
             <>
                 <Text style={styles.subfieldText}>{category.name} Fields</Text>
-                {category.fields.map(field => 
+                {(category.fields) ? category.fields.map(field => 
                     <View style={styles.accountContainer}>
                         <View style={styles.accountContent}>
                         <View style={styles.accountName}>
@@ -76,10 +77,10 @@ const Fields = ({ params, setScreen }) => {
                         </TouchableOpacity>
                         </View>
                     </View>
-                )}
+                ): null}
                 <View style={styles.margin} />
             </>
-        )
+        ): null
     );
 };
 

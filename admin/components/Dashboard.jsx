@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import styles from '../styles/DashStyles';
 import PrevEntries from './PrevEntries';
@@ -102,9 +102,10 @@ const FetchStats = async (stats) => {
   if (newChange) stats.set({...tempStats});
 };
 
-const UpdatePassword = (id, stats) => {
+const UpdatePassword = (id, stats, scrollRef) => {
   let password = '';
   let listeners = {cancel: () => {stats.set({...stats.get(), prompt: undefined})}, submit: () => {
+    // update pass request
     axios({
       method: 'put',
       url: url + '/password/' + id,
@@ -113,12 +114,15 @@ const UpdatePassword = (id, stats) => {
       let message = err?.response?.data ? err?.response?.data : err.message;
       Alert.alert('ERROR', message);
     });
-
+    
+    // remove prompt
     stats.set({...stats.get(), prompt: undefined})
   }, inputs: [(pass) => password = pass]};
-
-  let prompt = <Prompt title={'Enter Password'} inputs={['Password']} listeners={listeners} />;
-  stats.set({...stats.get(), prompt});
+  
+  scrollRef?.current?.measure((width, height, px, py, fx, fy)  => {
+    let prompt = <Prompt title={'Enter Password'} yOffset={fy} inputs={['Password']} listeners={listeners} />;
+    stats.set({...stats.get(), prompt});
+  });
 };
 
 const DeleteAccount = (id, stats) => {
@@ -144,16 +148,18 @@ const DeleteAccount = (id, stats) => {
   ]);
 };
 
-const AddCategory = (stats) => {
+const AddCategory = (stats, scrollRef) => {
   let Category = '';
   let listeners = {cancel: () => {stats.set({...stats.get(), prompt: undefined})}, submit: () => {
     // 
     stats?.set({...stats?.get(), fields: [...stats?.get()?.fields, {Category, conditionalFields: []}], prompt: undefined})
   }, inputs: [(cat) => Category = cat]};
   
-  // prompt user for entering a category name
-  let prompt = <Prompt title={'Enter Category'} inputs={['Category']} listeners={listeners} />;
-  stats.set({...stats.get(), prompt});
+  scrollRef?.current?.measure((width, height, px, py, fx, fy)  => {
+    // prompt user for entering a category name
+    let prompt = <Prompt title={'Enter Category'} yOffset={fy} inputs={['Category']} listeners={listeners} />;
+    stats.set({...stats.get(), prompt});
+  });
 };
 
 const PushRelease = (stats) => {
@@ -177,10 +183,12 @@ const PushRelease = (stats) => {
 
 const Dashboard = ({ params, setScreen }) => {
   const stats = useSyncState({historicDays: 7, fetchedFields: false});
+  const scrollRef = useRef();
   const layout = useWindowDimensions();
   const turtle = require('../assets/turtle.png');
   const snake = require('../assets/snake.png');
   const lizard = require('../assets/lizard.png');
+
 
   FetchStats(stats);
   
@@ -207,7 +215,7 @@ const Dashboard = ({ params, setScreen }) => {
             </TouchableOpacity>
           </View>
 
-          <View style={[styles.container, {minHeight: layout.height}]}>
+          <View ref={scrollRef} style={[styles.container, {minHeight: layout.height}]}>
             <View style={styles.mainContainer}>
               <View style={styles.entryCountContainer}>
                 <View style={styles.recentActivity}>
@@ -245,18 +253,18 @@ const Dashboard = ({ params, setScreen }) => {
                     <View style={styles.accountName}>
                       <Text>{acc.username}</Text>
                     </View>
-                    <TouchableOpacity onPress={() => UpdatePassword(acc._id, stats)} style={styles.updateButton}>
+                    <TouchableOpacity onPress={() => UpdatePassword(acc._id, stats, scrollRef)} style={styles.updateButton}>
                       <Text>Update Password</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => DeleteAccount(acc._id, stats)} style={styles.deleteButton}>
                       <Text>Delete Account</Text>
                     </TouchableOpacity>
-                  </View>
+                  </View> 
                 </View>
               )}
               <View style={styles.margin} />
 
-              <Fields params={{...params, stats}} setScreen={setScreen} />
+              {(stats?.get()?.fields) ? <Fields params={{...params, stats}} setScreen={setScreen} /> : null}
               <View style={styles.margin} />
             </View>
 
@@ -273,9 +281,9 @@ const Dashboard = ({ params, setScreen }) => {
               <View style={styles.categoryContainer}>
                 <Text style={styles.recentText}>Categories</Text>
                 <ScrollView nestedScrollEnabled={true}>
-                  <Categories params={{...params, stats}} setScreen={setScreen} />
+                  <Categories params={{...params, stats, scrollRef}} setScreen={setScreen} />
                 </ScrollView>
-                <TouchableOpacity style={styles.addButton} onPress={() => AddCategory(stats)}>
+                <TouchableOpacity style={styles.addButton} onPress={() => AddCategory(stats, scrollRef)}>
                   <Text>Add Category</Text>
                 </TouchableOpacity>
               </View>

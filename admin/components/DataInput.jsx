@@ -341,6 +341,8 @@ const DataInput = ({ params, setScreen }) => {
             if (field.conditionalFields) displayConditionals(field, displayField, fields, states);
         }
     }
+
+    console.log(photos);
         
     return (
         <SafeAreaView style={styles.safeAreaDark}>
