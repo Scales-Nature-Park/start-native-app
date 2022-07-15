@@ -2,9 +2,9 @@ import React from 'react';
 import styles from '../styles/PromptStyles';
 import { View, TouchableOpacity, Text, TextInput } from 'react-native'; 
 
-const Prompt = ({ title, inputs, listeners }) => {
+const Prompt = ({ title, inputs, listeners, yOffset }) => {
     return (
-      <View style={styles.promptContainer}>
+      <View style={[styles.promptContainer, {top: Math.abs(yOffset)}]}>
         <View style={styles.promptContent}>
           <Text style={styles.promptText}>{title}</Text>
           {inputs.map((input, index) => <TextInput placeholder={input} onChangeText={listeners.inputs[index]}></TextInput>)}

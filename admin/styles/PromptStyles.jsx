@@ -1,13 +1,11 @@
 import { StyleSheet } from 'react-native';
 
-const scalesColors = require('../utils/colors.json');
-
 const styles = StyleSheet.create({
     promptContainer: {
         position: 'absolute',
         width: '40%',
         minWidth: 400,
-        height: '100%',
+        height: 1000,
         alignSelf: 'center',
         justifyContent: 'center',
         alignItems: 'center',
@@ -18,7 +16,6 @@ const styles = StyleSheet.create({
         width: '70%',
         padding: '2%',
         height: '7%',
-        maxHeight: 150,
         justifyContent: 'space-evenly',
         backgroundColor: '#242323',
         borderBottomLeftRadius: 10,

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import styles from '../styles/DashStyles';
 import PrevEntries from './PrevEntries';
 import Categories from './Categories';
 import Prompt from './Prompt';
+import Fields from './Fields';
 import useSyncState, { url } from '../utils/SyncState';
 import {
     Text,
@@ -27,6 +28,11 @@ const ArrayEquals = (array1, array2, json) => {
 };
 
 const FetchStats = async (stats) => {
+  // copy stats and perform changes on the temp object
+  let newChange = false;
+  let tempStats = {...stats?.get()};
+  if (!tempStats) tempStats = {};
+
   // fetch the amount of entries for turtles, snakes and lizards
   try {
     let response = await axios({
@@ -34,7 +40,11 @@ const FetchStats = async (stats) => {
       url: url + '/search',
       params: {category: 'Turtle'},
     });
-    if (stats.get()?.turtEntries != response.data.length) stats.set({...stats.get(), turtEntries: response.data.length});
+
+    if (tempStats.turtEntries != response.data.length) {
+      newChange = true;
+      tempStats = {...tempStats, turtEntries: response.data.length};
+    } 
   } catch(err) {
     let message = err?.response?.data ? err?.response?.data : err.message;
     Alert.alert('ERROR', message);
@@ -46,7 +56,11 @@ const FetchStats = async (stats) => {
       url: url + '/search',
       params: {category: 'Snake'},
     });
-    if (stats.get()?.snakeEntries != response.data.length) stats.set({...stats.get(), snakeEntries: response.data.length});
+
+    if (tempStats.snakeEntries != response.data.length) {
+      newChange = true;
+      tempStats = {...tempStats, snakeEntries: response.data.length};
+    }
   } catch(err) {
     let message = err?.response?.data ? err?.response?.data : err.message;
     Alert.alert('ERROR', message);
@@ -58,7 +72,11 @@ const FetchStats = async (stats) => {
       url: url + '/search',
       params: {category: 'Lizard'},
     });
-    if (stats.get()?.lizardEntries != response.data.length) stats.set({...stats.get(), lizardEntries: response.data.length});
+
+    if (tempStats.lizardEntries != response.data.length) {
+      newChange = true;
+      tempStats = {...tempStats, lizardEntries: response.data.length};
+    }
   } catch(err) {
     let message = err?.response?.data ? err?.response?.data : err.message;
     Alert.alert('ERROR', message);
@@ -70,16 +88,24 @@ const FetchStats = async (stats) => {
       method: 'get',
       url: url + '/username',
     });
-    if (!ArrayEquals(response.data, stats?.get()?.accounts, true)) stats?.set({...stats.get(), accounts: response.data});
+
+    if (!ArrayEquals(response.data, tempStats.accounts, true)) {
+      newChange = true;
+      tempStats = {...tempStats, accounts: [...response.data]};
+    }
   } catch(err) {
     let message = err?.response?.data ? err?.response?.data : err.message;
     Alert.alert('ERROR', message);
   }
+
+  // set stats to the updated tempStats
+  if (newChange) stats.set({...tempStats});
 };
 
-const UpdatePassword = (id, stats) => {
+const UpdatePassword = (id, stats, scrollRef) => {
   let password = '';
   let listeners = {cancel: () => {stats.set({...stats.get(), prompt: undefined})}, submit: () => {
+    // update pass request
     axios({
       method: 'put',
       url: url + '/password/' + id,
@@ -88,12 +114,15 @@ const UpdatePassword = (id, stats) => {
       let message = err?.response?.data ? err?.response?.data : err.message;
       Alert.alert('ERROR', message);
     });
-
+    
+    // remove prompt
     stats.set({...stats.get(), prompt: undefined})
   }, inputs: [(pass) => password = pass]};
-
-  let prompt = <Prompt title={'Enter Password'} inputs={['Password']} listeners={listeners} />;
-  stats.set({...stats.get(), prompt});
+  
+  scrollRef?.current?.measure((width, height, px, py, fx, fy)  => {
+    let prompt = <Prompt title={'Enter Password'} yOffset={fy} inputs={['Password']} listeners={listeners} />;
+    stats.set({...stats.get(), prompt});
+  });
 };
 
 const DeleteAccount = (id, stats) => {
@@ -119,16 +148,18 @@ const DeleteAccount = (id, stats) => {
   ]);
 };
 
-const AddCategory = (stats) => {
+const AddCategory = (stats, scrollRef) => {
   let Category = '';
   let listeners = {cancel: () => {stats.set({...stats.get(), prompt: undefined})}, submit: () => {
     // 
     stats?.set({...stats?.get(), fields: [...stats?.get()?.fields, {Category, conditionalFields: []}], prompt: undefined})
   }, inputs: [(cat) => Category = cat]};
   
-  // prompt user for entering a category name
-  let prompt = <Prompt title={'Enter Category'} inputs={['Category']} listeners={listeners} />;
-  stats.set({...stats.get(), prompt});
+  scrollRef?.current?.measure((width, height, px, py, fx, fy)  => {
+    // prompt user for entering a category name
+    let prompt = <Prompt title={'Enter Category'} yOffset={fy} inputs={['Category']} listeners={listeners} />;
+    stats.set({...stats.get(), prompt});
+  });
 };
 
 const PushRelease = (stats) => {
@@ -152,10 +183,12 @@ const PushRelease = (stats) => {
 
 const Dashboard = ({ params, setScreen }) => {
   const stats = useSyncState({historicDays: 7, fetchedFields: false});
+  const scrollRef = useRef();
   const layout = useWindowDimensions();
   const turtle = require('../assets/turtle.png');
   const snake = require('../assets/snake.png');
   const lizard = require('../assets/lizard.png');
+
 
   FetchStats(stats);
   
@@ -182,7 +215,7 @@ const Dashboard = ({ params, setScreen }) => {
             </TouchableOpacity>
           </View>
 
-          <View style={[styles.container, {minHeight: layout.height}]}>
+          <View ref={scrollRef} style={[styles.container, {minHeight: layout.height}]}>
             <View style={styles.mainContainer}>
               <View style={styles.entryCountContainer}>
                 <View style={styles.recentActivity}>
@@ -220,15 +253,18 @@ const Dashboard = ({ params, setScreen }) => {
                     <View style={styles.accountName}>
                       <Text>{acc.username}</Text>
                     </View>
-                    <TouchableOpacity onPress={() => UpdatePassword(acc._id, stats)} style={styles.updateButton}>
+                    <TouchableOpacity onPress={() => UpdatePassword(acc._id, stats, scrollRef)} style={styles.updateButton}>
                       <Text>Update Password</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => DeleteAccount(acc._id, stats)} style={styles.deleteButton}>
                       <Text>Delete Account</Text>
                     </TouchableOpacity>
-                  </View>
+                  </View> 
                 </View>
               )}
+              <View style={styles.margin} />
+
+              {(stats?.get()?.fields) ? <Fields params={{...params, stats}} setScreen={setScreen} /> : null}
               <View style={styles.margin} />
             </View>
 
@@ -245,9 +281,9 @@ const Dashboard = ({ params, setScreen }) => {
               <View style={styles.categoryContainer}>
                 <Text style={styles.recentText}>Categories</Text>
                 <ScrollView nestedScrollEnabled={true}>
-                  <Categories params={{...params, stats}} setScreen={setScreen} />
+                  <Categories params={{...params, stats, scrollRef}} setScreen={setScreen} />
                 </ScrollView>
-                <TouchableOpacity style={styles.addButton} onPress={() => AddCategory(stats)}>
+                <TouchableOpacity style={styles.addButton} onPress={() => AddCategory(stats, scrollRef)}>
                   <Text>Add Category</Text>
                 </TouchableOpacity>
               </View>

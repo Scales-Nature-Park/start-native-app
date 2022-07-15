@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const url = 'http://localhost:5000';
+const url = 'https://start-data-server.herokuapp.com';
 
 function useSyncState(init) {
    const [state, setState] = useState(init);

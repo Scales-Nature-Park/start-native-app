@@ -30,6 +30,15 @@ const styles = StyleSheet.create({
       alignSelf: 'flex-start'
     },
 
+    subfieldText: {
+      color: '#fff',
+      fontWeight: 'bold',
+      textAlign: 'left',
+      fontSize: 25,
+      marginLeft: '2.5%',
+      alignSelf: 'flex-start'
+    },
+
     logout: {
       position: 'absolute',
       right: 0,
