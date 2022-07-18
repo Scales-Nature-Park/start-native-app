@@ -342,8 +342,6 @@ const DataInput = ({ params, setScreen }) => {
         }
     }
 
-    console.log(photos);
-        
     return (
         <SafeAreaView style={styles.safeAreaDark}>
             <ScrollView>
