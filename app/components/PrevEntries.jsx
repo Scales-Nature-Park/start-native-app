@@ -4,7 +4,6 @@ import storage from '../utils/Storage';
 import Entry from './Entry';
 import { styles } from '../styles/EntryStyles';
 import {
-    View,
     Text,
     ScrollView,
     SafeAreaView,

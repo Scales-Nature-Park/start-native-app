@@ -15,16 +15,11 @@ import {
     Image,
     Alert,
 } from 'react-native';
-import { url } from '../utils/Storage';
+import { url, ArrayEquals } from '../utils/Storage';
 import { useNetInfo } from "@react-native-community/netinfo";
 
 const scalesColors = require('../utils/colors.json');
 const searchFields = require('../utils/search.json');
-
-function ArrayEquals (array1, array2) {
-    return array1.length === array2.length &&
-        array1.every((val, index) => val === array2[index]);
-}
 
 const Search = ({route, navigation}) => {
     const netInfo = useNetInfo();

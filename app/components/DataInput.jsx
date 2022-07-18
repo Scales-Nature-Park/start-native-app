@@ -1,12 +1,16 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useReducer } from 'react';
+import storage, { url, ArrayEquals } from '../utils/Storage';
+import useSyncState from '../utils/SyncState';
 import axios from 'axios';
-import storage, { url } from '../utils/Storage';
 import Carousel from 'react-native-reanimated-carousel';
+import ModalDropdown from 'react-native-modal-dropdown';
 import styles from '../styles/DataStyles';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Progress from 'react-native-progress';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useNetInfo } from '@react-native-community/netinfo';
 import {
     Text,
     View,
@@ -18,10 +22,6 @@ import {
     Alert,
     Image,
 } from 'react-native';
-import ModalDropdown from 'react-native-modal-dropdown';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useNetInfo } from '@react-native-community/netinfo';
-import { cond } from 'react-native-reanimated';
 
 Feather.loadFont();
 const scalesColors = require('../utils/colors.json');
@@ -44,8 +44,6 @@ const displayConditionals = (jsObj, displayField, fields, states) => {
 
             if (!cond.includes(val)) continue;
             
-
-
         
             displayField(field, fields);
             displayConditionals(field, displayField, fields, states);
@@ -53,9 +51,65 @@ const displayConditionals = (jsObj, displayField, fields, states) => {
     }
 }
 
-const FetchFields = async (setFields) => {
-    storage.load({key: 'fields'}).then(fields => setFields(fields)).catch(() => {});
-}
+const FetchFields = (state) => {
+    storage.load({key: 'fields'}).then(fields => state.set({loadedFields: true, dataFields: [...fields]})).catch(() => {});
+};
+
+const Reducer = (state, action) => {
+    switch(action.type) {
+        /* Update the dark state to the opposite of what it is currently */
+        case 'dark': 
+            return {...state, dark: !state.dark};
+        
+        /* Update the valid state to the valid element in action */
+        case 'valid': 
+            return {...state, valid: action.valid};
+
+        /* Update the progress state to the progress element in action */
+        case 'progress': 
+            return {...state, progress: action.progress};
+
+        /* Update the category state to the category element in action */
+        case 'category': 
+            return {...state, category: action.category};
+    
+        /* Update the currDay state to the day element in action */
+        case 'day':
+            return {...state, currDay: action.day};
+
+        /* Update the currMonth state to the month element in action */
+        case 'month':
+            return {...state, currMonth: action.month};
+
+        /* Update the currYear state to the year element in action */
+        case 'year':
+            return {...state, currYear: action.year};
+                                
+        /* Update the hours state to the hours element in action */
+        case 'hours':
+            return {...state, hours: action.hours};
+
+        /* Update the mins state to the mins element in action */
+        case 'mins':
+            return {...state, mins: action.mins};
+
+        /* Update the comment state to the comment element in action */
+        case 'comment': 
+            return {...state, comment: action.comment};
+
+        /* Update the states substate to the states element in action or current states */
+        case 'states': 
+            return {...state, states: [...action?.states] || [...state.states]};
+
+        /* Update the photos substate to the photos element in action or current photos */
+        case 'photos': 
+            return {...state, photos: [...action?.photos] || [...state.photos]};
+
+        /*  General state change that changes the entire state to a new one */
+        case 'general': 
+            return {...action.state};
+    }
+};
 
 const DataInput = ({route, navigation}) => {
     const id = (route && route.params && route.params.id) ? route.params.id : '';
@@ -69,32 +123,36 @@ const DataInput = ({route, navigation}) => {
         currHours = (paramData && paramData.hours) ? paramData.hours : dateObj.getHours(),
         currMins = (paramData && paramData.mins) ? paramData.mins : dateObj.getMinutes();
 
-    const initialFields = (paramData && paramData.inputFields) ? [...paramData.inputFields] : []; 
-        
-    const [currDay, setDay] = useState('0'.repeat(2 - day.toString().length) + day);
-    const [currMonth, setMonth] = useState(month);
-    const [currYear, setYear] = useState(year);
-    const [hours, setHours] = useState('0'.repeat(2 - currHours.toString().length) + currHours);
-    const [mins, setMins] = useState('0'.repeat(2 - currMins.toString().length) + currMins);
-
-    const [category, setCategory] = useState((paramData && paramData.category) ? paramData.category : 'Turtle');
-    const [comment, setComment] = useState((paramData && paramData.comment) ? paramData.comment : '');
-    const [states, setStates] = useState(initialFields);
-    const [valid, setValid] = useState(false);
-    const [photos, setPhotos] = useState((paramData && paramData.photos) ? [...paramData.photos] : null);
-    const [dark, setDark] = useState(true);
-    const [progress, setProgress] = useState({display: false, progress: 0});
-    const [dataFields, setFields] = useState(require('../utils/fields.json'));
+    const initialFields = (paramData && paramData.inputFields) ? paramData.inputFields : []; 
     const netInfo = useNetInfo();
 
-    FetchFields(setFields);
+    let currDay = '0'.repeat(2 - day.toString().length) + day;
+    let currMonth = month
+    let currYear = year;
+    let hours = '0'.repeat(2 - currHours.toString().length) + currHours;
+    let mins = '0'.repeat(2 - currMins.toString().length) + currMins;
 
+    let category = (paramData && paramData.category) ? paramData.category : 'Turtle';
+    let comment = (paramData && paramData.comment) ? paramData.comment : '';
+    let states = [...initialFields];
+    let valid = false;
+    let photos = (paramData && paramData.photos) ? [...paramData.photos] : null;
+    let dark = true;
+    let progress = {display: false, progress: 0};
+    let dataFields = require('../utils/fields.json');
+    let loadedFields = false;
+
+    const [dataInput, dispatch] = useReducer(Reducer, {currDay, currMonth, currYear, hours, mins, category, comment, states, valid, photos, dark, progress});
+    const fieldState = useSyncState({loadedFields, dataFields: [...dataFields]});
+
+    if (!fieldState.get().loadedFields) FetchFields(fieldState);
+    
     useLayoutEffect(() => {
         navigation.setOptions({
           headerRight: () => (
-            <TouchableOpacity onPress= {() => setDark(!dark)}>
+            <TouchableOpacity onPress= {() => dispatch({type: 'dark'})}>
                 {
-                    (dark) ? <Image source={require('../assets/sun.png')} style={styles.iconImage}/> :
+                    (dataInput?.dark) ? <Image source={require('../assets/sun.png')} style={styles.iconImage}/> :
                              <Image source={require('../assets/moon.png')} style={styles.iconImage}/>
                 }
             </TouchableOpacity>
@@ -103,19 +161,20 @@ const DataInput = ({route, navigation}) => {
     });
     
     // append image uris to photos from existing photoids passed in paramdata
-    let validityError = '';
-    let photoIds = (paramData && paramData.photoIds && !photos) ? [...paramData.photoIds] : null;
-    if (photoIds && photoIds.length > 0 && !photos) {
-        let tempPhotos = [];
+    let validityError = '', tempPhotos = undefined;
+    let photoIds = (paramData && paramData.photoIds && !dataInput.photos) ? [...paramData.photoIds] : null;
+    if (photoIds && photoIds.length > 0 && !dataInput.photos) {
+        tempPhotos = [];
         for (let id of photoIds) (!tempPhotos.includes({uri: url + '/image/' + id})) ? tempPhotos.push({uri: url + '/image/' + id}) : null;
-        setPhotos(tempPhotos);
     } 
+
+    if (tempPhotos && !dataInput.photos) dispatch({type: 'photos', photos: tempPhotos});
 
     useEffect(() => {
         let validStates = true;
 
         // validate all the states with their dataValidation functions
-        states.forEach((state) => {
+        dataInput.states.forEach((state) => {
             if (!state.dataValidation || !state.dataValidation.arguments) return;
             
             // validate the data after states are set
@@ -145,13 +204,14 @@ const DataInput = ({route, navigation}) => {
             validityError = 'Minutes need to be a number in MM format.';
         }
         
-        setValid(validStates);
-    });
+        // dispatch state change if it defers over the current valid state
+        if (validStates != dataInput.valid) dispatch({type: 'valid', valid: validStates})
+    }); 
     
     const ChoosePhoto = () => {
         launchImageLibrary({ noData: true }, (response) => {
-            let tempPhotos = (photos) ? [...photos] : [];
-            if (response && !response.didCancel && !tempPhotos.includes(response.assets[0])) setPhotos([...tempPhotos, response.assets[0]]);
+            let tempPhotos = (dataInput.photos) ? [...dataInput.photos] : [];
+            if (response && !response.didCancel && !tempPhotos.includes(response.assets[0])) dispatch({type: 'photos', photos: [...tempPhotos, response.assets[0]]});
         });
     };
 
@@ -180,13 +240,13 @@ const DataInput = ({route, navigation}) => {
         }
 
         photoIds = [];
-        setProgress({display: true, progress: progress.progress});
+        dispatch({type: 'progress', progress: {display: true, progress: dataInput.progress.progress}});
         
         // create image forms for each photo and upload them to the server and the retrieve
         // the entry ids into the database to be linked to this data entry
-        if (photos && photos.length > 0) {
+        if (dataInput.photos && dataInput.photos.length > 0) {
             let i = 0;
-            for (let photo of photos) {
+            for (let photo of dataInput.photos) {
                 i++
                 let imageForm = createFormData(photo);
         
@@ -197,10 +257,9 @@ const DataInput = ({route, navigation}) => {
                         'Content-Type': 'multipart/form-data',
                     },
                     onUploadProgress: (currProgress) => {
-                        setProgress({display: true, progress: progress.progress + (currProgress.loaded / currProgress.total * i / photos.length)});
+                        dispatch({type: 'progress', progress: {display: true, progress: dataInput.progress.progress + (currProgress.loaded / currProgress.total * i / dataInput.photos.length)}});
                     }
-                }
-                ).catch((e) => {
+                }).catch((e) => {
                     imageForm = undefined;
                 });
     
@@ -221,17 +280,17 @@ const DataInput = ({route, navigation}) => {
             params: {
                 "id": id,
                 photoIds,
-                "day": currDay,
-                "month": currMonth,
-                "year": currYear,
-                "hours": hours,
-                "mins": mins,
-                "category": category,
-                "inputFields": states,
-                "comment": comment
+                "day": dataInput.currDay,
+                "month": dataInput.currMonth,
+                "year": dataInput.currYear,
+                "hours": dataInput.hours,
+                "mins": dataInput.mins,
+                "category": dataInput.category,
+                "inputFields": dataInput.states,
+                "comment": dataInput.comment
             }
         }).then((response) => {
-            setProgress({progress: 0, display: false});
+            dispatch({type: 'progress', progress: {progress: 0, display: false}});
             Alert.alert(
                 'Successful Data Entry', 
                 'Your data has been submitted. Return to Home.',
@@ -243,7 +302,7 @@ const DataInput = ({route, navigation}) => {
                 {cancelable: false}
             );
         }).catch(function (error) {
-            setProgress({progress: 0, display: false});
+            dispatch({type: 'progress', progress: {progress: 0, display: false}});
             Alert.alert('ERROR', error.message);
             return;
         });
@@ -251,7 +310,7 @@ const DataInput = ({route, navigation}) => {
 
     const changeState = (field, item) => {
         if (!item) return; 
-        let tempStates = states.slice();
+        let tempStates = dataInput?.states?.slice();
         let tempIndex = -1;
         
         // search for an existing state with the current field name and update its value
@@ -265,7 +324,8 @@ const DataInput = ({route, navigation}) => {
         if(tempIndex == -1) tempStates.push(
             {"name": field.name.toLowerCase(), "value": item.title.toString(), "dataValidation": field.dataValidation}
         ); 
-        setStates(tempStates);
+
+        dispatch({type: 'states', states: tempStates});
     };
 
     const displayField = (field, fields) => {
@@ -278,7 +338,7 @@ const DataInput = ({route, navigation}) => {
                         defaultValue={day.toString()}
                         placeholder={'DD'}
                         placeholderTextColor='#000000'
-                        onChangeText={(currDay) => setDay(currDay)}
+                        onChangeText={(currDay) => dispatch({type: 'day', day: currDay})}
                         />
                     </View>
     
@@ -292,7 +352,7 @@ const DataInput = ({route, navigation}) => {
                         dropdownStyle={styles.dropDown}
                         dropdownTextHighlightStyle={styles.dropText}
                         defaultValue={month}
-                        onSelect={(selectedMonth) => setMonth(months[selectedMonth])}
+                        onSelect={(selectedMonth) => dispatch({type: 'month', month: months[selectedMonth]})}
                         />
                     </View>
     
@@ -302,7 +362,7 @@ const DataInput = ({route, navigation}) => {
                         defaultValue={year.toString()}
                         placeholder={'YYYY'}
                         placeholderTextColor='#000000'
-                        onChangeText={(currYear) => setYear(currYear)}
+                        onChangeText={(currYear) => dispatch({type: 'year', year: currYear})}
                         />
                     </View>
                 </ View>
@@ -311,7 +371,7 @@ const DataInput = ({route, navigation}) => {
         } else if (field.name.toLowerCase() == 'time') {
             fields.push(
                 <View style={styles.container1}>
-                    <Text style={(dark) ? styles.timeFieldDark : styles.timeField}>Time: </Text>
+                    <Text style={(dataInput?.dark) ? styles.timeFieldDark : styles.timeField}>Time: </Text>
                     <View style={styles.inputView}>
                         <TextInput
                         style={styles.TextInput}
@@ -319,14 +379,14 @@ const DataInput = ({route, navigation}) => {
                         defaultValue={hours.toString()}
                         placeholderTextColor='#000000'
                         onChangeText={(inHours) => {
-                                if (inHours.trim() == '') setHours(currHours);
-                                else setHours(inHours);
+                                if (inHours.trim() == '') dispatch({type: 'hours', hours: currHours});
+                                else dispatch({type: 'hours', hours: inHours});
                             }
                         }
                         />
                     </View>
     
-                    <Text style={(dark) ? styles.timeFieldDark : styles.timeField}>:</Text>
+                    <Text style={(dataInput?.dark) ? styles.timeFieldDark : styles.timeField}>:</Text>
     
                     <View style={styles.inputView}>
                         <TextInput
@@ -335,8 +395,8 @@ const DataInput = ({route, navigation}) => {
                         placeholder={'MM'}
                         placeholderTextColor='#000000'
                         onChangeText={(inMins) => {
-                                if (inMins.trim() == '') setMins(currMins);
-                                else setMins(inMins);
+                                if (inMins.trim() == '') dispatch({type: 'mins', mins: currMins});
+                                else dispatch({type: 'mins', mins: inMins});
                             }
                         }
                         />
@@ -360,7 +420,7 @@ const DataInput = ({route, navigation}) => {
             fields.push(
                 <View style={styles.container1}>
                     <View style={styles.fieldContainer}>
-                        <Text style={(dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
+                        <Text style={(dataInput?.dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
                     </View>
 
                     <AutocompleteDropdown
@@ -387,16 +447,17 @@ const DataInput = ({route, navigation}) => {
             fields.push(
                 <View style={styles.container1}>
                     <View style={styles.fieldContainer}>
-                        <Text style={(dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
+                        <Text style={(dataInput?.dark) ? styles.fieldDark : styles.field}>{field.name}:</Text>
                     </View>
                     <View style={styles.fieldInput}>
                         <TextInput
                             style={styles.TextInput}
-                            placeholder={(paramData && paramData.inputFields.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? paramData.inputFields.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : 'Enter ' + field.name}
-                            value={(states.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? states.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : ''}
+                            placeholder={'Enter ' + field.name}
+                            defaultValue={(paramData && paramData.inputFields.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? paramData.inputFields.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : ''}
+                            value={(dataInput.states.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? dataInput.states.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : ''}
                             placeholderTextColor='#000000'
                             onChangeText={(value) => {
-                                let tempStates = states.slice();
+                                let tempStates = dataInput.states.slice();
                                 let tempIndex = -1;
 
                                 tempStates.forEach((curr, index) => {
@@ -408,7 +469,7 @@ const DataInput = ({route, navigation}) => {
                                 if(tempIndex == -1) tempStates.push(
                                     {"name": field.name.toLowerCase(), "value": value, "dataValidation": field.dataValidation}
                                 );
-                                setStates(tempStates);
+                                dispatch({type: 'states', states: [...tempStates]});
                             }}
                         />
                     </View>
@@ -422,15 +483,15 @@ const DataInput = ({route, navigation}) => {
 
     // get the indeces of the all category and the selected
     // categpry objects in dataFields
-    dataFields.forEach((element, index) => {
+    fieldState.get()?.dataFields?.forEach((element, index) => {
         if (element.Category == "All") {
             allIndex = index;
         } else {
-            if (element.Category == category) catIndex = index;
+            if (element.Category == dataInput.category) catIndex = index;
             categoryButtons.push(
-                <TouchableOpacity style={(category == element.Category) ? styles.buttonView : styles.buttonView2}
-                onPress= {() => setCategory(element.Category)}>
-                    <Text style={(category == element.Category) ? {color: '#000000'} : {color: scalesColors.BlueRacer}}>{element.Category}</Text>
+                <TouchableOpacity style={(dataInput.category == element.Category) ? styles.buttonView : styles.buttonView2}
+                onPress= {() => dispatch({type: 'category', category: element.Category})}>
+                    <Text style={(dataInput.category == element.Category) ? {color: '#000000'} : {color: scalesColors.BlueRacer}}>{element.Category}</Text>
                 </TouchableOpacity>
             );
         } 
@@ -442,31 +503,34 @@ const DataInput = ({route, navigation}) => {
         return (<View></View>);
     } 
     
-    if (allIndex != -1) modfDataFields.push(dataFields[allIndex]);
-    if (catIndex != -1) modfDataFields.push(dataFields[catIndex]);
+    if (allIndex != -1) modfDataFields.push(fieldState.get().dataFields[allIndex]);
+    if (catIndex != -1) modfDataFields.push(fieldState.get().dataFields[catIndex]);
 
-    let fields = [];
-
-    // loop through all the fields in the fields.json file
+    // loop through all the fields in the dataFields substate of dataInput
     // and display them with theire conditional fields
+    let fields = [];
+    let tempStates = [...dataInput.states];
+    let editedStates = false; 
     for (let i = 0; i < modfDataFields.length; i++) {
         for (let field of modfDataFields[i].conditionalFields) {
             displayField(field, fields);                 
             if (field.name.toLowerCase() == 'date' || field.name.toLowerCase() == 'time') continue;  
 
             // set a state for the fields in the sates list
-            let state = states.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0];
+            let state = tempStates.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0];
 
             if (!state) {
                 state = {"name": field.name.toLowerCase(), "value": '', "dataValidation": field.dataValidation};
                 if (field.dropDown) state.value = field.values[0].toString();
 
-                setStates([...states, state]);
+                tempStates = [...tempStates, state];
+                editedStates = true;
             }
             
-            if (field.conditionalFields) displayConditionals(field, displayField, fields, states);
+            if (field.conditionalFields) displayConditionals(field, displayField, fields, tempStates);
         }
     }
+    if (editedStates) dispatch({type: 'states', states: [...tempStates]});
     
     let buttons = [];
 
@@ -482,7 +546,7 @@ const DataInput = ({route, navigation}) => {
                     Alert.alert('ERROR', (validityError != '') ? validityError : 'Invalid data.');
                     return;
                 }
-                if (!photos || photos.length <= 0) {
+                if (!dataInput.photos || dataInput.photos.length <= 0) {
                     Alert.alert('WARNING', "You haven't uploaded an image.",
                         [
                             {
@@ -502,14 +566,14 @@ const DataInput = ({route, navigation}) => {
     } 
         
     return (
-        <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
+        <SafeAreaView style={(dataInput?.dark) ? styles.safeAreaDark : styles.safeArea}>
             <GestureHandlerRootView>
                 <ScrollView>
                     <ScrollView horizontal={true}>
                             {categoryButtons}
                     </ScrollView>
 
-                    {(photos) ? (photos.length > 1) ?
+                    {(dataInput.photos) ? (dataInput.photos.length > 1) ?
                         <View style={styles.container2}>
                         <Carousel
                             width={Dimensions.get('window').width}
@@ -519,7 +583,7 @@ const DataInput = ({route, navigation}) => {
                                 parallaxScrollingScale: 0.9,
                                 parallaxScrollingOffset: 50,
                             }}
-                            data={photos}
+                            data={dataInput.photos}
                             renderItem={({ item }) => 
                             <View style={styles.container2}>
                                 <Image source={item} style={styles.image} />
@@ -531,7 +595,7 @@ const DataInput = ({route, navigation}) => {
                         </View>
                     :
                     <View style={styles.container2}>
-                        <Image source={photos[0]} style={[styles.imageSingle]} />
+                        <Image source={dataInput.photos[0]} style={[styles.imageSingle]} />
                         <TouchableOpacity style={styles.addImage} onPress={ChoosePhoto}>
                             <Text style={styles.submitText}>Add Image</Text>
                         </TouchableOpacity>
@@ -555,7 +619,7 @@ const DataInput = ({route, navigation}) => {
                                 defaultValue={paramData?.comment}
                                 placeholder={'Add Comments...'}
                                 placeholderTextColor='#000000'
-                                onChangeText={(value) => setComment(value)}
+                                onChangeText={(value) => dispatch({type: 'comment', comment: value})}
                             />
                         </View>
                     </View>
@@ -567,15 +631,15 @@ const DataInput = ({route, navigation}) => {
                             SaveDataEntry(
                                 {
                                     "id": id,
-                                    photos,
-                                    "day": currDay,
-                                    "month": currMonth,
-                                    "year": currYear,
-                                    "hours": hours,
-                                    "mins": mins,
-                                    "category": category,
-                                    "inputFields": states,
-                                    "comment": comment
+                                    "photos": dataInput.photos,
+                                    "day": dataInput.currDay,
+                                    "month": dataInput.currMonth,
+                                    "year": dataInput.currYear,
+                                    "hours": dataInput.hours,
+                                    "mins": dataInput.mins,
+                                    "category": dataInput.category,
+                                    "inputFields": dataInput.states,
+                                    "comment": dataInput.comment
                                 },
                                 navigation, route.params
                             );
@@ -595,15 +659,15 @@ const DataInput = ({route, navigation}) => {
                             SaveDataEntry(
                                 {
                                     "id": id,
-                                    photos,
-                                    "day": currDay,
-                                    "month": currMonth,
-                                    "year": currYear,
-                                    "hours": hours,
-                                    "mins": mins,
-                                    "category": category,
-                                    "inputFields": states,
-                                    "comment": comment
+                                    "photos": dataInput.photos,
+                                    "day": dataInput.currDay,
+                                    "month": dataInput.currMonth,
+                                    "year": dataInput.currYear,
+                                    "hours": dataInput.hours,
+                                    "mins": dataInput.mins,
+                                    "category": dataInput.category,
+                                    "inputFields": dataInput.states,
+                                    "comment": dataInput.comment
                                 },
                                 navigation, route.params
                             );
@@ -612,7 +676,7 @@ const DataInput = ({route, navigation}) => {
                             <Text style={styles.submitText}>SAVE</Text>
                         </TouchableOpacity>
                         
-                        {(buttons.length > 0 && progress.display) ?
+                        {(buttons.length > 0 && dataInput.progress.display) ?
                         
                         <View style={styles.progress}>
                              <Progress.Circle indeterminate={true} /> 
@@ -642,7 +706,16 @@ const SaveDataEntry = (dataObj, navigation, params) => {
             }
         });
 
-        navigation.navigate('Home', params);     
+        Alert.alert(
+            'Data Saved', 
+            'Your data has been saved on device. Return to Home.',
+            [
+                {text: "OK", onPress: () => {
+                    navigation.navigate('Home', params);    
+                }}
+            ],
+            {cancelable: false}
+        ); 
     }).catch((err) => {
         // store the entry into entries as the only element
         storage.save({
@@ -651,6 +724,17 @@ const SaveDataEntry = (dataObj, navigation, params) => {
                 fields: [dataObj]
             }
         });
+
+        Alert.alert(
+            'Data Saved', 
+            'Your data has been saved on device. Return to Home.',
+            [
+                {text: "OK", onPress: () => {
+                    navigation.navigate('Home', params);    
+                }}
+            ],
+            {cancelable: false}
+        ); 
     });
 }
 

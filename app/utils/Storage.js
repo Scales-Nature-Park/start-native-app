@@ -10,6 +10,16 @@ const storage = new Storage({
   enableCache: true,
 });
 
-export { url };
+const ArrayEquals = (array1, array2, json = false) => {
+  if (!array1 || !array2) return false;
+
+  if (json) return array1.length === array2.length &&
+      array1.every((elem, index) => JSON.stringify(elem) === JSON.stringify(array2[index]));
+  
+  return array1.length == array2.length &&
+    array1.every((elem, index) => elem === array2[index]);
+};
+
+export { url, ArrayEquals };
 
 export default storage;

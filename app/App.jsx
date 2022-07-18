@@ -7,7 +7,7 @@ import Home from './components/Home';
 import PrevEntries from './components/PrevEntries';
 import Search from './components/Search';
 import Account from './components/Account';
-import storage, { url } from './utils/Storage';
+import storage, { url, ArrayEquals } from './utils/Storage';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -15,16 +15,6 @@ import { Alert } from 'react-native';
 
 
 const dataFields = require('./utils/fields.json');
-
-const ArrayEquals = (array1, array2, json) => {
-  if (!array1 || !array2) return false;
-
-  if (json) return array1.length === array2.length &&
-      array1.every((elem, index) => JSON.stringify(elem) === JSON.stringify(array2[index]));
-  
-  return array1.length == array2.length &&
-    array1.every((elem, index) => elem === array2[index]);
-};
 
 /**
  * Asynchronous function that fetches data fields from the server and compares
