@@ -145,6 +145,16 @@
                 }
             },
             {
+                "name": "GPS Accuracy",
+                "dropDown": false,
+                "dataValidation": {
+                    "isNumber": true,
+                    "arguments": "input",
+                    "body":"return (input.toString().trim() != '' && !isNaN(input) && input <= 10) ? true : false;",
+                    "error": "GPS accuracy must be less than 10 meters" 
+                }
+            },
+            {
                 "name": "Project",
                 "dropDown": true,
                 "values": ["Pembroke", "Pelee", "Long Point", "START/CARES", "OTHER"]
@@ -987,6 +997,62 @@
                     "M",
                     "F",
                     "UNK"
+                ]
+            },
+            {
+                "name": "Radio Telemetry",
+                "dropDown": true,
+                "values": ["Yes", "No"],
+                "conditionalFields": [
+                    {
+                        "condition": "Yes",
+                        "name": "Radio Transmitter Attached",
+                        "dropDown": true,
+                        "values": ["Yes", "No"]
+                    },
+                    {
+                        "condition": "Yes",
+                        "name": "Radio Transmitter Frequency",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Yes",
+                        "name": "Radio Tracking Start Time (24hr)",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Yes",
+                        "name": "Radio Tracking End Time (24hr)",
+                        "dropDown": false
+                        
+                    },
+                    {
+                        "condition": "Yes",
+                        "name": "Total Time [AUTOFILL]",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Yes",
+                        "name": "Radio Capture Status",
+                        "dropDown": true,
+                        "values": [
+                            "Handled",
+                            "Pinpointed with visual",
+                            "Pinpointed with no visual",
+                            "No signal"
+                        ]
+                    },
+                    {
+                        "condition": "Yes",
+                        "name": "Atenna Health",
+                        "dropDown": true,
+                        "values": [
+                            "Handled",
+                            "Pinpointed with visual",
+                            "Pinpointed with no visual",
+                            "No signal"
+                        ]
+                    }
                 ]
             }
         ]
@@ -1998,7 +2064,359 @@
                     "Injured-Collected for Rehab",
                     "Field Euthenized"
                 ],
-                "conditionalFields": []
+                "conditionalFields": [
+                    {
+                        "condition": ["Captured", "Observed"],
+                        "name": "TEST!",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Measurer Initials",
+                        "dropDown": true,
+                        "values": [
+                            "ACV",
+                            "ANL",
+                            "ARL",
+                            "AVB",
+                            "AWD",
+                            "BPM",
+                            "CJH",
+                            "CSH",
+                            "DKB",
+                            "DRW",
+                            "EAZ",
+                            "ELO",
+                            "ENT",
+                            "ESA",
+                            "ETU",
+                            "GEC",
+                            "HJH",
+                            "IFS",
+                            "IRS",
+                            "JAK",
+                            "ABC",
+                            "JAR",
+                            "JAZ",
+                            "JBM",
+                            "JUL",
+                            "JUS",
+                            "KAM",
+                            "KCD",
+                            "KEC",
+                            "KGM",
+                            "KLR",
+                            "KVW",
+                            "LAS",
+                            "LMM",
+                            "MEB",
+                            "MFM",
+                            "MHB",
+                            "MHL",
+                            "MWX",
+                            "NAN",
+                            "NAT",
+                            "NMH",
+                            "RMI",
+                            "SED",
+                            "SES",
+                            "SIB",
+                            "SKF",
+                            "SMM",
+                            "STB",
+                            "TAK",
+                            "TDH",
+                            "TMM",
+                            "TSG",
+                            "ZOO"
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Scribe Initials",
+                        "dropDown": true,
+                        "values": [
+                            "ACV",
+                            "ANL",
+                            "ARL",
+                            "AVB",
+                            "AWD",
+                            "BPM",
+                            "CJH",
+                            "CSH",
+                            "DKB",
+                            "DRW",
+                            "EAZ",
+                            "ELO",
+                            "ENT",
+                            "ESA",
+                            "ETU",
+                            "GEC",
+                            "HJH",
+                            "IFS",
+                            "IRS",
+                            "JAK",
+                            "ABC",
+                            "JAR",
+                            "JAZ",
+                            "JBM",
+                            "JUL",
+                            "JUS",
+                            "KAM",
+                            "KCD",
+                            "KEC",
+                            "KGM",
+                            "KLR",
+                            "KVW",
+                            "LAS",
+                            "LMM",
+                            "MEB",
+                            "MFM",
+                            "MHB",
+                            "MHL",
+                            "MWX",
+                            "NAN",
+                            "NAT",
+                            "NMH",
+                            "RMI",
+                            "SED",
+                            "SES",
+                            "SIB",
+                            "SKF",
+                            "SMM",
+                            "STB",
+                            "TAK",
+                            "TDH",
+                            "TMM",
+                            "TSG",
+                            "ZOO"
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Penis Visible",
+                        "dropDown": true,
+                        "values": ["Yes", "No", "Unknown"]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "GravGest",
+                        "dropDown": true,
+                        "values": [
+                            "Yes", 
+                            "No",
+                            "Unknown"
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Gross Mass",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input > 0) ? true : false;",
+                            "error": "Gross Mass must be a non negative number."
+                        }   
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Bag Mass",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
+                            "error": "Bag Mass must be a non negative number."
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Mass Accuracy",
+                        "dropDown": true,
+                        "values": [
+                            "300g",
+                            "1000g",
+                            "2500g",
+                            "25kg"
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Spec Mass",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Bio Sample",
+                        "dropDown": true,
+                        "values": [
+                            "No",
+                            "Blood Taken",
+                            "Tissue Taken"
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Blood Vial ID",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Observed",
+                        "name": "Shed Only",
+                        "dropDown": true,
+                        "values": ["Yes", "No"]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Head Code",
+                        "dropDown": true,
+                        "values": ["B", "R", "L", "N"]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Irregularity Code",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Version Number",
+                        "dropDown": true,
+                        "values": ["V01", "V02", "V03", "V04", "V05"]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Dorsal Code",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Snake Name",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Tail Length (mm)",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body":"return (input.toString().trim() != '' && !isNaN(input) && input > 0) ? true : false;",
+                            "error": "Tail Length must be number greater than 0."
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Subcaudal Count",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input > 0 && input < 100) ? true : false;",
+                            "error": "Subcautal Count must be a number greater than 0 and less than 100"
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Rattle Segments (plus Button)",
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input > 0) ? true : false;",
+                            "error": "The count of Rattle Segements must be greater than 0"
+                        }
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Button Present",
+                        "dropDown": true,
+                        "values": ["Yes", "No", "UNK"]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Proximal Colour",
+                        "dropDown": true,
+                        "values": [
+                            "Neon Red (2021)",
+                            "Neon Green (2020)",
+                            "Dark Blue (2022)"
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Site Code",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Hibernation Site Colour",
+                        "dropDown": true,
+                        "values": [
+                            "Dark Blue",
+                            "Neon Yellow",
+                            "Light Blue",
+                            "Neon Green",
+                            "Neon Pink",
+                            "Red",
+                            "Purple"
+                        ]
+                    },
+                    {
+                        "condition": "Captured",
+                        "name": "Neonate Mother (name)",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": ["Captured", "Observed"],
+                        "name": "In Shed",
+                        "dropDown": true,
+                        "values": ["Yes", "No", "UNK"]
+                    }                 
+                ]
+            },
+            {
+                "name": "Snake Post Process",
+                "dropDown": true,
+                "values": ["Yes", "No"],
+                "conditionalFields": [
+                    {
+                        "condition": "Yes",
+                        "name": "Total L1",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Yes",
+                        "name": "Total L2",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Yes",
+                        "name": "Total L3",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Yes",
+                        "name": "Average Total L [AUTOFILL]",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Yes",
+                        "name": "SVL [AUTOFILL]",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Yes",
+                        "name": "TL:VTL Ratio [AUTOFILL]",
+                        "dropDown": false
+                    },
+                    {
+                        "condition": "Yes",
+                        "name": "Linear Mass Density [AUTOFILL]",
+                        "dropDown": false
+                    }
+
+                ]
             }
         ]
     },

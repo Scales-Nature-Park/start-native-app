@@ -26,6 +26,9 @@ import {
 Feather.loadFont();
 const scalesColors = require('../utils/colors.json');
 
+//To bypass condition match ie: will display no matter the parent value if the condition is 'Any'
+const conditionBypass = 'Any';
+
 // recursive function that display conditional fields of a field
 // and their conditionals
 const displayConditionals = (jsObj, displayField, fields, states) => {
@@ -34,8 +37,14 @@ const displayConditionals = (jsObj, displayField, fields, states) => {
 
     if (jsObj.conditionalFields) {
         for (let field of jsObj.conditionalFields) {
-            if (state.value != field.condition) continue;
+            
+            let cond = field.condition.toString().toLowerCase();
+            let val = state.value.toString().toLowerCase();
+           
 
+            if (!cond.includes(val)) continue;
+            
+        
             displayField(field, fields);
             displayConditionals(field, displayField, fields, states);
         }
