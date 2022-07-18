@@ -90,11 +90,11 @@ const Reducer = (state, action) => {
 
         /* Update the states substate to the states element in action or current states */
         case 'states': 
-            return {...state, states: [...action?.states] || state.states};
+            return {...state, states: [...action?.states] || [...state.states]};
 
         /* Update the photos substate to the photos element in action or current photos */
         case 'photos': 
-            return {...state, photos: [...action?.photos] || state.photos};
+            return {...state, photos: [...action?.photos] || [...state.photos]};
 
         /*  General state change that changes the entire state to a new one */
         case 'general': 
@@ -114,7 +114,7 @@ const DataInput = ({route, navigation}) => {
         currHours = (paramData && paramData.hours) ? paramData.hours : dateObj.getHours(),
         currMins = (paramData && paramData.mins) ? paramData.mins : dateObj.getMinutes();
 
-    const initialFields = (paramData && paramData.inputFields) ? [...paramData.inputFields] : []; 
+    const initialFields = (paramData && paramData.inputFields) ? paramData.inputFields : []; 
     const netInfo = useNetInfo();
 
     let currDay = '0'.repeat(2 - day.toString().length) + day;
@@ -159,7 +159,7 @@ const DataInput = ({route, navigation}) => {
         for (let id of photoIds) (!tempPhotos.includes({uri: url + '/image/' + id})) ? tempPhotos.push({uri: url + '/image/' + id}) : null;
     } 
 
-    if (tempPhotos && dataInput.photos) dispatch({type: 'photos', photos: tempPhotos});
+    if (tempPhotos && !dataInput.photos) dispatch({type: 'photos', photos: tempPhotos});
 
     useEffect(() => {
         let validStates = true;
@@ -250,8 +250,7 @@ const DataInput = ({route, navigation}) => {
                     onUploadProgress: (currProgress) => {
                         dispatch({type: 'progress', progress: {display: true, progress: dataInput.progress.progress + (currProgress.loaded / currProgress.total * i / dataInput.photos.length)}});
                     }
-                }
-                ).catch((e) => {
+                }).catch((e) => {
                     imageForm = undefined;
                 });
     
@@ -498,7 +497,6 @@ const DataInput = ({route, navigation}) => {
     if (allIndex != -1) modfDataFields.push(fieldState.get().dataFields[allIndex]);
     if (catIndex != -1) modfDataFields.push(fieldState.get().dataFields[catIndex]);
 
-
     // loop through all the fields in the dataFields substate of dataInput
     // and display them with theire conditional fields
     let fields = [];
@@ -699,7 +697,16 @@ const SaveDataEntry = (dataObj, navigation, params) => {
             }
         });
 
-        navigation.navigate('Home', params);     
+        Alert.alert(
+            'Data Saved', 
+            'Your data has been saved on device. Return to Home.',
+            [
+                {text: "OK", onPress: () => {
+                    navigation.navigate('Home', params);    
+                }}
+            ],
+            {cancelable: false}
+        ); 
     }).catch((err) => {
         // store the entry into entries as the only element
         storage.save({
@@ -708,6 +715,17 @@ const SaveDataEntry = (dataObj, navigation, params) => {
                 fields: [dataObj]
             }
         });
+
+        Alert.alert(
+            'Data Saved', 
+            'Your data has been saved on device. Return to Home.',
+            [
+                {text: "OK", onPress: () => {
+                    navigation.navigate('Home', params);    
+                }}
+            ],
+            {cancelable: false}
+        ); 
     });
 }
 
