@@ -17,11 +17,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // DB client
-const { MongoClient } = require('mongodb');
+const { MongoClient, Binary } = require('mongodb');
 const { ObjectID } = require('bson');
 const uri = process.env.MONGODB;
 const client = new MongoClient(uri);
 const port = process.env.PORT || 5000;
+const MONGOLIMIT = 15728640; // let the limit be 1 MB less than actual limit to be safe
 
 /**
  * Async function that attempts connecting to the database.
@@ -54,10 +55,10 @@ app.get('/signin', (req, res) => {
         // database for the passed username and password
         let db = client.db('START-Project');
         let credentials = db.collection('credentials');
-        let results = credentials.find({"username": username, "password": password});
-        
+        let results = credentials.find({username, password});
+    
         // retrieve the array of the account and respond with the id
-        results.toArray().then((response) => {
+        results.toArray().then(response => {
             if (response.length <= 0) 
             return res.status(500).send('Invalid credentials. Please verify you have entered the correct username and password.');
 
@@ -110,18 +111,18 @@ app.get('/signin', (req, res) => {
  * them otherwise.
  */
 app.post('/signup', (req, res) => {
-    if (!req.query || !req.query.username || !req.query.password)
+    if (!req.body || !req.body.username || !req.body.password)
     return res.status(400).send('Username and password were not sent to the server.');
 
-    const username = sanitize(req.query.username);
-    const password = sanitize(req.query.password);
+    const username = sanitize(req.body.username);
+    const password = sanitize(req.body.password);
     
     try {
         // search the credentials collection in the START-Project
         // database for the passed username and password
         let db = client.db('START-Project');
         let credentials = db.collection('credentials');
-        let results = credentials.find({"username": username});
+        let results = credentials.find({username});
 
         // retrieve the array of the account and respond with the fail
         // if it has any elements
@@ -132,8 +133,8 @@ app.post('/signup', (req, res) => {
             
             // insert a new document with the username and password
             credentials.insertOne({
-                "username": username,
-                "password": password
+                username,
+                password
             }).then((insertRes) => {
                 return res.status(200).send('');
             }).catch((insertError) => {
@@ -282,11 +283,6 @@ app.post('/imageUpload', async (req, res) => {
         if (!image) {
             return res.status(400).send('Please enter an icon url.');
         }
-
-        // store our image in the uploads folder on our server
-        image.mv('uploads/' + image.name, (err) => {
-            if(err) return res.status(500).send(err);
-        });
         
         // generate a document in the images collection on our database and 
         // and respond with the ObjectID of that document
@@ -294,12 +290,19 @@ app.post('/imageUpload', async (req, res) => {
         let images = db.collection('images');
         let { name, mimetype, size } = image; 
 
-        images.insertOne({ name, mimetype, size }).then((response) => {
+        // store our image in the uploads folder on our server as backup for small
+        // images and as main storage for oversized images 
+        image.mv('uploads/' + image.name, err => {
+            // failure to store oversized image results in error response
+            if(err && image.size > MONGOLIMIT) return res.status(500).send(err);
+        });
+
+        images.insertOne((image.size <= MONGOLIMIT) ? image : {name, mimetype, size}).then(response => {
             return res.status(200).send(response.insertedId);
-        }).catch((err)   => {
+        }).catch(err => {
             return res.status(400).send(err);
         });
-    } catch (err) {
+    } catch(err) {
         res.status(500).send(err.message);
     }
 });
@@ -317,13 +320,9 @@ app.get('/image/:photoId', (req, res) => {
         let db = client.db('START-Project');
         let images = db.collection('images');
 
-        // search an image document using the passed in photoid
-        images.find({_id: ObjectID(params.photoId)}).toArray((err, searchRes) => {
-            if (err) return res.status(400).send(err.message);
-            if (searchRes.length == 0) return res.status(404).send('Could not find an image with the specified ID.');
-
+        const ServerImageFetch = (image) => {
             // get the name of the file we're looking for and search for it in /uploads
-            let name = searchRes[0].name;
+            let name = image.name;
             let file = '';
             fs.readdir('uploads', (err, files) => {
                 if (err) return res.status(500).send(err);
@@ -335,6 +334,30 @@ app.get('/image/:photoId', (req, res) => {
                 if(!file) res.status(404).send('Could not find a file with the name: ', name);
                 else return res.status(200).sendFile(path.join(__dirname + '/uploads/' + file));
             });
+        }
+
+        // search an image document using the passed in photoid
+        images.find({_id: ObjectID(params.photoId)}).toArray((err, searchRes) => {
+            if (err) return res.status(400).send(err.message);
+            if (searchRes.length == 0) return res.status(404).send('Could not find an image with the specified ID.');
+            
+            // Execute this branch when the image is physically stored in the database
+            // document as binary
+            if (searchRes[0].data) {
+                // attempt to write binary image to a file
+                let buffer = searchRes[0]?.data?.read(0, searchRes[0].data.length);
+                fs.writeFile('pic.jpeg', buffer, err => {
+                    if (!err) return res.status(200).sendFile(path.join(__dirname, '/pic.jpeg'));
+
+                    // use server backup on image write failure 
+                    ServerImageFetch(searchRes[0]);
+                });
+            }
+
+            // Oversized images will likely be the ones to enter this branch > MONGOLIMIT
+            // unless someone manually deleted image data from the database for some reason 
+            else ServerImageFetch(searchRes[0]);
+
         });
     } catch(err) {
         res.status(500).send(err.message);

@@ -110,7 +110,7 @@ const UpdatePassword = (id, stats, scrollRef) => {
       method: 'put',
       url: url + '/password/' + id,
       params: {admin: true, newPassword: password} 
-    }).catch((err) => {
+    }).catch(err => {
       let message = err?.response?.data ? err?.response?.data : err.message;
       Alert.alert('ERROR', message);
     });
@@ -135,7 +135,7 @@ const DeleteAccount = (id, stats) => {
           url: url + '/user/' + id
         }).then(() => {
           FetchStats(stats);
-        }).catch((err) => {
+        }).catch(err => {
           let message = err?.response?.data ? err?.response?.data : err.message;
           Alert.alert('ERROR', message);
         });
@@ -174,7 +174,7 @@ const PushRelease = (stats) => {
     method: 'put',
     url: url + '/addFields',
     data: {fields: stats.get().fields}
-  }).then((response) => {
+  }).then(response => {
     Alert.alert('Update Released', response.data);
   }).catch(err => {
     Alert.alert('ERROR', err.response.data || err.message);

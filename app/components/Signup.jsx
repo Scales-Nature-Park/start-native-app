@@ -62,14 +62,14 @@ const Signup = ({ navigation }) => {
       axios({
         method: 'post',
         url: url + '/signup',
-        params: {
-          "username": username,
-          "password": password
+        data: {
+          username,
+          password
         }
-      }).then((response) => {
+      }).then(response => {
         navigation.navigate('Login');
-      }).catch((error) => {
-        Alert.alert('ERROR', error.response.data);
+      }).catch(error => {
+        Alert.alert('ERROR', error?.response?.data || error.message);
         return;
       });
     };

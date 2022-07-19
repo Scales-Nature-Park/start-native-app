@@ -336,9 +336,9 @@ const Search = ({route, navigation}) => {
                             category,
                             states: states.get()
                         }
-                    }).then((response) => {
-                        let entries = [];
+                    }).then(response => {
                         // display list of entries under the Add criteria button
+                        let entries = [];
                         for (let i = response.data.length - 1; i >= 0; i--) {
                             entries = [...entries, <Entry data={response.data[i]} onPress={() => {
                                 navigation.navigate('DataEntry', {...route.params, data: response.data[i], search: true});
@@ -346,8 +346,8 @@ const Search = ({route, navigation}) => {
                         }
                         setEntries(entries);
                         if (entries.length == 0) Alert.alert('Response', 'No entries found that match the specified criteria.');
-                    }).catch((error) => {
-                        Alert.alert('ERROR', error.message);
+                    }).catch(error => {
+                        Alert.alert('ERROR', error.response.data || error.message);
                     });
                 }}>
                     <Text style={styles.emptyText}>SEARCH</Text>

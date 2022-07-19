@@ -46,16 +46,16 @@ const LoginForm = ({ navigation }) => {
         method: 'get',
         url: url + '/signin',
         params: {
-          "username": username,
-          "password": password
+          username,
+          password
         }
-      }).then((response) => {
+      }).then(response => {
         setID(response.data);
         storage.save({
           key: 'loginState', 
           data: {
-            "username": username,
-            "password": password,
+            username,
+            password,
             "id": response.data
           }
         }); 
@@ -64,8 +64,8 @@ const LoginForm = ({ navigation }) => {
           "id": response.data,
           "onlineMode": true,
         });
-      }).catch(function (error) {
-        Alert.alert('ERROR', error.response.data);
+      }).catch(error => {
+        Alert.alert('ERROR', error.response.data || error.message);
         return;
       });
     };

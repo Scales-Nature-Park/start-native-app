@@ -249,19 +249,21 @@ const DataInput = ({route, navigation}) => {
             for (let photo of dataInput.photos) {
                 i++
                 let imageForm = createFormData(photo);
-        
-                let photoId = await    
-                axios.post(url + '/imageUpload', imageForm, {
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'multipart/form-data',
-                    },
-                    onUploadProgress: (currProgress) => {
-                        dispatch({type: 'progress', progress: {display: true, progress: dataInput.progress.progress + (currProgress.loaded / currProgress.total * i / dataInput.photos.length)}});
-                    }
-                }).catch((e) => {
+                
+                dispatch({type: 'progress', progress: {display: true, progress: 1}});
+                
+                let photoId = undefined;
+                try {
+                    photoId = await    
+                    axios.post(url + '/imageUpload', imageForm, {
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'multipart/form-data',
+                        }
+                    });
+                } catch(e) {
                     imageForm = undefined;
-                });
+                };
     
                 // if image upload fails, try it again. give network error alert if on second attempt
                 if(!imageForm) {
@@ -289,7 +291,7 @@ const DataInput = ({route, navigation}) => {
                 "inputFields": dataInput.states,
                 "comment": dataInput.comment
             }
-        }).then((response) => {
+        }).then(response => {
             dispatch({type: 'progress', progress: {progress: 0, display: false}});
             Alert.alert(
                 'Successful Data Entry', 
@@ -301,9 +303,9 @@ const DataInput = ({route, navigation}) => {
                 ],
                 {cancelable: false}
             );
-        }).catch(function (error) {
+        }).catch(error => {
             dispatch({type: 'progress', progress: {progress: 0, display: false}});
-            Alert.alert('ERROR', error.message);
+            Alert.alert('ERROR', error?.response?.data || error.message);
             return;
         });
     }
@@ -542,6 +544,7 @@ const DataInput = ({route, navigation}) => {
                     Alert.alert('ERROR', (validityError != '') ? validityError : 'Invalid data.');
                     return;
                 }
+
                 if (!dataInput.photos || dataInput.photos.length <= 0) {
                     Alert.alert('WARNING', "You haven't uploaded an image.",
                         [
