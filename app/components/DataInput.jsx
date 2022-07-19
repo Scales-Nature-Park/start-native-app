@@ -519,8 +519,6 @@ const DataInput = ({route, navigation}) => {
 
             if (!state) {
                 state = {"name": field.name.toLowerCase(), "value": '', "dataValidation": field.dataValidation};
-                if (field.dropDown) state.value = field.values[0].toString();
-
                 tempStates = [...tempStates, state];
                 editedStates = true;
             }
