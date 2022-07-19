@@ -123,7 +123,7 @@ const DataInput = ({route, navigation}) => {
         currHours = (paramData && paramData.hours) ? paramData.hours : dateObj.getHours(),
         currMins = (paramData && paramData.mins) ? paramData.mins : dateObj.getMinutes();
 
-    const initialFields = (paramData && paramData.inputFields) ? paramData.inputFields : []; 
+    const initialFields = (paramData && paramData.inputFields) ? JSON.parse(JSON.stringify(paramData.inputFields)) : []; 
     const netInfo = useNetInfo();
 
     let currDay = '0'.repeat(2 - day.toString().length) + day;
@@ -249,19 +249,21 @@ const DataInput = ({route, navigation}) => {
             for (let photo of dataInput.photos) {
                 i++
                 let imageForm = createFormData(photo);
-        
-                let photoId = await    
-                axios.post(url + '/imageUpload', imageForm, {
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'multipart/form-data',
-                    },
-                    onUploadProgress: (currProgress) => {
-                        dispatch({type: 'progress', progress: {display: true, progress: dataInput.progress.progress + (currProgress.loaded / currProgress.total * i / dataInput.photos.length)}});
-                    }
-                }).catch((e) => {
+                
+                dispatch({type: 'progress', progress: {display: true, progress: 1}});
+                
+                let photoId = undefined;
+                try {
+                    photoId = await    
+                    axios.post(url + '/imageUpload', imageForm, {
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'multipart/form-data',
+                        }
+                    });
+                } catch(e) {
                     imageForm = undefined;
-                });
+                };
     
                 // if image upload fails, try it again. give network error alert if on second attempt
                 if(!imageForm) {
@@ -289,7 +291,7 @@ const DataInput = ({route, navigation}) => {
                 "inputFields": dataInput.states,
                 "comment": dataInput.comment
             }
-        }).then((response) => {
+        }).then(response => {
             dispatch({type: 'progress', progress: {progress: 0, display: false}});
             Alert.alert(
                 'Successful Data Entry', 
@@ -301,9 +303,9 @@ const DataInput = ({route, navigation}) => {
                 ],
                 {cancelable: false}
             );
-        }).catch(function (error) {
+        }).catch(error => {
             dispatch({type: 'progress', progress: {progress: 0, display: false}});
-            Alert.alert('ERROR', error.message);
+            Alert.alert('ERROR', error?.response?.data || error.message);
             return;
         });
     }
@@ -408,8 +410,8 @@ const DataInput = ({route, navigation}) => {
 
         if (field.dropDown) {
             let dropVals = [];
-            let initId = (paramData) ? -1 : 0;
-            let initValue = paramData?.inputFields?.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0];
+            let initId = -1;
+            let initValue = initialFields?.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0];
 
             // find initial value and use initId to refer to the initialValue
             for (let i = 0; i < field.values.length; i++) {
@@ -429,7 +431,6 @@ const DataInput = ({route, navigation}) => {
                         closeOnSubmit={true}
                         initialValue={{ id: initId.toString() }}
                         showClear={false}
-                        onClear={() => changeState({title: ''})}
                         onSelectItem={(item) => changeState(field, item)}
                         direction={'up'}
                         initialNumToRender={5} 
@@ -453,7 +454,6 @@ const DataInput = ({route, navigation}) => {
                         <TextInput
                             style={styles.TextInput}
                             placeholder={'Enter ' + field.name}
-                            defaultValue={(paramData && paramData.inputFields.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? paramData.inputFields.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : ''}
                             value={(dataInput.states.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? dataInput.states.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : ''}
                             placeholderTextColor='#000000'
                             onChangeText={(value) => {
@@ -521,8 +521,6 @@ const DataInput = ({route, navigation}) => {
 
             if (!state) {
                 state = {"name": field.name.toLowerCase(), "value": '', "dataValidation": field.dataValidation};
-                if (field.dropDown) state.value = field.values[0].toString();
-
                 tempStates = [...tempStates, state];
                 editedStates = true;
             }
@@ -546,6 +544,7 @@ const DataInput = ({route, navigation}) => {
                     Alert.alert('ERROR', (validityError != '') ? validityError : 'Invalid data.');
                     return;
                 }
+
                 if (!dataInput.photos || dataInput.photos.length <= 0) {
                     Alert.alert('WARNING', "You haven't uploaded an image.",
                         [
@@ -575,23 +574,23 @@ const DataInput = ({route, navigation}) => {
 
                     {(dataInput.photos) ? (dataInput.photos.length > 1) ?
                         <View style={styles.container2}>
-                        <Carousel
-                            width={Dimensions.get('window').width}
-                            height={220}
-                            mode="parallax"
-                            modeConfig={{
-                                parallaxScrollingScale: 0.9,
-                                parallaxScrollingOffset: 50,
-                            }}
-                            data={dataInput.photos}
-                            renderItem={({ item }) => 
-                            <View style={styles.container2}>
-                                <Image source={item} style={styles.image} />
-                            </View>}
-                        />
-                        <TouchableOpacity style={[styles.addImage, {marginTop: 0}]} onPress={ChoosePhoto}>
-                            <Text style={styles.submitText}>Add Image</Text>
-                        </TouchableOpacity>
+                            <Carousel
+                                width={Dimensions.get('window').width}
+                                height={220}
+                                mode="parallax"
+                                modeConfig={{
+                                    parallaxScrollingScale: 0.9,
+                                    parallaxScrollingOffset: 50,
+                                }}
+                                data={dataInput.photos}
+                                renderItem={({ item }) => 
+                                <View style={styles.container2}>
+                                    <Image source={item} style={styles.image} />
+                                </View>}
+                            />
+                            <TouchableOpacity style={[styles.addImage, {marginTop: 0}]} onPress={ChoosePhoto}>
+                                <Text style={styles.submitText}>Add Image</Text>
+                            </TouchableOpacity>
                         </View>
                     :
                     <View style={styles.container2}>

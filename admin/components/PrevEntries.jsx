@@ -15,7 +15,7 @@ const PrevEntries = ({ params, setScreen }) => {
       method: 'get',
       url: url + '/search',
       params: {}
-    }).then((response) => {
+    }).then(response => {
       // display list of entries 
       let entries = [];
       for (let i = response.data.length - 1; i >= 0; i--) {
@@ -25,8 +25,8 @@ const PrevEntries = ({ params, setScreen }) => {
         }
 
         (entries.length > 0) ? entryElems.set(entries) : entryElems.set([<Text style={styles.emptyTextDark}>No Entries Found.</Text>]);;
-    }).catch((error) => {
-        Alert.alert('ERROR', error.message);
+    }).catch(error => {
+        Alert.alert('ERROR', error?.response?.data || error.message);
     });
   }
 

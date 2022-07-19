@@ -172,7 +172,7 @@ const DataInput = ({ params, setScreen }) => {
         axios({
             method: 'delete',
             url: url + '/entry/' + entryId
-        }).then((response) => {
+        }).then(response => {
             Alert.alert('Entry Deleted', response.data, [{
                 text: 'Ok',
                 onPress: () => {

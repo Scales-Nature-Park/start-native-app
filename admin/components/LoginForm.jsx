@@ -28,10 +28,10 @@ const LoginForm = ({ params, setScreen }) => {
       //     "username": username,
       //     "password": password
       //   }
-      // }).then((response) => {
+      // }).then(response => {
       //   setScreen({val: 'Dashboard', params: {username, id}});
-      // }).catch(function (error) {
-      //   Alert.alert('ERROR', error.response.data);
+      // }).catch(error => {
+      //   Alert.alert('ERROR', error?.response?.data || error.message);
       //   return;
       // });
     };
