@@ -974,7 +974,7 @@
             },
             {
                 "name": "Age",
-                "dropDown": false,
+                "dropDown": true,
                 "values": [
                     "Hatchling",
                     "Juvenile",
@@ -982,13 +982,7 @@
                     "Neonate",
                     "Sub-Adult",
                     "UNK"
-                ],
-                "dataValidation": {
-                    "isNumber": true,
-                    "arguments": "input",
-                    "body":"return (input.toString().trim() != '' && !isNaN(input) && input >= 0) ? true : false;",
-                    "error": "Age needs to be a number greater than or equal to 0."
-                }
+                ]
             },
             {
                 "name": "Sex",
@@ -1029,7 +1023,15 @@
                     {
                         "condition": "Yes",
                         "name": "Total Time [AUTOFILL]",
-                        "dropDown": false
+                        "dropDown": false,
+                        "autoFill": {
+                            "dependencies": [
+                                 "Radio Tracking Start Time (24hr)", 
+                                 "Radio Tracking End Time (24hr)"
+                            ],
+                            "arguments": "dependencies",
+                            "body": "return dependencies[1] - dependencies[0];"
+                       }
                     },
                     {
                         "condition": "Yes",

@@ -29,37 +29,78 @@ const scalesColors = require('../utils/colors.json');
 //To bypass condition match ie: will display no matter the parent value if the condition is 'Any'
 const conditionBypass = 'Any';
 
+const AutoFillField = (field, tempStates, state, meta) => {
+    if (!field.autoFill) return;
+    
+    let dependencyVals = [], autoFillFail = false;
+
+    // loop over all dependencies and try to find a state that matches the name 
+    for (let dependency of field.autoFill.dependencies) {
+        let dependencyState = tempStates.filter(elem => elem.name.toLowerCase() == dependency.toLowerCase())[0];
+
+        // fail autofill if no matching state is found
+        if (!dependencyState) {
+            autoFillFail = true; 
+            break;
+        }
+
+        dependencyVals.push(dependencyState.value);
+    }
+    
+    // if autofill didn't fail attempt to set the state value to the returned
+    // value of the function
+    if (!autoFillFail) {
+        let autoFill = new Function(field.autoFill.arguments, field.autoFill.body);
+        let newVal = autoFill(dependencyVals);
+
+        if (newVal && state.value != newVal) {
+            state.value = newVal;
+            meta.editedStates = true;
+        }
+    }
+}
+
 // recursive function that display conditional fields of a field
 // and their conditionals
-const displayConditionals = (jsObj, displayField, fields, states) => {
+const displayConditionals = (jsObj, displayField, fields, states, autoFill, meta) => {
     let state = states.filter(element => element.name.toLowerCase() == jsObj.name.toLowerCase())[0];
     if(!state) return;
 
-    if (jsObj.conditionalFields) {
-        for (let field of jsObj.conditionalFields) {
-            let val = state.value.toString().toLowerCase();
-            
-            // if the condition is a single string then check if it matches the value
-            if (typeof field.condition == 'string' && field.condition.toLowerCase() != val && field.condition.toLowerCase() != conditionBypass) continue;
+    if (!jsObj.conditionalFields) return;
+    
+    for (let field of jsObj.conditionalFields) {
+        let val = state.value.toString().toLowerCase();
+        
+        // if the condition is a single string then check if it matches the value
+        if (typeof field.condition == 'string' && field.condition.toLowerCase() != val && field.condition.toLowerCase() != conditionBypass) continue;
 
-            // if it's a list of strings then check if any of the strings match the value
-            else if (typeof field.condition == 'object') {
-                let conditionMet = true;
-                try {
-                    for (let cond of field.condition) {
-                        if (cond.toString().toLowerCase() != val) conditionMet = false;
-                    }
-                } catch (err) {
-                    continue;
+        // if it's a list of strings then check if any of the strings match the value
+        else if (typeof field.condition == 'object') {
+            let conditionMet = true;
+            try {
+                for (let cond of field.condition) {
+                    if (cond.toString().toLowerCase() != val) conditionMet = false;
                 }
-                
-                if (!conditionMet) continue;
+            } catch (err) {
+                continue;
             }
-               
-            // display field and conditionals if condition is met
-            displayField(field, fields);
-            displayConditionals(field, displayField, fields, states);
+            
+            if (!conditionMet) continue;
         }
+        
+        let newState = states.filter(elem => elem.name.toLowerCase() == field.name.toLowerCase())[0];
+
+        if (!newState) {
+            newState = {name: field.name.toLowerCase(), value: '', dataValidation: field.dataValidation};
+            states.push(newState);
+            meta.editedStates = true;
+        }
+
+        autoFill(field, states, newState, meta);
+            
+        // display field and conditionals if condition is met
+        displayField(field, fields);
+        displayConditionals(field, displayField, fields, states, autoFill, meta);
     }
 }
 
@@ -524,7 +565,7 @@ const DataInput = ({route, navigation}) => {
     // and display them with theire conditional fields
     let fields = [];
     let tempStates = [...dataInput.states];
-    let editedStates = false; 
+    let meta = {editedFields: false}; 
     for (let i = 0; i < modfDataFields.length; i++) {
         for (let field of modfDataFields[i].conditionalFields) {
             displayField(field, fields);                 
@@ -539,13 +580,15 @@ const DataInput = ({route, navigation}) => {
                 state = {"name": field.name.toLowerCase(), "value": (state) ? state.value : '', "dataValidation": field.dataValidation};
                    
                 tempStates = [...tempStates, state];
-                editedStates = true;
+                meta.editedStates = true;
             }
             
-            if (field.conditionalFields) displayConditionals(field, displayField, fields, tempStates);
+            AutoFillField(field, tempStates, state, meta);
+            
+            if (field.conditionalFields) displayConditionals(field, displayField, fields, tempStates, AutoFillField, meta);
         }
     }
-    if (editedStates) dispatch({type: 'states', states: [...tempStates]});
+    if (meta.editedStates) dispatch({type: 'states', states: [...tempStates]});
     
     let buttons = [];
 
