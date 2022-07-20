@@ -37,22 +37,37 @@ const displayConditionals = (jsObj, displayField, fields, states) => {
 
     if (jsObj.conditionalFields) {
         for (let field of jsObj.conditionalFields) {
-            
-            let cond = field.condition.toString().toLowerCase();
             let val = state.value.toString().toLowerCase();
-           
-
-            if (!cond.includes(val)) continue;
             
-        
+            // if the condition is a single string then check if it matches the value
+            if (typeof field.condition == 'string' && field.condition.toLowerCase() != val && field.condition.toLowerCase() != conditionBypass) continue;
+
+            // if it's a list of strings then check if any of the strings match the value
+            else if (typeof field.condition == 'object') {
+                let conditionMet = true;
+                try {
+                    for (let cond of field.condition) {
+                        if (cond.toString().toLowerCase() != val) conditionMet = false;
+                    }
+                } catch (err) {
+                    continue;
+                }
+                
+                if (!conditionMet) continue;
+            }
+               
+            // display field and conditionals if condition is met
             displayField(field, fields);
             displayConditionals(field, displayField, fields, states);
         }
     }
 }
 
-const FetchFields = (state) => {
-    storage.load({key: 'fields'}).then(fields => state.set({loadedFields: true, dataFields: [...fields]})).catch(() => {});
+const FetchFields = (state, dispatch) => {
+    storage.load({key: 'fields'}).then(fields => { 
+        state.set({loadedFields: true, dataFields: [...fields]});
+        dispatch({type: 'states', states: []});
+    }).catch(() => {});
 };
 
 const Reducer = (state, action) => {
@@ -134,7 +149,6 @@ const DataInput = ({route, navigation}) => {
 
     let category = (paramData && paramData.category) ? paramData.category : 'Turtle';
     let comment = (paramData && paramData.comment) ? paramData.comment : '';
-    let states = [...initialFields];
     let valid = false;
     let photos = (paramData && paramData.photos) ? [...paramData.photos] : null;
     let dark = true;
@@ -142,10 +156,10 @@ const DataInput = ({route, navigation}) => {
     let dataFields = require('../utils/fields.json');
     let loadedFields = false;
 
-    const [dataInput, dispatch] = useReducer(Reducer, {currDay, currMonth, currYear, hours, mins, category, comment, states, valid, photos, dark, progress});
+    const [dataInput, dispatch] = useReducer(Reducer, {currDay, currMonth, currYear, hours, mins, category, comment, states: [], valid, photos, dark, progress});
     const fieldState = useSyncState({loadedFields, dataFields: [...dataFields]});
 
-    if (!fieldState.get().loadedFields) FetchFields(fieldState);
+    if (!fieldState.get().loadedFields) FetchFields(fieldState, dispatch);
     
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -174,7 +188,7 @@ const DataInput = ({route, navigation}) => {
         let validStates = true;
 
         // validate all the states with their dataValidation functions
-        dataInput.states.forEach((state) => {
+        dataInput.states.forEach(state => {
             if (!state.dataValidation || !state.dataValidation.arguments) return;
             
             // validate the data after states are set
@@ -411,7 +425,7 @@ const DataInput = ({route, navigation}) => {
         if (field.dropDown) {
             let dropVals = [];
             let initId = -1;
-            let initValue = initialFields?.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0];
+            let initValue = initialFields?.filter(element => element.name.toLowerCase() == field.name.toLowerCase())[0];
 
             // find initial value and use initId to refer to the initialValue
             for (let i = 0; i < field.values.length; i++) {
@@ -517,10 +531,14 @@ const DataInput = ({route, navigation}) => {
             if (field.name.toLowerCase() == 'date' || field.name.toLowerCase() == 'time') continue;  
 
             // set a state for the fields in the sates list
-            let state = tempStates.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0];
+            let state = tempStates.filter(element => element.name.toLowerCase() == field.name.toLowerCase())[0];
+            if (state?.name.toLowerCase() == 'gps accuracy') console.log(field.name);
 
             if (!state) {
-                state = {"name": field.name.toLowerCase(), "value": '', "dataValidation": field.dataValidation};
+                // get initial value passed as in paramData
+                state = initialFields?.filter(elem => elem.name.toLowerCase() == field.name.toLowerCase())[0];
+                state = {"name": field.name.toLowerCase(), "value": (state) ? state.value : '', "dataValidation": field.dataValidation};
+                   
                 tempStates = [...tempStates, state];
                 editedStates = true;
             }
