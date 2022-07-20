@@ -97,7 +97,7 @@ const Account = ({ route, navigation }) => {
         axios({
             method: 'put',
             url: url + '/password/' + accountId,
-            params: {
+            data: {
                 currentPassword: currPass,
                 newPassword: password
             }

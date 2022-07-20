@@ -109,7 +109,7 @@ const UpdatePassword = (id, stats, scrollRef) => {
     axios({
       method: 'put',
       url: url + '/password/' + id,
-      params: {admin: true, newPassword: password} 
+      data: {admin: true, newPassword: password} 
     }).catch(err => {
       let message = err?.response?.data ? err?.response?.data : err.message;
       Alert.alert('ERROR', message);

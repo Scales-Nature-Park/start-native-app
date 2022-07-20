@@ -279,7 +279,7 @@ const DataInput = ({route, navigation}) => {
         axios({
             method: 'post',
             url: url + '/dataEntry',
-            params: {
+            data: {
                 "id": id,
                 photoIds,
                 "day": dataInput.currDay,
