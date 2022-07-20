@@ -32,7 +32,7 @@ const conditionBypass = 'Any';
 // recursive function that display conditional fields of a field
 // and their conditionals
 const displayConditionals = (jsObj, displayField, fields, states) => {
-    let state = states.filter((element) => element.name.toLowerCase() == jsObj.name.toLowerCase())[0];
+    let state = states.filter(element => element.name.toLowerCase() == jsObj.name.toLowerCase())[0];
     if(!state) return;
 
     if (jsObj.conditionalFields) {
@@ -468,7 +468,7 @@ const DataInput = ({route, navigation}) => {
                         <TextInput
                             style={styles.TextInput}
                             placeholder={'Enter ' + field.name}
-                            value={(dataInput.states.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? dataInput.states.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : ''}
+                            value={(dataInput.states.filter(element => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? dataInput.states.filter(element => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : ''}
                             placeholderTextColor='#000000'
                             onChangeText={(value) => {
                                 let tempStates = dataInput.states.slice();
@@ -532,7 +532,6 @@ const DataInput = ({route, navigation}) => {
 
             // set a state for the fields in the sates list
             let state = tempStates.filter(element => element.name.toLowerCase() == field.name.toLowerCase())[0];
-            if (state?.name.toLowerCase() == 'gps accuracy') console.log(field.name);
 
             if (!state) {
                 // get initial value passed as in paramData
@@ -558,7 +557,7 @@ const DataInput = ({route, navigation}) => {
             onPress={() => {
                 // get the data validation value before proceedoing
                 // if its false return with an alert
-                if (!valid){
+                if (!dataInput.valid){
                     Alert.alert('ERROR', (validityError != '') ? validityError : 'Invalid data.');
                     return;
                 }
@@ -668,7 +667,7 @@ const DataInput = ({route, navigation}) => {
                         onPress={() => {
                             // get the data validation value before proceedoing
                             // if its false return with an alert
-                            if (!valid){
+                            if (!dataInput.valid){
                                 Alert.alert('ERROR', (validityError != '') ? validityError : 'Invalid data.');
                                 return;
                             }
