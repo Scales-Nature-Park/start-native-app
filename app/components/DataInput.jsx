@@ -29,30 +29,86 @@ const scalesColors = require('../utils/colors.json');
 //To bypass condition match ie: will display no matter the parent value if the condition is 'Any'
 const conditionBypass = 'Any';
 
-// recursive function that display conditional fields of a field
-// and their conditionals
-const displayConditionals = (jsObj, displayField, fields, states) => {
-    let state = states.filter((element) => element.name.toLowerCase() == jsObj.name.toLowerCase())[0];
-    if(!state) return;
+const AutoFillField = (field, tempStates, state, meta) => {
+    if (!field.autoFill) return;
+    
+    let dependencyVals = [], autoFillFail = false;
 
-    if (jsObj.conditionalFields) {
-        for (let field of jsObj.conditionalFields) {
-            
-            let cond = field.condition.toString().toLowerCase();
-            let val = state.value.toString().toLowerCase();
-           
+    // loop over all dependencies and try to find a state that matches the name 
+    for (let dependency of field.autoFill.dependencies) {
+        let dependencyState = tempStates.filter(elem => elem.name.toLowerCase() == dependency.toLowerCase())[0];
 
-            if (!cond.includes(val)) continue;
-            
-        
-            displayField(field, fields);
-            displayConditionals(field, displayField, fields, states);
+        // fail autofill if no matching state is found
+        if (!dependencyState) {
+            autoFillFail = true; 
+            break;
+        }
+
+        dependencyVals.push(dependencyState.value);
+    }
+    
+    // if autofill didn't fail attempt to set the state value to the returned
+    // value of the function
+    if (!autoFillFail) {
+        let autoFill = new Function(field.autoFill.arguments, field.autoFill.body);
+        let newVal = autoFill(dependencyVals);
+
+        if (newVal && state.value != newVal) {
+            state.value = newVal;
+            meta.editedStates = true;
         }
     }
 }
 
-const FetchFields = (state) => {
-    storage.load({key: 'fields'}).then(fields => state.set({loadedFields: true, dataFields: [...fields]})).catch(() => {});
+// recursive function that display conditional fields of a field
+// and their conditionals
+const displayConditionals = (jsObj, displayField, fields, states, autoFill, meta) => {
+    let state = states.filter(element => element.name.toLowerCase() == jsObj.name.toLowerCase())[0];
+    if(!state) return;
+
+    if (!jsObj.conditionalFields) return;
+    
+    for (let field of jsObj.conditionalFields) {
+        let val = state.value.toString().toLowerCase();
+        
+        // if the condition is a single string then check if it matches the value
+        if (typeof field.condition == 'string' && field.condition.toLowerCase() != val && field.condition.toLowerCase() != conditionBypass) continue;
+
+        // if it's a list of strings then check if any of the strings match the value
+        else if (typeof field.condition == 'object') {
+            let conditionMet = true;
+            try {
+                for (let cond of field.condition) {
+                    if (cond.toString().toLowerCase() != val) conditionMet = false;
+                }
+            } catch (err) {
+                continue;
+            }
+            
+            if (!conditionMet) continue;
+        }
+        
+        let newState = states.filter(elem => elem.name.toLowerCase() == field.name.toLowerCase())[0];
+
+        if (!newState) {
+            newState = {name: field.name.toLowerCase(), value: '', dataValidation: field.dataValidation};
+            states.push(newState);
+            meta.editedStates = true;
+        }
+
+        autoFill(field, states, newState, meta);
+            
+        // display field and conditionals if condition is met
+        displayField(field, fields);
+        displayConditionals(field, displayField, fields, states, autoFill, meta);
+    }
+}
+
+const FetchFields = (state, dispatch) => {
+    storage.load({key: 'fields'}).then(fields => { 
+        state.set({loadedFields: true, dataFields: [...fields]});
+        dispatch({type: 'states', states: []});
+    }).catch(() => {});
 };
 
 const Reducer = (state, action) => {
@@ -134,7 +190,6 @@ const DataInput = ({route, navigation}) => {
 
     let category = (paramData && paramData.category) ? paramData.category : 'Turtle';
     let comment = (paramData && paramData.comment) ? paramData.comment : '';
-    let states = [...initialFields];
     let valid = false;
     let photos = (paramData && paramData.photos) ? [...paramData.photos] : null;
     let dark = true;
@@ -142,10 +197,10 @@ const DataInput = ({route, navigation}) => {
     let dataFields = require('../utils/fields.json');
     let loadedFields = false;
 
-    const [dataInput, dispatch] = useReducer(Reducer, {currDay, currMonth, currYear, hours, mins, category, comment, states, valid, photos, dark, progress});
+    const [dataInput, dispatch] = useReducer(Reducer, {currDay, currMonth, currYear, hours, mins, category, comment, states: [], valid, photos, dark, progress});
     const fieldState = useSyncState({loadedFields, dataFields: [...dataFields]});
 
-    if (!fieldState.get().loadedFields) FetchFields(fieldState);
+    if (!fieldState.get().loadedFields) FetchFields(fieldState, dispatch);
     
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -174,7 +229,7 @@ const DataInput = ({route, navigation}) => {
         let validStates = true;
 
         // validate all the states with their dataValidation functions
-        dataInput.states.forEach((state) => {
+        dataInput.states.forEach(state => {
             if (!state.dataValidation || !state.dataValidation.arguments) return;
             
             // validate the data after states are set
@@ -411,7 +466,7 @@ const DataInput = ({route, navigation}) => {
         if (field.dropDown) {
             let dropVals = [];
             let initId = -1;
-            let initValue = initialFields?.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0];
+            let initValue = initialFields?.filter(element => element.name.toLowerCase() == field.name.toLowerCase())[0];
 
             // find initial value and use initId to refer to the initialValue
             for (let i = 0; i < field.values.length; i++) {
@@ -454,7 +509,7 @@ const DataInput = ({route, navigation}) => {
                         <TextInput
                             style={styles.TextInput}
                             placeholder={'Enter ' + field.name}
-                            value={(dataInput.states.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? dataInput.states.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : ''}
+                            value={(dataInput.states.filter(element => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? dataInput.states.filter(element => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : ''}
                             placeholderTextColor='#000000'
                             onChangeText={(value) => {
                                 let tempStates = dataInput.states.slice();
@@ -510,25 +565,30 @@ const DataInput = ({route, navigation}) => {
     // and display them with theire conditional fields
     let fields = [];
     let tempStates = [...dataInput.states];
-    let editedStates = false; 
+    let meta = {editedFields: false}; 
     for (let i = 0; i < modfDataFields.length; i++) {
         for (let field of modfDataFields[i].conditionalFields) {
             displayField(field, fields);                 
             if (field.name.toLowerCase() == 'date' || field.name.toLowerCase() == 'time') continue;  
 
             // set a state for the fields in the sates list
-            let state = tempStates.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0];
+            let state = tempStates.filter(element => element.name.toLowerCase() == field.name.toLowerCase())[0];
 
             if (!state) {
-                state = {"name": field.name.toLowerCase(), "value": '', "dataValidation": field.dataValidation};
+                // get initial value passed as in paramData
+                state = initialFields?.filter(elem => elem.name.toLowerCase() == field.name.toLowerCase())[0];
+                state = {"name": field.name.toLowerCase(), "value": (state) ? state.value : '', "dataValidation": field.dataValidation};
+                   
                 tempStates = [...tempStates, state];
-                editedStates = true;
+                meta.editedStates = true;
             }
             
-            if (field.conditionalFields) displayConditionals(field, displayField, fields, tempStates);
+            AutoFillField(field, tempStates, state, meta);
+            
+            if (field.conditionalFields) displayConditionals(field, displayField, fields, tempStates, AutoFillField, meta);
         }
     }
-    if (editedStates) dispatch({type: 'states', states: [...tempStates]});
+    if (meta.editedStates) dispatch({type: 'states', states: [...tempStates]});
     
     let buttons = [];
 
@@ -540,7 +600,7 @@ const DataInput = ({route, navigation}) => {
             onPress={() => {
                 // get the data validation value before proceedoing
                 // if its false return with an alert
-                if (!valid){
+                if (!dataInput.valid){
                     Alert.alert('ERROR', (validityError != '') ? validityError : 'Invalid data.');
                     return;
                 }
@@ -650,7 +710,7 @@ const DataInput = ({route, navigation}) => {
                         onPress={() => {
                             // get the data validation value before proceedoing
                             // if its false return with an alert
-                            if (!valid){
+                            if (!dataInput.valid){
                                 Alert.alert('ERROR', (validityError != '') ? validityError : 'Invalid data.');
                                 return;
                             }

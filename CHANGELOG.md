@@ -4,6 +4,66 @@ changes, please include a short explanation of what your changes are trying to a
 with the rest of the codebase and/or how to run and build up on them. You can treat this file as a more in depth
 commit log and place your changes over the previous changes, below this message.
 
+## Multiple Field Display Conditions & Field Autofill Support
+#### Changes: 
+Added support for multiple conditions that display conditional fields.  
+
+**There are 2 types of Conditions:**
+1. String conditions: 
+```javascript
+    {
+       condition: "Value of parent",
+       ...fields
+     }
+```
+2. List conditions: 
+```javascript
+    {
+       condition: ["Potential Value 1 of parent", "Potential Value 2 of parent", "Potential Value 3 of parent"],
+       ...fields
+     }
+```
+
+Any of the values above will result in the display of the conditional field. Comparison is case insensitive.
+
+- Added support for auto filling fields based on values of other fields.
+- The logic of the autofill is completely reliant on fields.json, like it is in data validation.
+- A function body and arguments need to be defined. 
+- A list of field names needs to be defined, this will be the only argument to the function.
+*** Sample from fields.json ***
+```javascript
+{
+        "condition": "Yes",
+        "name": "Total Time [AUTOFILL]",
+        "dropDown": false,
+        "autoFill": {
+                "dependencies": [
+                    "Radio Tracking Start Time (24hr)", 
+                     "Radio Tracking End Time (24hr)"
+                ],
+                "arguments": "dependencies",
+                "body": "return Number(dependencies[1]) - Number(dependencies[0]);"
+        }
+}
+```
+- `dependencies` is the list of field names that you will be using in your function.
+- `body & arguments` shape the function that calculates the field's value. 
+
+## Image Storage on DB
+#### Changes:
+- User uploaded images under 15MB now get stored on the mongo database.
+- A backup for all images is stored on the server in the uploads folder.
+- Server attempts to retrieve image first from the database then attempts to retrieve it from the uploads folder.
+
+## Admin App Progress
+#### Changes:
+- Dashboard is now fully populated with all the main elements that will be displayed on load.
+- Edit & Delete functionalities both work for the non-admin account list and the  catgeory names.
+- fields.json is now being stored on the database to be utilized by both the mobile & the admin app for updates. 
+- All updates to fields.json will be pushed to the database and pulled by the mobile app on load with connection. The updated fields get stored locally on device. 
+- Save Changes button has been added to push the changes to the database for categories and fields when they get implemented.
+- Data entry screen is now usable on admin app where a user can edit or delete entries. 
+
 ## Half Populated Dashboard
 #### Changes: 
 - Added a category menu that displays all the current categories of reptiles and amphibians in `fiellds.json`.
