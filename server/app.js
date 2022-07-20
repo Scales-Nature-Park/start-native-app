@@ -63,7 +63,7 @@ app.get('/signin', (req, res) => {
             return res.status(500).send('Invalid credentials. Please verify you have entered the correct username and password.');
 
             return res.status(200).send(response[0]._id);
-        }).catch((err) => {
+        }).catch(err => {
             return res.status(500).send(err.message);
         });
     } catch (error) {
@@ -91,12 +91,12 @@ app.get('/signin', (req, res) => {
         let results = credentials.find({"username": username, "password": password});
         
         // retrieve the array of the account and respond with the id
-        results.toArray().then((response) => {
+        results.toArray().then(response => {
             if (response.length <= 0) 
             return res.status(500).send('Invalid credentials. Please verify you have entered the correct username and password.');
 
             return res.status(200).send(response[0]._id);
-        }).catch((err) => {
+        }).catch(err => {
             return res.status(500).send(err.message);
         });
     } catch (error) {
@@ -126,7 +126,7 @@ app.post('/signup', (req, res) => {
 
         // retrieve the array of the account and respond with the fail
         // if it has any elements
-        results.toArray().then((response) => {
+        results.toArray().then(response => {
             if (response.length > 0) {
                 throw 'An account already exists with this username. Try to login or use a different username.';
             }
@@ -135,12 +135,12 @@ app.post('/signup', (req, res) => {
             credentials.insertOne({
                 username,
                 password
-            }).then((insertRes) => {
+            }).then(insertRes => {
                 return res.status(200).send('');
-            }).catch((insertError) => {
+            }).catch(insertError => {
                 return res.status(500).send(insertError);
             });
-        }).catch((err) => {
+        }).catch(err => {
             return res.status(400).send(err);
         });
     } catch (error) {
@@ -210,7 +210,7 @@ app.get('/username/:userId', (req, res) => {
  * queries failed.
  */
 app.put('/password/:userid', (req, res) => {
-    const params = {...req.params, ...req.query};
+    const params = {...req.params, ...req.body};
     if (!params.userid || (!params.currentPassword && !params.admin) || !params.newPassword)
     return res.status(404).send('Failed to retrieve your user information.');
 
@@ -420,7 +420,7 @@ app.put('/addFields', (req, res) => {
  * based on the database response.
  */
 app.post('/dataEntry', (req, res) => {
-    const data = req.query;
+    const data = req.body;
     if (!data) return res.status(400).send('Failed to retrieve entered data.');
 
     try {
@@ -439,9 +439,9 @@ app.post('/dataEntry', (req, res) => {
             data.inputFields[i].value = Number(data.inputFields[i].value);
         }
 
-        reptiles.insertOne(data).then((response) => {
+        reptiles.insertOne(data).then(response => {
             return res.status(200).send('');
-        }).catch((err)   => {
+        }).catch(err  => {
             return res.status(400).send(err);
         });
     } catch(error) {

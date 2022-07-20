@@ -130,7 +130,7 @@ const DataInput = ({ params, setScreen }) => {
             await axios({
                 method: 'post',
                 url: url + '/dataEntry',
-                params: {
+                data: {
                     "id": id,
                     photoIds,
                     "day": currDay,
