@@ -635,7 +635,7 @@ const DataInput = ({route, navigation}) => {
             <GestureHandlerRootView>
                 <ScrollView>
                     <ScrollView horizontal={true}>
-                            {categoryButtons}
+                        {categoryButtons}
                     </ScrollView>
 
                     {(dataInput.photos && dataInput.photos.length > 0) ? (dataInput.photos.length > 1) ?
