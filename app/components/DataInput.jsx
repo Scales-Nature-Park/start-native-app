@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect, useReducer } from 'react';
+import React, { useEffect, useLayoutEffect, useReducer } from 'react';
 import storage, { url, ArrayEquals } from '../utils/Storage';
 import useSyncState from '../utils/SyncState';
 import axios from 'axios';
@@ -8,7 +8,7 @@ import styles from '../styles/DataStyles';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Progress from 'react-native-progress';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { openPicker } from 'react-native-image-crop-picker';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useNetInfo } from '@react-native-community/netinfo';
 import {
@@ -21,6 +21,7 @@ import {
     Dimensions,
     Alert,
     Image,
+    Platform,
 } from 'react-native';
 
 Feather.loadFont();
@@ -109,7 +110,7 @@ const FetchFields = (state, dispatch) => {
         state.set({loadedFields: true, dataFields: [...fields]});
         dispatch({type: 'states', states: []});
     }).catch(() => {});
-};
+}
 
 const Reducer = (state, action) => {
     switch(action.type) {
@@ -165,7 +166,7 @@ const Reducer = (state, action) => {
         case 'general': 
             return {...action.state};
     }
-};
+}
 
 const DataInput = ({route, navigation}) => {
     const id = (route && route.params && route.params.id) ? route.params.id : '';
@@ -264,10 +265,21 @@ const DataInput = ({route, navigation}) => {
     }); 
     
     const ChoosePhoto = () => {
-        launchImageLibrary({ noData: true }, (response) => {
-            let tempPhotos = (dataInput.photos) ? [...dataInput.photos] : [];
-            if (response && !response.didCancel && !tempPhotos.includes(response.assets[0])) dispatch({type: 'photos', photos: [...tempPhotos, response.assets[0]]});
-        });
+        let tempPhotos = (dataInput.photos) ? [...dataInput.photos] : [];
+
+        openPicker({
+            multiple: true,
+            mediaType: 'photo',
+            maxFiles: `10`,
+            showsSelectedCount: true,
+        }).then(images => {
+            images.forEach(img => {
+                let {path, ...myImage} = img;
+                tempPhotos.push({...myImage, uri: path});
+            });
+
+            dispatch({type: 'photos', photos: tempPhotos});
+        }).catch(err => {});
     };
 
     const createFormData = (photo, body = {}) => {
@@ -747,7 +759,7 @@ const DataInput = ({route, navigation}) => {
         </GestureHandlerRootView>
         </SafeAreaView>
     );
-};
+}
 
 const SaveDataEntry = (dataObj, navigation, params) => {
     // try loading the entries local storage
