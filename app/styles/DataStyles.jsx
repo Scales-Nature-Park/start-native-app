@@ -112,6 +112,28 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
 
+    deleteImage: {
+        position: 'absolute',
+        borderRadius: 10,
+        width: 25,
+        height: 25,
+        alignItems: 'flex-end',
+        right: '2%',
+        top: '7%',
+        alignSelf: 'flex-end',
+    },
+
+    deleteImageSingle: {
+        position: 'absolute',
+        borderRadius: 10,
+        width: 25,
+        height: 25,
+        alignItems: 'flex-end',
+        right: '4%',
+        top: '4%',
+        alignSelf: 'flex-end',
+    },
+
     imageSingle: {
         position: 'relative',
         width: '95%',

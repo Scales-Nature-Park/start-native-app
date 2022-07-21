@@ -1030,7 +1030,7 @@
                                  "Radio Tracking End Time (24hr)"
                             ],
                             "arguments": "dependencies",
-                            "body": "return dependencies[1] - dependencies[0];"
+                            "body": "return Number(dependencies[1]) - Number(dependencies[0]);"
                        }
                     },
                     {
