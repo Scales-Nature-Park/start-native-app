@@ -18,6 +18,16 @@ const entryStyles = StyleSheet.create({
         fontSize: 20,
         color: '#000000',
         textAlign: 'center',
+    },
+
+    delete: {
+      position: 'absolute',
+      width: 30,
+      height: 30,
+      alignItems: 'flex-end',
+      right: '4%',
+      top: '4%',
+      alignSelf: 'flex-end',
     }
 });
 
