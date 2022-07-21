@@ -638,7 +638,7 @@ const DataInput = ({route, navigation}) => {
                             {categoryButtons}
                     </ScrollView>
 
-                    {(dataInput.photos) ? (dataInput.photos.length > 1) ?
+                    {(dataInput.photos && dataInput.photos.length > 0) ? (dataInput.photos.length > 1) ?
                         <View style={styles.container2}>
                             <Carousel
                                 width={Dimensions.get('window').width}
@@ -652,17 +652,29 @@ const DataInput = ({route, navigation}) => {
                                 renderItem={({ item }) => 
                                 <View style={styles.container2}>
                                     <Image source={item} style={styles.image} />
+                                    <TouchableOpacity style={styles.deleteImage} onPress={() => {
+                                        let tempPhotos = dataInput.photos.filter(elem => elem != item);
+                                        dispatch({type: 'photos', photos: tempPhotos});
+                                    }}>
+                                        <Feather name="x-circle" size={25} color='red' />
+                                    </TouchableOpacity>
                                 </View>}
                             />
                             <TouchableOpacity style={[styles.addImage, {marginTop: 0}]} onPress={ChoosePhoto}>
-                                <Text style={styles.submitText}>Add Image</Text>
+                                <Text style={styles.submitText}>Add Images</Text>
                             </TouchableOpacity>
                         </View>
                     :
                     <View style={styles.container2}>
                         <Image source={dataInput.photos[0]} style={[styles.imageSingle]} />
+                        <TouchableOpacity style={styles.deleteImageSingle} onPress={() => {
+                            let tempPhotos = dataInput.photos.filter(elem => elem != dataInput.photos[0]);
+                            dispatch({type: 'photos', photos: tempPhotos});
+                        }}>
+                            <Feather name="x-circle" size={25} color='red' />
+                        </TouchableOpacity>
                         <TouchableOpacity style={styles.addImage} onPress={ChoosePhoto}>
-                            <Text style={styles.submitText}>Add Image</Text>
+                            <Text style={styles.submitText}>Add Images</Text>
                         </TouchableOpacity>
                     </View>
                     : 
