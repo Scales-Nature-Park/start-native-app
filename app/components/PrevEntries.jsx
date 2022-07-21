@@ -13,8 +13,9 @@ import {
 
 const PrevEntries = ({route, navigation}) => {
   const id = route.params.id;
-  const entryElems = useSyncState([]);
+  const entryElems = useSyncState(undefined);
   const [dark, setDark] = useState(true);
+  const [rerender, setRerender] = useState(true);
 
   useLayoutEffect(() => {
       navigation.setOptions({
@@ -30,19 +31,23 @@ const PrevEntries = ({route, navigation}) => {
   });
 
   // load the data from local storage and store it in the entries state
-  if (entryElems.get() && entryElems.get().length == 0) {
+  if (!entryElems.get() || rerender) {
     storage.load({
       key: 'entries',
-    }).then((local) => {        
+    }).then(local => {        
         let fields = local.fields;
+        let localEntryElems = [];
+
         // iterate over all entries and set an entry component
         for (let i = fields.length - 1; i >= 0 ; i--) {
-          entryElems.set([...entryElems.get(), <Entry data={fields[i]} onPress={() => {
+          localEntryElems = [...localEntryElems, <Entry data={fields[i]} allEntries={[...fields]} onPress={() => {
             navigation.navigate('DataEntry', {...route.params, data: fields[i]});
-          }}/>]);
+          }} setRerender={setRerender} />];
         } 
-        if (entryElems.get().length == 0) entryElems.set([<Text style={styles.emptyText}>No Entries Found.</Text>]);
-    }).catch((err) => {
+        entryElems.set([...localEntryElems]);
+
+        if (rerender) setRerender(false);
+    }).catch(err => {
         entryElems.set(undefined);
     });
   }
@@ -50,7 +55,7 @@ const PrevEntries = ({route, navigation}) => {
   return (
     <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
       <ScrollView>
-        {(entryElems.get()) ? entryElems.get() : 
+        {(entryElems.get()?.length > 0) ? entryElems.get() : 
         <Text style={(dark) ? styles.emptyTextDark : styles.emptyText}>No Entries Found.</Text>}
       </ScrollView>
     </SafeAreaView>

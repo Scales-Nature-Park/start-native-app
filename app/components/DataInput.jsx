@@ -270,7 +270,7 @@ const DataInput = ({route, navigation}) => {
         openPicker({
             multiple: true,
             mediaType: 'photo',
-            maxFiles: `10`,
+            maxFiles: '10',
             showsSelectedCount: true,
         }).then(images => {
             images.forEach(img => {
@@ -635,7 +635,7 @@ const DataInput = ({route, navigation}) => {
             <GestureHandlerRootView>
                 <ScrollView>
                     <ScrollView horizontal={true}>
-                            {categoryButtons}
+                        {categoryButtons}
                     </ScrollView>
 
                     {(dataInput.photos && dataInput.photos.length > 0) ? (dataInput.photos.length > 1) ?
@@ -656,7 +656,7 @@ const DataInput = ({route, navigation}) => {
                                         let tempPhotos = dataInput.photos.filter(elem => elem != item);
                                         dispatch({type: 'photos', photos: tempPhotos});
                                     }}>
-                                        <Feather name="x-circle" size={25} color='red' />
+                                        <Feather name="x" size={25} color='red' />
                                     </TouchableOpacity>
                                 </View>}
                             />
@@ -671,7 +671,7 @@ const DataInput = ({route, navigation}) => {
                             let tempPhotos = dataInput.photos.filter(elem => elem != dataInput.photos[0]);
                             dispatch({type: 'photos', photos: tempPhotos});
                         }}>
-                            <Feather name="x-circle" size={25} color='red' />
+                            <Feather name="x" size={25} color='red' />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.addImage} onPress={ChoosePhoto}>
                             <Text style={styles.submitText}>Add Images</Text>
@@ -681,7 +681,8 @@ const DataInput = ({route, navigation}) => {
                     <View style={styles.container2}>
                         <View style={styles.selectImage}>
                             <TouchableOpacity style={styles.selectImageButton} onPress={ChoosePhoto}>
-                                <Text style={styles.submitText}>Select Image</Text>
+                                <Text style={styles.imageSelectText}>Select Image</Text>
+                                <Feather name="upload" style={styles.uploadIcon} size={25} color={scalesColors.background} />
                             </TouchableOpacity>
                         </View>
                     </View>}

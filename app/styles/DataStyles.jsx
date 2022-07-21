@@ -236,7 +236,17 @@ const styles = StyleSheet.create({
     },
 
     submitText: {
-        color: '#000000',
+        color: scalesColors.background,
+    },
+
+    imageSelectText: {
+        color: scalesColors.background,
+        fontWeight: 'bold',
+        marginTop: '2%',
+    },
+
+    uploadIcon: {
+        marginTop: '3%'
     },
 
     timeField: {

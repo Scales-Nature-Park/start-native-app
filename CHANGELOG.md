@@ -4,6 +4,12 @@ changes, please include a short explanation of what your changes are trying to a
 with the rest of the codebase and/or how to run and build up on them. You can treat this file as a more in depth
 commit log and place your changes over the previous changes, below this message.
 
+## Image Selection & Entry Deletion 
+#### Changes:
+- Added a feature to select multiple images at once instead of selecting one at a time.
+- Added a feature to delete a selected image in a data entry.
+- Added a feature to delete a locally saved entry from the Saved Entries screen.
+
 ## Multiple Field Display Conditions & Field Autofill Support
 #### Changes: 
 Added support for multiple conditions that display conditional fields.  
