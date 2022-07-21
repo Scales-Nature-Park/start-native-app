@@ -282,18 +282,14 @@ const DataInput = ({route, navigation}) => {
         }).catch(err => {});
     };
 
-    const createFormData = (photo, body = {}) => {
+    const createFormData = (photo) => {
         if (!photo) return;
         const data = new FormData();
         
         data.append('photo', {
-          name: photo.fileName,
-          type: photo.type,
+          name: photo.uri,
+          type: photo.mime,
           uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
-        });
-      
-        Object.keys(body).forEach((key) => {
-          data.append(key, body[key]);
         });
 
         return data;
@@ -316,9 +312,7 @@ const DataInput = ({route, navigation}) => {
             for (let photo of dataInput.photos) {
                 i++
                 let imageForm = createFormData(photo);
-                
-                dispatch({type: 'progress', progress: {display: true, progress: 1}});
-                
+                                
                 let photoId = undefined;
                 try {
                     photoId = await    
