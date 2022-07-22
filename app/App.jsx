@@ -32,8 +32,9 @@ const FetchFields = async () => {
         method: 'get',
         url: url + '/fields'
       });
-
-      fields = res.data;
+      
+      if (res?.data?.length > 0) fields = res.data;
+      else fields = undefined;
     } catch (err) {
       fields = undefined;
     }

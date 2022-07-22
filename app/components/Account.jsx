@@ -125,29 +125,29 @@ const Account = ({ route, navigation }) => {
 
         Alert.alert('Confirm Delete', 'Are you sure you want to delete your account?', [
             {
-              text: 'Confirm',
-              onPress: () => {
-                // request account deletion
-                axios({
-                    method: 'delete',
-                    url: url + '/user/' + accountId,
-                }).then(response => {
-                    Alert.alert('Success', 'Deleted your account successfully. Return to login page.', [
-                        {
-                            text: 'Ok', 
-                            onPress: () => navigation.navigate('Login')
-                        }
-                    ]);
-                }).catch(error => {
-                    Alert.alert('ERROR', error.response.data);
-                    return;
-                });
-              }
-            },
-            {
               text: 'Cancel',
               onPress: () => {}
-            }
+            },
+            {
+                text: 'Confirm',
+                onPress: () => {
+                  // request account deletion
+                  axios({
+                      method: 'delete',
+                      url: url + '/user/' + accountId,
+                  }).then(response => {
+                      Alert.alert('Success', 'Deleted your account successfully. Return to login page.', [
+                          {
+                              text: 'Ok', 
+                              onPress: () => navigation.navigate('Login')
+                          }
+                      ]);
+                  }).catch(error => {
+                      Alert.alert('ERROR', error.response.data);
+                      return;
+                  });
+                }
+            },
         ]);
     };
 
