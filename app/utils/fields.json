@@ -2246,7 +2246,15 @@
                     {
                         "condition": "Captured",
                         "name": "Spec Mass",
-                        "dropDown": false
+                        "dropDown": false,
+                        "autoFill": {
+                            "dependencies": [
+                                "Bag Mass",
+                                "Gross Mass"
+                            ],
+                            "arguments": "dependencies",
+                            "body": "return (Number(dependencies[1]) - Number(dependencies[0]));"
+                        }
                     },
                     {
                         "condition": "Captured",
@@ -2289,7 +2297,16 @@
                     {
                         "condition": "Captured",
                         "name": "Dorsal Code",
-                        "dropDown": false
+                        "dropDown": false,
+                        "autoFill": {
+                            "dependencies": [
+                                "Head Code",
+                                "Irregularity Code",
+                                "Version Number" 
+                            ],
+                            "arguments": "dependencies",
+                            "body": "return (String(dependencies[0]) + String(dependencies[1]) + String(dependencies[2]));"
+                        }
                     },
                     {
                         "condition": "Captured",
@@ -2303,7 +2320,7 @@
                         "dataValidation": {
                             "isNumber": true,
                             "arguments": "input",
-                            "body":"return (input.toString().trim() != '' && !isNaN(input) && input > 0) ? true : false;",
+                            "body": "return (input.toString().trim() != '' && !isNaN(input) && input > 0) ? true : false;",
                             "error": "Tail Length must be number greater than 0."
                         }
                     },
@@ -2385,37 +2402,80 @@
                     {
                         "condition": "Yes",
                         "name": "Total L1",
-                        "dropDown": false
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (!isNaN(input) && input >= 0);",
+                            "error": "Total L1 must be a positive number."
+                        }
                     },
                     {
                         "condition": "Yes",
                         "name": "Total L2",
-                        "dropDown": false
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (!isNaN(input) && input >= 0);",
+                            "error": "Total L2 must be a positive number."
+                        }
                     },
                     {
                         "condition": "Yes",
                         "name": "Total L3",
-                        "dropDown": false
+                        "dropDown": false,
+                        "dataValidation": {
+                            "isNumber": true,
+                            "arguments": "input",
+                            "body": "return (!isNaN(input) && input >= 0);",
+                            "error": "Total L3 must be a positive number."
+                        }
                     },
                     {
                         "condition": "Yes",
-                        "name": "Average Total L [AUTOFILL]",
-                        "dropDown": false
+                        "name": "Average Total Length",
+                        "dropDown": false,
+                        "autoFill": {
+                            "dependencies": [
+                                "Total L1",
+                                "Total L2",
+                                "Total L3" 
+                            ],
+                            "arguments": "dependencies",
+                            "body": "return (Number(dependencies[0]) + Number(dependencies[1]) + Number(dependencies[2])) / 3;"
+                        }
                     },
                     {
                         "condition": "Yes",
-                        "name": "SVL [AUTOFILL]",
-                        "dropDown": false
+                        "name": "SVL",
+                        "dropDown": false,
+                        "autoFill": {
+                            "dependencies": [
+                                "Average Total Length", "Tail Length (mm)"],
+                            "arguments": "dependencies",
+                            "body": "return Number(dependencies[0]) - Number(dependencies[1]);"
+                        }
                     },
                     {
                         "condition": "Yes",
-                        "name": "TL:VTL Ratio [AUTOFILL]",
-                        "dropDown": false
+                        "name": "TL:VTL Ratio",
+                        "dropDown": false,
+                        "autoFill": {
+                            "dependencies": ["Average Total Length", "Tail Length (mm)"],
+                            "arguments": "dependencies",
+                            "body": "return Number(dependencies[1]) / Number(dependencies[0]);"
+                        }
                     },
                     {
                         "condition": "Yes",
-                        "name": "Linear Mass Density [AUTOFILL]",
-                        "dropDown": false
+                        "name": "Linear Mass Density",
+                        "dropDown": false,
+                        "autoFill": {
+                            "dependencies": ["Gross Mass", "Average Total Length"],
+                            "arguments": "dependencies",
+                            "body":"return Number(dependencies[0]) / Number(dependencies[1]);"
+                        }
                     }
 
                 ]
