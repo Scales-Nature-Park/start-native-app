@@ -41,7 +41,7 @@ const AutoFillField = (field, tempStates, state, meta) => {
 
         // fail autofill if no matching state is found
         if (!dependencyState) {
-            autoFillFail = true; 
+            autoFillFail = true;
             break;
         }
 
