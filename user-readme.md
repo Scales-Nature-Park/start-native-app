@@ -54,3 +54,8 @@ There are 2 modes for this app:
 - Use the `Save` button to validate all the data before saving it, you can then submit your entry to the database in user mode without any further edits.
 - Once an entry is saved, it will appear at the top of the `Saved Entries` screen.
 - You can perform search operations in guest mode but that will require an internet connection.
+
+## Updates 
+- In app updates are small changes made to the app like input fields and can be downloaded by responding to a prompt when first launching the app after an update has been release. You can choose to download the update or be reminded later to download it to stay using the current version on your device.
+- Source updates are changes made to the app structure itself and require you to delete the old version of the app and install the latest version from the google drive folder. These updates are usually released to resolve bugs and/or add new features. 
+- It is recommended to download any updates once they are released, especially in earlier versions of the app. 
