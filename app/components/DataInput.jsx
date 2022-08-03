@@ -63,7 +63,7 @@ const AutoFillField = (field, tempStates, state, meta) => {
 
 // recursive function that display conditional fields of a field
 // and their conditionals
-const displayConditionals = (jsObj, displayField, fields, states, autoFill, meta) => {
+const displayConditionals = (jsObj, displayField, fields, states, autoFill, meta, initialFields) => {
     let state = states.filter(element => element.name.toLowerCase() == jsObj.name.toLowerCase())[0];
     if(!state) return;
 
@@ -92,7 +92,10 @@ const displayConditionals = (jsObj, displayField, fields, states, autoFill, meta
         let newState = states.filter(elem => elem.name.toLowerCase() == field.name.toLowerCase())[0];
 
         if (!newState) {
-            newState = {name: field.name.toLowerCase(), value: '', dataValidation: field.dataValidation};
+            // get initial value passed as in paramData
+            newState = initialFields?.filter(elem => elem.name.toLowerCase() == field.name.toLowerCase())[0];
+            newState = {name: field.name.toLowerCase(), value: (newState) ? newState.value : '', dataValidation: field.dataValidation};
+
             states.push(newState);
             meta.editedStates = true;
         }
@@ -101,7 +104,7 @@ const displayConditionals = (jsObj, displayField, fields, states, autoFill, meta
             
         // display field and conditionals if condition is met
         displayField(field, fields);
-        displayConditionals(field, displayField, fields, states, autoFill, meta);
+        displayConditionals(field, displayField, fields, states, autoFill, meta, initialFields);
     }
 }
 
@@ -491,13 +494,15 @@ const DataInput = ({route, navigation}) => {
                         closeOnBlur={false}
                         closeOnSubmit={true}
                         initialValue={{ id: initId.toString() }}
-                        showClear={false}
-                        onSelectItem={(item) => changeState(field, item)}
+                        showClear={true}
+                        onClear={() => changeState(field, {title: ''})}
+                        onSelectItem={item => changeState(field, item)}
                         direction={'up'}
                         initialNumToRender={5} 
                         dataSet={dropVals}
                         ItemSeparatorComponent={<View style={{ height: 1, width: '100%', backgroundColor: '#787177' }} />}
                         ChevronIconComponent={<Feather name="chevron-down" size={20} color="#000" />}
+                        ClearIconComponent={<Feather name="x-circle" size={18} color="#383b42" />}
                         suggestionsListMaxHeight={200}
                         containerStyle={styles.dropButton3}
                         inputContainerStyle={styles.dropButton2}
@@ -517,7 +522,7 @@ const DataInput = ({route, navigation}) => {
                             placeholder={'Enter ' + field.name}
                             value={(dataInput.states.filter(element => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? dataInput.states.filter(element => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : ''}
                             placeholderTextColor='#000000'
-                            onChangeText={(value) => {
+                            onChangeText={value => {
                                 let tempStates = dataInput.states.slice();
                                 let tempIndex = -1;
 
@@ -527,7 +532,7 @@ const DataInput = ({route, navigation}) => {
                                     tempIndex = index;
                                 });
                                 
-                                if(tempIndex == -1) tempStates.push(
+                                if (tempIndex == -1) tempStates.push(
                                     {"name": field.name.toLowerCase(), "value": value, "dataValidation": field.dataValidation}
                                 );
                                 dispatch({type: 'states', states: [...tempStates]});
@@ -591,7 +596,7 @@ const DataInput = ({route, navigation}) => {
             
             AutoFillField(field, tempStates, state, meta);
             
-            if (field.conditionalFields) displayConditionals(field, displayField, fields, tempStates, AutoFillField, meta);
+            if (field.conditionalFields) displayConditionals(field, displayField, fields, tempStates, AutoFillField, meta, initialFields);
         }
     }
     if (meta.editedStates) dispatch({type: 'states', states: [...tempStates]});
