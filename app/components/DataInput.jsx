@@ -6,6 +6,7 @@ import Carousel from 'react-native-reanimated-carousel';
 import ModalDropdown from 'react-native-modal-dropdown';
 import styles from '../styles/DataStyles';
 import Feather from 'react-native-vector-icons/Feather';
+import Geolocation from '@react-native-community/geolocation';
 import * as Progress from 'react-native-progress';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import { openPicker } from 'react-native-image-crop-picker';
@@ -470,6 +471,38 @@ const DataInput = ({route, navigation}) => {
                 </ View>
             );
             return;
+        } else if (field.name.toLowerCase() == 'get location') {
+            fields.push(
+                <View style={styles.container3}>
+                    <TouchableOpacity style={styles.addImage} onPress={() => {
+                        Geolocation.getCurrentPosition(info => {
+                            let { latitude, longitude,  accuracy} = info?.coords;
+                            let tempStates = [...dataInput?.states] || [];
+                            
+                            // retrieve lat/long/accuracy states and edit their values if found
+                            let state = tempStates.find(elem => elem.name.toLowerCase() == 'longitude');
+                            if (state) state.value = longitude;
+                            
+                            state = tempStates.find(elem => elem.name.toLowerCase() == 'latitude');
+                            if (state) state.value = latitude;
+
+                            state = tempStates.find(elem => elem.name.toLowerCase() == 'gps accuracy');
+                            if (state) state.value = accuracy;
+                                
+                            // dispatch the changes made to the states
+                            dispatch({type: 'states', states: tempStates});
+                        }, () => Alert.alert('ERROR', 'Could not fetch your current location. Please try again later.'), {
+                            enableHighAccuracy: true,
+                            timeout: 5000,
+                        });
+                    }}>
+                        <Text style={styles.submitText}>Get Location</Text>
+                    </TouchableOpacity>
+                </View>
+            );
+            return;
+        } else if (field.name.toLowerCase() == 'latitude') {
+            displayField({name: 'get location'}, fields);
         }
 
         if (field.dropDown) {
