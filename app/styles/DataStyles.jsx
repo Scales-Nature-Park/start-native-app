@@ -104,6 +104,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'column',
     },
+
+    container3: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        marginBottom: 15
+    },
    
     image: {
         position: 'absolute',
