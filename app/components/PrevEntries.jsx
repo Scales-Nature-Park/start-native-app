@@ -1,6 +1,6 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useContext, useLayoutEffect } from 'react';
 import useSyncState from '../utils/SyncState';
-import storage from '../utils/Storage';
+import storage, { UserContext } from '../utils/Storage';
 import Entry from './Entry';
 import { styles } from '../styles/EntryStyles';
 import {
@@ -13,6 +13,7 @@ import {
 
 const PrevEntries = ({ navigation }) => {
   const entryElems = useSyncState(undefined);
+  const user = useContext(UserContext);
   const [dark, setDark] = useState(true);
   const [rerender, setRerender] = useState(true);
 
@@ -34,8 +35,10 @@ const PrevEntries = ({ navigation }) => {
     storage.load({
       key: 'entries',
     }).then(local => {        
-        let fields = local.fields;
+        let fields = [...local.fields];
         let localEntryElems = [];
+
+        if (user?.userInfo?.sharedEntries?.length) fields = [...fields, ...user?.userInfo?.sharedEntries];
 
         // iterate over all entries and set an entry component
         for (let i = fields.length - 1; i >= 0 ; i--) {

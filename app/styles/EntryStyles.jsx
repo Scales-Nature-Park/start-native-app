@@ -13,6 +13,21 @@ const entryStyles = StyleSheet.create({
         padding: '7%',
         backgroundColor: scalesColors.DeepGreen,
     },
+
+    buttonContainer: {
+      position: 'absolute',
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      top: '2%',
+      right: '2%',
+    },
+
+    promptContainer: {
+      width: '100%',
+      height: '100%',
+      position:'absolute'
+    },
     
     panelText: {
         fontSize: 20,
@@ -21,13 +36,14 @@ const entryStyles = StyleSheet.create({
     },
 
     delete: {
-      position: 'absolute',
       width: 30,
       height: 30,
-      alignItems: 'flex-end',
-      right: '4%',
-      top: '4%',
-      alignSelf: 'flex-end',
+      paddingTop: '5%',
+    },
+
+    share: {
+      width: 30,
+      height: 25,
     }
 });
 
