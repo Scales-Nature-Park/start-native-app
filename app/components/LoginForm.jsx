@@ -1,7 +1,7 @@
 import React, { useState, useLayoutEffect, useContext } from 'react';
 import axios from 'axios';
 import styles from '../styles/LoginStyles';
-import storage, { url, UserContext } from '../utils/Storage';
+import { url, UserContext } from '../utils/Storage';
 import { useNetInfo } from "@react-native-community/netinfo";
 import {
     StatusBar,
