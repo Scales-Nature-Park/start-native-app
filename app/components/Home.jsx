@@ -1,5 +1,6 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useContext, useLayoutEffect } from 'react';
 import styles from '../styles/HomeStyles';
+import { UserContext } from '../utils/Storage';
 import {
     Text,
     View,
@@ -8,8 +9,8 @@ import {
     Image,
 } from 'react-native';
 
-const Home = ({route, navigation}) => {
-    let id = (route && route.params && route.params.id) ? route.params.id : '';
+const Home = ({ navigation }) => {
+    const user = useContext(UserContext);
     const [dark, setDark] = useState(true);
 
     useLayoutEffect(() => {
@@ -29,32 +30,23 @@ const Home = ({route, navigation}) => {
         <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
             <View style={(dark) ? styles.containerDark : styles.container}>
                 <TouchableOpacity style={styles.buttonView}
-                onPress= {() => {
-                    if (route.params.data) route.params.data = undefined;
-                    navigation.navigate('DataEntry', route.params);
-                }}>
+                onPress= {() => navigation.navigate('DataEntry')}>
                     <Text style={styles.buttonText}>Data Entry</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.buttonView}
-                onPress= {() => {
-                    navigation.navigate('Search', route.params);
-                }}>
+                onPress= {() => navigation.navigate('Search')}>
                     <Text style={styles.buttonText}>Search</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style= {styles.buttonView}
-                onPress= {() => {
-                    navigation.navigate('PrevEntries', route.params);
-                }}>
+                onPress= {() => navigation.navigate('PrevEntries')}>
                     <Text style={styles.buttonText}>Saved Entries</Text>
                 </TouchableOpacity>
                 
-                {(route?.params?.onlineMode) ? 
+                {(user?.userInfo?.id) ? 
                 <TouchableOpacity style= {styles.buttonView}
-                onPress= {() => {
-                    navigation.navigate('Account', route.params);
-                }}>
+                onPress= {() => navigation.navigate('Account')}>
                     <Text style={styles.buttonText}>Account</Text>
                 </TouchableOpacity> : null}
             </View>

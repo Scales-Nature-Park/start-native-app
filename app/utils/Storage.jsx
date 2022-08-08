@@ -1,7 +1,10 @@
 import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createContext } from 'react';
 
 const url = 'https://start-data-server.herokuapp.com';
+
+const UserContext = createContext();
 
 const storage = new Storage({
   size: 1000,
@@ -20,6 +23,6 @@ const ArrayEquals = (array1, array2, json = false) => {
     array1.every((elem, index) => elem === array2[index]);
 };
 
-export { url, ArrayEquals };
+export { url, ArrayEquals, UserContext };
 
 export default storage;

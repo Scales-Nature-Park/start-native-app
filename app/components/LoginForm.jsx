@@ -1,7 +1,7 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useContext } from 'react';
 import axios from 'axios';
 import styles from '../styles/LoginStyles';
-import storage, { url } from '../utils/Storage';
+import storage, { url, UserContext } from '../utils/Storage';
 import { useNetInfo } from "@react-native-community/netinfo";
 import {
     StatusBar,
@@ -18,10 +18,10 @@ import {
 const LoginForm = ({ navigation }) => {
     const [username, setUser] = useState('');
     const [password, setPassword] = useState('');
-    const [id, setID] = useState('');
     const [dark, setDark] = useState(true);
     const netInfo = useNetInfo();
-
+    const user = useContext(UserContext);
+        
     useLayoutEffect(() => {
         navigation.setOptions({
           headerRight: () => (
@@ -50,20 +50,10 @@ const LoginForm = ({ navigation }) => {
           password
         }
       }).then(response => {
-        setID(response.data);
-        storage.save({
-          key: 'loginState', 
-          data: {
-            username,
-            password,
-            "id": response.data
-          }
-        }); 
-        
-        navigation.navigate('Home', {
-          "id": response.data,
-          "onlineMode": true,
-        });
+        if (!response?.data) throw 'Invalid credentials. Please verify you have entered the correct username and password.';
+
+        user.setUserInfo({id: response?.data?.id || '', username: username || '', sharedEntries: (response?.data?.sharedEntries) ? [...response?.data?.sharedEntries] : []});
+        navigation.navigate('Home');
       }).catch(error => {
         Alert.alert('ERROR', error.response.data || error.message);
         return;
@@ -77,20 +67,20 @@ const LoginForm = ({ navigation }) => {
             <StatusBar style="auto" />
             <View style={styles.inputView}>
                 <TextInput
-                style={styles.TextInput}
-                placeholder="Username"
-                placeholderTextColor="#000000"
-                onChangeText={(username) => setUser(username)}
+                  style={styles.TextInput}
+                  placeholder="Username"
+                  placeholderTextColor="#000000"
+                  onChangeText={username => setUser(username)}
                 />
             </View>
         
             <View style={styles.inputView}>
                 <TextInput
-                style={styles.TextInput}
-                placeholder="Password"
-                placeholderTextColor="#000000"
-                secureTextEntry={true}
-                onChangeText={(password) => setPassword(password)}
+                  style={styles.TextInput}
+                  placeholder="Password"
+                  placeholderTextColor="#000000"
+                  secureTextEntry={true}
+                  onChangeText={password => setPassword(password)}
                 />
             </View>
         
@@ -99,7 +89,7 @@ const LoginForm = ({ navigation }) => {
             </TouchableOpacity>
         
             <TouchableOpacity style={styles.loginBtn}
-            onPress = {() => AuthenticateCredentials(username, password, id, setID)}>
+            onPress = {() => AuthenticateCredentials(username, password)}>
                 <Text style={styles.loginText}>LOGIN</Text>
             </TouchableOpacity>
 
@@ -109,7 +99,11 @@ const LoginForm = ({ navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.offlineBtn}
-            onPress = {() => navigation.navigate('Home', {id: '', onlineMode: false})}>
+            onPress = {() => {
+              // reset user info to avoid registered user privileges
+              user.setUserInfo({id: '', username: '', sharedEntries: []});
+              navigation.navigate('Home');
+            }}>
                 <Text style={styles.loginText}>GUEST MODE</Text>
             </TouchableOpacity>
         </View>
