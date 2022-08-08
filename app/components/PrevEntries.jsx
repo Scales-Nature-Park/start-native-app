@@ -11,8 +11,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-const PrevEntries = ({route, navigation}) => {
-  const id = route.params.id;
+const PrevEntries = ({ navigation }) => {
   const entryElems = useSyncState(undefined);
   const [dark, setDark] = useState(true);
   const [rerender, setRerender] = useState(true);
@@ -41,7 +40,7 @@ const PrevEntries = ({route, navigation}) => {
         // iterate over all entries and set an entry component
         for (let i = fields.length - 1; i >= 0 ; i--) {
           localEntryElems = [...localEntryElems, <Entry data={fields[i]} allEntries={[...fields]} onPress={() => {
-            navigation.navigate('DataEntry', {...route.params, data: fields[i]});
+            navigation.navigate('DataEntry', {data: fields[i]});
           }} setRerender={setRerender} />];
         } 
         entryElems.set([...localEntryElems]);

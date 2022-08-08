@@ -1,7 +1,7 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useContext, useLayoutEffect } from 'react';
 import axios from 'axios';
 import styles from '../styles/AccountStyles';
-import { url } from '../utils/Storage';
+import { url, UserContext } from '../utils/Storage';
 import { useNetInfo } from "@react-native-community/netinfo";
 import {
     StatusBar,
@@ -15,14 +15,17 @@ import {
     Alert,
 } from 'react-native';
 
-const Account = ({ route, navigation }) => {
-    const [username, setUser] = useState('');
+const Account = ({ navigation }) => {
+    const user = useContext(UserContext);
+    const [username, setUser] = useState(user?.userInfo?.username || '');
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
     const [currPass, setCurrPass] = useState('')
     const [dark, setDark] = useState(true);
     const netInfo = useNetInfo();
-    const accountId = route?.params?.id;
+    const accountId = user.userInfo.id;
+
+    console.log(user);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -82,8 +85,8 @@ const Account = ({ route, navigation }) => {
             method: 'get',
             url: url + '/signin',
             params: {
-                "username": username,
-                "password": currPass
+                username: username,
+                password: currPass
             }
         }).then(response => {
             UpdatePassword();
@@ -155,7 +158,7 @@ const Account = ({ route, navigation }) => {
         <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
         <ScrollView>
             {(username)  ?
-            <View style={styles.container2}>
+            <View>
                 <Text style={(dark) ? styles.hiDark : styles.hi}>Hi {username}!</Text>
             </View> : null}
 

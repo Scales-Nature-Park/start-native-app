@@ -21,7 +21,7 @@ import { useNetInfo } from "@react-native-community/netinfo";
 const scalesColors = require('../utils/colors.json');
 const searchFields = require('../utils/search.json');
 
-const Search = ({route, navigation}) => {
+const Search = ({ navigation }) => {
     const netInfo = useNetInfo();
     const ref = useRef(null);
     const states = useSyncState([]);
@@ -341,7 +341,7 @@ const Search = ({route, navigation}) => {
                         let entries = [];
                         for (let i = response.data.length - 1; i >= 0; i--) {
                             entries = [...entries, <Entry data={response.data[i]} onPress={() => {
-                                navigation.navigate('DataEntry', {...route.params, data: response.data[i], search: true});
+                                navigation.navigate('DataEntry', {data: response.data[i], search: true});
                             }}/>];
                         }
                         setEntries(entries);

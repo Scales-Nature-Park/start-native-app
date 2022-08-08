@@ -1,12 +1,12 @@
 import React, { useEffect, useLayoutEffect, useReducer } from 'react';
-import storage, { url, ArrayEquals } from '../utils/Storage';
+import storage, { url, UserContext } from '../utils/Storage';
 import useSyncState from '../utils/SyncState';
 import axios from 'axios';
 import Carousel from 'react-native-reanimated-carousel';
 import ModalDropdown from 'react-native-modal-dropdown';
 import styles from '../styles/DataStyles';
 import Feather from 'react-native-vector-icons/Feather';
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 import * as Progress from 'react-native-progress';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import { openPicker } from 'react-native-image-crop-picker';
@@ -24,6 +24,7 @@ import {
     Image,
     Platform,
 } from 'react-native';
+import { useContext } from 'react';
 
 Feather.loadFont();
 const scalesColors = require('../utils/colors.json');
@@ -173,8 +174,9 @@ const Reducer = (state, action) => {
 }
 
 const DataInput = ({route, navigation}) => {
-    const id = (route && route.params && route.params.id) ? route.params.id : '';
-    const paramData = route.params.data;
+    const user = useContext(UserContext);
+    const accountId = user?.userInfo?.id || '';
+    const paramData = route?.params?.data;
 
     const months = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'Novemeber', 'December'];
     const dateObj = new Date(),
@@ -345,7 +347,7 @@ const DataInput = ({route, navigation}) => {
             method: 'post',
             url: url + '/dataEntry',
             data: {
-                "id": id,
+                accountId,
                 photoIds,
                 "day": dataInput.currDay,
                 "month": dataInput.currMonth,
@@ -363,7 +365,7 @@ const DataInput = ({route, navigation}) => {
                 'Your data has been submitted. Return to Home.',
                 [
                     {text: "OK", onPress: () => {
-                        navigation.navigate('Home', route.params);
+                        navigation.navigate('Home');
                     }}
                 ],
                 {cancelable: false}
@@ -488,12 +490,13 @@ const DataInput = ({route, navigation}) => {
 
                             state = tempStates.find(elem => elem.name.toLowerCase() == 'gps accuracy');
                             if (state) state.value = accuracy;
-                                
+
                             // dispatch the changes made to the states
                             dispatch({type: 'states', states: tempStates});
                         }, () => Alert.alert('ERROR', 'Could not fetch your current location. Please try again later.'), {
                             enableHighAccuracy: true,
-                            timeout: 5000,
+                            timeout: 50000,
+                            maximumAge: 0
                         });
                     }}>
                         <Text style={styles.submitText}>Get Location</Text>
@@ -638,7 +641,7 @@ const DataInput = ({route, navigation}) => {
 
     // render submit button only in online mode, cuz we cant
     // connect to the server offline
-    if (route.params.onlineMode) {
+    if (accountId?.trim()) {
         buttons.push(
             <TouchableOpacity style={styles.submitBtn}
             onPress={() => {
@@ -740,13 +743,13 @@ const DataInput = ({route, navigation}) => {
                         </View>
                     </View>
                     
-                    {(!route || !route.params || !route.params.search) ? 
+                    {(!route || !route?.params || !route?.params?.search) ? 
                     <View style={styles.container2}>
                         <TouchableOpacity style={styles.quickSave}
                         onPress={() => {                
                             SaveDataEntry(
                                 {
-                                    "id": id,
+                                    accountId,
                                     "photos": dataInput.photos,
                                     "day": dataInput.currDay,
                                     "month": dataInput.currMonth,
@@ -757,7 +760,7 @@ const DataInput = ({route, navigation}) => {
                                     "inputFields": dataInput.states,
                                     "comment": dataInput.comment
                                 },
-                                navigation, route.params
+                                navigation, route?.params
                             );
                         }}>
                             <Text style={styles.submitText}>QUICK SAVE</Text>
@@ -774,7 +777,7 @@ const DataInput = ({route, navigation}) => {
 
                             SaveDataEntry(
                                 {
-                                    "id": id,
+                                    accountId,
                                     "photos": dataInput.photos,
                                     "day": dataInput.currDay,
                                     "month": dataInput.currMonth,
@@ -785,7 +788,7 @@ const DataInput = ({route, navigation}) => {
                                     "inputFields": dataInput.states,
                                     "comment": dataInput.comment
                                 },
-                                navigation, route.params
+                                navigation, route?.params
                             );
 
                         }}>
