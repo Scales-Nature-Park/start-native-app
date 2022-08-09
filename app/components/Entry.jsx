@@ -1,8 +1,10 @@
 import Feather from 'react-native-vector-icons/Feather';
 import storage from '../utils/Storage';
 import Dialog from 'react-native-dialog';
-import React, { useState, useRef } from 'react';
-import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import axios from 'axios';
+import React, { useState } from 'react';
+import { url } from '../utils/Storage';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { entryStyles } from '../styles/EntryStyles';
 import { useNetInfo } from '@react-native-community/netinfo';
 
@@ -11,7 +13,6 @@ Feather.loadFont();
 const Entry = ({data, allEntries, onPress, setRerender}) => {
     const [share, setShare] = useState(false);
     const [target, setTarget] = useState('');
-    const inputRef = useRef(null);
     const netInfo = useNetInfo();
     
     const onDelete = () => {
@@ -28,8 +29,23 @@ const Entry = ({data, allEntries, onPress, setRerender}) => {
     }
 
     const onShare = () => {
-        console.log(inputRef.current);
+        axios({
+            method: 'patch',
+            url: url + '/user/shares',
+            data: {
+                username: target,
+                data
+            }
+        }).then(() => {
+            Alert.alert('Success', `Sent the data entry to ${target}.`);
+            setShare(false);
+        }).catch(e => {
+            Alert.alert('ERROR', e?.response?.data || e?.message);
+            setShare(false);
+        });
     }
+
+    console.log(target);
 
     return (
         <TouchableOpacity style={entryStyles.container} onPress={onPress}>
@@ -61,9 +77,7 @@ const Entry = ({data, allEntries, onPress, setRerender}) => {
                 <Dialog.Description>
                     Enter the user's username who you want to share the data entry with. 
                 </Dialog.Description>
-                <Dialog.Input
-                    textInputRef={inputRef}
-                />
+                <Dialog.Input onChangeText={text => setTarget(text)} />
                 <Dialog.Button label="Cancel" onPress={() => setShare(false)}/>
                 <Dialog.Button label="Share" onPress={() => onShare(target)} />
             </Dialog.Container>
