@@ -32,7 +32,7 @@ async function DBConnect() {
         await client.connect();    
         console.log("Connected successfully to database");
     } catch (e) {
-        console.log(e.message);
+        console.log(e);
     } 
 }
 
@@ -67,7 +67,7 @@ app.get('/signin', (req, res) => {
             return res.status(500).send(err.message);
         });
     } catch (error) {
-        return res.status(400).send(error.message);
+        return res.status(400).send(error);
     }
 });
 
@@ -100,7 +100,7 @@ app.get('/signin', (req, res) => {
             return res.status(500).send(err.message);
         });
     } catch (error) {
-        return res.status(400).send(error.message);
+        return res.status(400).send(error);
     }
 });
 
@@ -210,11 +210,11 @@ app.get('/username/:userId', (req, res) => {
  * queries failed.
  */
 app.put('/password/:userid', (req, res) => {
-    const params = {...req.params, ...req.body};
-    if (!params.userid || (!params.currentPassword && !params.admin) || !params.newPassword)
-    return res.status(404).send('Failed to retrieve your user information.');
-
     try {
+        const params = {...req.params, ...req.body};
+        if (!params.userid || (!params.currentPassword && !params.admin) || !params.newPassword)
+        return res.status(404).send('Failed to retrieve your user information.');
+
         // load the credentials collection from the START-Project db
         let db = client.db('START-Project');
         let credentials = db.collection('credentials');
@@ -266,7 +266,36 @@ app.delete('/user/:userid', (req, res) => {
             return res.status(200).send('Successfully deleted your account.');
         });
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).send(error);
+    }
+});
+
+/**
+ * Update shared entries endpoint that takes in a request body with a username and
+ * a new entry's data. It then modifies the user's credentials document in the 
+ * START-Project database by adding the entry datat to the sharedEntries list.
+ * Responds with an error otherwise.   
+ */
+app.patch('/user/shares', async (req, res) => {
+    try {
+        const params = {...req.body};
+        const { username, data } = params;
+        
+        // load the credentials collection from the START-Project databases
+        let db = client.db('START-Project');
+        let credentials = db.collection('credentials');
+        
+        // find the user document with the passed in username 
+        let user = await credentials.findOne({username});
+        if (!user) return res.status(404).send('Could not find the user with the specified username.');
+        
+        // add the shared data entry to the user document and save it to the database
+        user.sharedEntries = (user.sharedEntries) ? [...user.sharedEntries, data] : [data];
+        await credentials.replaceOne({_id: ObjectID(user._id)}, user);
+
+        return res.status(200).send('');
+    } catch (err) {
+        res.status(500).send(err)
     }
 });
 
@@ -303,7 +332,7 @@ app.post('/imageUpload', async (req, res) => {
             return res.status(400).send(err);
         });
     } catch(err) {
-        res.status(500).send(err.message);
+        res.status(500).send(err);
     }
 });
 
@@ -360,7 +389,7 @@ app.get('/image/:photoId', (req, res) => {
 
         });
     } catch(err) {
-        res.status(500).send(err.message);
+        res.status(500).send(err);
     }
 });
 
@@ -381,7 +410,7 @@ app.get('/fields', (req, res) => {
             return res.send(searchRes);
         });
     } catch(err) {
-        res.status(500).send(err.message);
+        res.status(500).send(err);
     }
 });
 
@@ -410,7 +439,7 @@ app.put('/addFields', (req, res) => {
             });
         });
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(err);
     }
 });
 
@@ -470,7 +499,7 @@ app.delete('/entry/:entryId', (req, res) => {
             return res.status(200).send('Successfully deleted entry.');
         });
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).send(error);
     }
 });
 
