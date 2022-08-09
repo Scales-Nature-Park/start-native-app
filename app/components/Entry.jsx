@@ -52,7 +52,7 @@ const Entry = ({data, allEntries, onPress, setRerender}) => {
     }
 
     return (
-        <TouchableOpacity style={(data.type == 'saved') ? entryStyles.container : entryStyles.container3} onPress={onPress}>
+        <TouchableOpacity style={(data.type == 'saved') ? (data?.field?.valid) ? entryStyles.container : entryStyles.containe2 : entryStyles.container3} onPress={onPress}>
             <View style={entryStyles.buttonContainer}>
                 {(netInfo?.isConnected && user?.userInfo?.id) ?
                 <TouchableOpacity style={entryStyles.share} onPress={() => setShare(true)}>

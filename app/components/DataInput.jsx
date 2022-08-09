@@ -750,15 +750,16 @@ const DataInput = ({route, navigation}) => {
                             SaveDataEntry(
                                 {
                                     accountId,
-                                    "photos": dataInput.photos,
-                                    "day": dataInput.currDay,
-                                    "month": dataInput.currMonth,
-                                    "year": dataInput.currYear,
-                                    "hours": dataInput.hours,
-                                    "mins": dataInput.mins,
-                                    "category": dataInput.category,
-                                    "inputFields": dataInput.states,
-                                    "comment": dataInput.comment
+                                    valid: dataInput.valid,
+                                    photos: dataInput.photos,
+                                    day: dataInput.currDay,
+                                    month: dataInput.currMonth,
+                                    year: dataInput.currYear,
+                                    hours: dataInput.hours,
+                                    mins: dataInput.mins,
+                                    category: dataInput.category,
+                                    inputFields: dataInput.states,
+                                    comment: dataInput.comment
                                 },
                                 navigation, route?.params
                             );
@@ -778,15 +779,16 @@ const DataInput = ({route, navigation}) => {
                             SaveDataEntry(
                                 {
                                     accountId,
-                                    "photos": dataInput.photos,
-                                    "day": dataInput.currDay,
-                                    "month": dataInput.currMonth,
-                                    "year": dataInput.currYear,
-                                    "hours": dataInput.hours,
-                                    "mins": dataInput.mins,
-                                    "category": dataInput.category,
-                                    "inputFields": dataInput.states,
-                                    "comment": dataInput.comment
+                                    valid: dataInput.valid,
+                                    photos: dataInput.photos,
+                                    day: dataInput.currDay,
+                                    month: dataInput.currMonth,
+                                    year: dataInput.currYear,
+                                    hours: dataInput.hours,
+                                    mins: dataInput.mins,
+                                    category: dataInput.category,
+                                    inputFields: dataInput.states,
+                                    comment: dataInput.comment
                                 },
                                 navigation, route?.params
                             );
