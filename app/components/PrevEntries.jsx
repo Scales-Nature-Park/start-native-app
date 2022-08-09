@@ -4,6 +4,7 @@ import React, { useState, useContext, useLayoutEffect } from 'react';
 import storage, { UserContext } from '../utils/Storage';
 import { styles } from '../styles/EntryStyles';
 import {
+    View,
     Text,
     ScrollView,
     SafeAreaView,
@@ -60,6 +61,17 @@ const PrevEntries = ({ navigation }) => {
   return (
     <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
       <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.legend1}>
+            <Text>Shared</Text>
+          </View>
+          <View style={styles.legend2}>
+            <Text>Valid Save</Text>
+          </View>
+          <View style={styles.legend3}>
+            <Text>Invalid Save</Text>
+          </View>
+        </View>
         {(entryElems.get()?.length > 0) ? entryElems.get() : 
         <Text style={(dark) ? styles.emptyTextDark : styles.emptyText}>No Entries Found.</Text>}
       </ScrollView>

@@ -76,11 +76,47 @@ const styles = StyleSheet.create({
   
     safeAreaDark: {
       flex: 1,
-      paddingTop: StatusBar.currentHeight * 70 / 100,
+      paddingTop: StatusBar.currentHeight * 30 / 100,
       paddingBottom: StatusBar.currentHeight * 70 / 100,
       backgroundColor: scalesColors.background,    
     },
+
+    container: {
+      flex: 1,
+      flexDirection: 'row',
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'space-evenly',
+      marginBottom: StatusBar.currentHeight * 30 / 100,
+    },
   
+    legend1: {
+      width: '30%',
+      borderRadius: 5,
+      backgroundColor: scalesColors.BlueRacer,
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: 40
+    },
+
+    legend2: {
+      width: '30%',
+      borderRadius: 5,
+      backgroundColor: scalesColors.DeepGreen,
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: 40
+    },
+
+    legend3: {
+      width: '30%',
+      borderRadius: 5,
+      backgroundColor: scalesColors.Peach,
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: 40
+    },
+
     overlay: {
       flex: 1,
       position: 'absolute',
