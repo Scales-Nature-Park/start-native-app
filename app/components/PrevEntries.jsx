@@ -1,7 +1,7 @@
-import React, { useState, useContext, useLayoutEffect } from 'react';
-import useSyncState from '../utils/SyncState';
-import storage, { UserContext } from '../utils/Storage';
 import Entry from './Entry';
+import useSyncState from '../utils/SyncState';
+import React, { useState, useContext, useLayoutEffect } from 'react';
+import storage, { UserContext } from '../utils/Storage';
 import { styles } from '../styles/EntryStyles';
 import {
     Text,
@@ -35,15 +35,18 @@ const PrevEntries = ({ navigation }) => {
     storage.load({
       key: 'entries',
     }).then(local => {        
-        let fields = [...local.fields];
+        let fields = local.fields.map(field => {return {field, type: 'saved'}});
         let localEntryElems = [];
 
-        if (user?.userInfo?.sharedEntries?.length) fields = [...fields, ...user?.userInfo?.sharedEntries];
+        if (user?.userInfo?.sharedEntries?.length) {
+          let tempFields = user.userInfo.sharedEntries.map(entry => {return {field: entry, type: 'shared'}});
+          fields = [...fields, ...tempFields];
+        } 
 
         // iterate over all entries and set an entry component
         for (let i = fields.length - 1; i >= 0 ; i--) {
-          localEntryElems = [...localEntryElems, <Entry data={fields[i]} allEntries={[...fields]} onPress={() => {
-            navigation.navigate('DataEntry', {data: fields[i]});
+          localEntryElems = [...localEntryElems, <Entry data={fields[i]} allEntries={[...local.fields]} onPress={() => {
+            navigation.navigate('DataEntry', {data: fields[i].field});
           }} setRerender={setRerender} />];
         } 
         entryElems.set([...localEntryElems]);

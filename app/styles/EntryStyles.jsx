@@ -4,14 +4,33 @@ const scalesColors = require('../utils/colors.json');
 
 const entryStyles = StyleSheet.create({
     container: {
-        width: '95%',
-        backgroundColor: '#fff',
-        borderColor: '#E6EAF0',
-        borderWidth: 2.5,
-        borderRadius: 10,
-        margin: '2%',
-        padding: '7%',
-        backgroundColor: scalesColors.DeepGreen,
+      width: '95%',
+      borderColor: '#E6EAF0',
+      borderWidth: 2.5,
+      borderRadius: 10,
+      margin: '2%',
+      padding: '7%',
+      backgroundColor: scalesColors.DeepGreen,
+    },
+
+    containe2: {
+      width: '95%',
+      borderColor: '#E6EAF0',
+      borderWidth: 2.5,
+      borderRadius: 10,
+      margin: '2%',
+      padding: '7%',
+      backgroundColor: scalesColors.Peach,
+    },
+
+    container3: {
+      width: '95%',
+      borderColor: '#E6EAF0',
+      borderWidth: 2.5,
+      borderRadius: 10,
+      margin: '2%',
+      padding: '7%',
+      backgroundColor: scalesColors.BlueRacer,
     },
 
     buttonContainer: {
