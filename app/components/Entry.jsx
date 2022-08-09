@@ -2,8 +2,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import storage from '../utils/Storage';
 import Dialog from 'react-native-dialog';
 import axios from 'axios';
-import React, { useState } from 'react';
-import { url } from '../utils/Storage';
+import React, { useState, useContext } from 'react';
+import { url, UserContext } from '../utils/Storage';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { entryStyles } from '../styles/EntryStyles';
 import { useNetInfo } from '@react-native-community/netinfo';
@@ -14,12 +14,13 @@ const Entry = ({data, allEntries, onPress, setRerender}) => {
     const [share, setShare] = useState(false);
     const [target, setTarget] = useState('');
     const netInfo = useNetInfo();
+    const user = useContext(UserContext);
     
     const onDelete = () => {
         storage.save({
             key: 'entries',
             data: {
-                fields: allEntries.filter(elem => elem != data)
+                fields: allEntries.filter(elem => elem !== data.field)
             }
         }).then(response => {
             setRerender(true);
@@ -29,12 +30,17 @@ const Entry = ({data, allEntries, onPress, setRerender}) => {
     }
 
     const onShare = () => {
+        if (!netInfo?.isConnected) {
+            Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.')
+            return;
+        }
+
         axios({
             method: 'patch',
             url: url + '/user/shares',
             data: {
                 username: target,
-                data
+                data: data.field
             }
         }).then(() => {
             Alert.alert('Success', `Sent the data entry to ${target}.`);
@@ -45,15 +51,13 @@ const Entry = ({data, allEntries, onPress, setRerender}) => {
         });
     }
 
-    console.log(target);
-
     return (
-        <TouchableOpacity style={entryStyles.container} onPress={onPress}>
+        <TouchableOpacity style={(data.type == 'saved') ? entryStyles.container : entryStyles.container3} onPress={onPress}>
             <View style={entryStyles.buttonContainer}>
-                {netInfo?.isConnected && 
+                {(netInfo?.isConnected && user?.userInfo?.id) ?
                 <TouchableOpacity style={entryStyles.share} onPress={() => setShare(true)}>
                     <Feather name="share" size={25} color='blue' />
-                </TouchableOpacity>}
+                </TouchableOpacity> : null}
 
                 {allEntries && 
                 <TouchableOpacity style={entryStyles.delete} onPress={() => {
@@ -82,8 +86,8 @@ const Entry = ({data, allEntries, onPress, setRerender}) => {
                 <Dialog.Button label="Share" onPress={() => onShare(target)} />
             </Dialog.Container>
 
-            <Text style={entryStyles.panelText}>{data.category} Entry</Text>
-            <Text style={entryStyles.panelText}>{data.day}/{data.month}/{data.year} at {data.hours}:{data.mins}</Text>
+            <Text style={entryStyles.panelText}>{data?.field?.category} Entry</Text>
+            <Text style={entryStyles.panelText}>{data?.field?.day}/{data?.field?.month}/{data?.field?.year} at {data?.field?.hours}:{data?.field?.mins}</Text>
         </TouchableOpacity>
     );   
 };
