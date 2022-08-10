@@ -198,7 +198,7 @@ app.get('/username/:userId', (req, res) => {
             else return res.status(200).send(searchRes[0].username);
         });
     } catch(err) {
-        res.status(500).send(err);
+        return res.status(500).send(err);
     }
 });
 
@@ -295,7 +295,37 @@ app.patch('/user/shares', async (req, res) => {
 
         return res.status(200).send('');
     } catch (err) {
-        res.status(500).send(err)
+        return res.status(500).send(err);
+    }
+});
+
+/**
+ * Patch shared entry endpoint that takes in a username and entry id body parameters
+ * and searches the credentials collection for the user and their shared entry that
+ * matches the id. It then deletes that entry from the user's sharedEntries list.
+ * Responds with an error message if failed. The reason I used patch here is because 
+ * we aren't deleting the entire document and to have access to body parameters.
+ */
+app.patch('/user/entry', async (req, res) => {
+    try {
+        const { entryId, username } = req.body;
+        if (!entryId) return res.status(400).send('Invalid entry id provided.');
+
+        // load the credentials collection from the START-Project databases
+        let db = client.db('START-Project');
+        let credentials = db.collection('credentials');
+
+        // find the user document with the passed in username 
+        let user = await credentials.findOne({username});
+        if (!user) return res.status(404).send('Could not find the user with the specified username.');
+
+        // remove the shared entry with a matching id to the one specified in the req body
+        user.sharedEntries = user?.sharedEntries?.filter(elem => elem.entryId != entryId);
+        await credentials.replaceOne({_id: ObjectID(user._id)}, user);
+
+        return res.status(200).send('');
+    } catch (err) {
+        return res.status(500).send(err);
     }
 });
 

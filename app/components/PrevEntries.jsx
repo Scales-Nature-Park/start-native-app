@@ -1,16 +1,31 @@
 import Entry from './Entry';
 import useSyncState from '../utils/SyncState';
+import axios from 'axios';
 import React, { useState, useContext, useLayoutEffect } from 'react';
-import storage, { UserContext } from '../utils/Storage';
+import storage, { UserContext, url } from '../utils/Storage';
 import { styles } from '../styles/EntryStyles';
 import {
-    View,
-    Text,
-    ScrollView,
-    SafeAreaView,
-    Image,
-    TouchableOpacity,
+  View,
+  Text,
+  ScrollView,
+  SafeAreaView,
+  Image,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
+
+const onShareDelete = (field, username, set) => {
+  axios({
+    method: 'patch',
+    url: url + '/user/entry',
+    data: {
+      entryId: field?.entryId,
+      username
+    }
+  }).catch(err => {
+    Alert.alert('ERROR', err?.response?.data || err?.message);
+  });
+}
 
 const PrevEntries = ({ navigation }) => {
   const entryElems = useSyncState(undefined);
@@ -41,12 +56,12 @@ const PrevEntries = ({ navigation }) => {
 
         if (user?.userInfo?.sharedEntries?.length) {
           let tempFields = user.userInfo.sharedEntries.map(entry => {return {field: entry, type: 'shared'}});
-          fields = [...fields, ...tempFields];
+          fields = (fields) ? [...fields, ...tempFields] : [...tempFields];
         } 
 
         // iterate over all entries and set an entry component
         for (let i = fields.length - 1; i >= 0 ; i--) {
-          localEntryElems = [...localEntryElems, <Entry data={fields[i]} allEntries={[...local.fields]} onPress={() => {
+          localEntryElems = [...localEntryElems, <Entry data={fields[i]} allEntries={[...local.fields]} onShareDelete={onShareDelete} onPress={() => {
             navigation.navigate('DataEntry', {data: fields[i].field});
           }} setRerender={setRerender} />];
         } 

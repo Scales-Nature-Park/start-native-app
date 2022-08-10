@@ -2,6 +2,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import storage from '../utils/Storage';
 import Dialog from 'react-native-dialog';
 import axios from 'axios';
+import uuid from 'react-native-uuid';
 import React, { useState, useContext } from 'react';
 import { url, UserContext } from '../utils/Storage';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
@@ -10,13 +11,23 @@ import { useNetInfo } from '@react-native-community/netinfo';
 
 Feather.loadFont();
 
-const Entry = ({data, allEntries, onPress, setRerender}) => {
+const Entry = ({data, allEntries, onPress, setRerender, onShareDelete}) => {
     const [share, setShare] = useState(false);
     const [target, setTarget] = useState('');
     const netInfo = useNetInfo();
     const user = useContext(UserContext);
     
     const onDelete = () => {
+        if (data?.type == 'shared') {
+            if (!netInfo?.isConnected) {
+                Alert.alert('Network Error', 'You need an internet connection to delete shared data entries. Please check your connection and try again later.')
+                return;
+            }
+
+            onShareDelete(data?.field, user?.userInfo?.username);
+            return;
+        }
+
         storage.save({
             key: 'entries',
             data: {
@@ -40,7 +51,7 @@ const Entry = ({data, allEntries, onPress, setRerender}) => {
             url: url + '/user/shares',
             data: {
                 username: target,
-                data: data.field
+                data: {...data.field, entryId: uuid.v4()},
             }
         }).then(() => {
             Alert.alert('Success', `Sent the data entry to ${target}.`);
