@@ -24,7 +24,7 @@ const Entry = ({data, allEntries, onPress, setRerender, onShareDelete}) => {
                 return;
             }
 
-            onShareDelete(data?.field, user?.userInfo?.username);
+            onShareDelete(data?.field, user, setRerender);
             return;
         }
 
