@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import axios from 'axios';
 import LoginForm from './components/LoginForm'; 
 import DataInput from './components/DataInput';
@@ -7,6 +6,7 @@ import Home from './components/Home';
 import PrevEntries from './components/PrevEntries';
 import Search from './components/Search';
 import Account from './components/Account';
+import React, { useState } from 'react';
 import storage, { url, ArrayEquals, UserContext } from './utils/Storage';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { NavigationContainer } from '@react-navigation/native';
