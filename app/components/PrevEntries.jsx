@@ -14,14 +14,19 @@ import {
   Alert,
 } from 'react-native';
 
-const onShareDelete = (field, username, set) => {
+const onShareDelete = (field, user, setRerender) => {
   axios({
     method: 'patch',
     url: url + '/user/entry',
     data: {
       entryId: field?.entryId,
-      username
+      username: user?.userInfo?.username
     }
+  }).then(() => {
+    // update user context to reflect the deletion success on screen
+    let sharedEntries = (user?.userInfo?.sharedEntries?.length) ? user?.userInfo?.sharedEntries?.filter(elem => elem.entryId != field?.entryId) : [];
+    user.setUserInfo({id: user?.userInfo?.id, username: user?.userInfo?.username, sharedEntries});
+    setRerender(true);
   }).catch(err => {
     Alert.alert('ERROR', err?.response?.data || err?.message);
   });
@@ -39,25 +44,30 @@ const PrevEntries = ({ navigation }) => {
           <TouchableOpacity onPress= {() => setDark(!dark)}>
               {
                 (dark) ? <Image source={require('../assets/sun.png')} style={styles.iconImage}/> :
-                          <Image source={require('../assets/moon.png')} style={styles.iconImage}/>
+                         <Image source={require('../assets/moon.png')} style={styles.iconImage}/>
               }
           </TouchableOpacity>
         ),
       });
   });
 
-  // load the data from local storage and store it in the entries state
-  if (!entryElems.get() || rerender) {
+  // load the data entry fields into the entry elems state 
+  if (rerender) {
+    let fields = [];
+    let localEntryElems = [];
+    let localFields = [];
+    
+    // append shared entries to the fields list
+    if (user?.userInfo?.sharedEntries?.length) {
+      fields = user.userInfo.sharedEntries.map(entry => {return {field: entry, type: 'shared'}});
+    } 
+    setRerender(false);
+
     storage.load({
       key: 'entries',
     }).then(local => {        
-        let fields = local.fields.map(field => {return {field, type: 'saved'}});
-        let localEntryElems = [];
-
-        if (user?.userInfo?.sharedEntries?.length) {
-          let tempFields = user.userInfo.sharedEntries.map(entry => {return {field: entry, type: 'shared'}});
-          fields = (fields) ? [...fields, ...tempFields] : [...tempFields];
-        } 
+        let tempFields = local.fields.map(field => {return {field, type: 'saved'}});
+        fields = [...tempFields, ...fields];
 
         // iterate over all entries and set an entry component
         for (let i = fields.length - 1; i >= 0 ; i--) {
@@ -66,10 +76,16 @@ const PrevEntries = ({ navigation }) => {
           }} setRerender={setRerender} />];
         } 
         entryElems.set([...localEntryElems]);
-
-        if (rerender) setRerender(false);
     }).catch(err => {
-        entryElems.set(undefined);
+        if (!fields?.length) entryElems.set(undefined);
+        
+        // iterate over all entries and set an entry component
+        for (let i = fields.length - 1; i >= 0 ; i--) {
+          localEntryElems = [...localEntryElems, <Entry data={fields[i]} allEntries={[...localFields]} onShareDelete={onShareDelete} onPress={() => {
+            navigation.navigate('DataEntry', {data: fields[i].field});
+          }} setRerender={setRerender} />];
+        } 
+        entryElems.set([...localEntryElems]);
     });
   }
 
