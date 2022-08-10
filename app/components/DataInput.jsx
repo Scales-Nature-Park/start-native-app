@@ -13,6 +13,7 @@ import { openPicker } from 'react-native-image-crop-picker';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useNetInfo } from '@react-native-community/netinfo';
 import {
+    PermissionsAndroid,
     Text,
     View,
     TextInput,
@@ -62,6 +63,18 @@ const AutoFillField = (field, tempStates, state, meta) => {
         }
     }
 }
+
+const RequestLocation = async () => {
+    try {
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        );
+      
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) return true;
+    } catch (err) {}
+    
+    return false;
+};
 
 // recursive function that display conditional fields of a field
 // and their conditionals
@@ -476,7 +489,10 @@ const DataInput = ({route, navigation}) => {
         } else if (field.name.toLowerCase() == 'get location') {
             fields.push(
                 <View style={styles.container3}>
-                    <TouchableOpacity style={styles.addImage} onPress={() => {
+                    <TouchableOpacity style={styles.addImage} onPress={async () => {
+                        // request the user's location and return if denied
+                        if (!await RequestLocation()) return;
+                        
                         Geolocation.getCurrentPosition(info => {
                             let { latitude, longitude,  accuracy} = info?.coords;
                             let tempStates = [...dataInput?.states] || [];
