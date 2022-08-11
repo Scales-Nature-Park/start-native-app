@@ -319,6 +319,18 @@ app.patch('/user/entry', async (req, res) => {
         let user = await credentials.findOne({username});
         if (!user) return res.status(404).send('Could not find the user with the specified username.');
 
+        // find the shared entry with the specified entryId
+        let entry = user.sharedEntries?.find(elem => elem.entryId == entryId);
+        if (!entry) return res.status(400).send('Could not find a matching shared data entry linked to your account.');
+        
+        // delete all the entry's image documents in photoIds
+        if (entry.photoIds?.length) {
+            let images = db.collection('images');
+            for (let id of entry.photoIds) {
+                await images.deleteOne({_id: ObjectID(id)});
+            }
+        }
+
         // remove the shared entry with a matching id to the one specified in the req body
         user.sharedEntries = user?.sharedEntries?.filter(elem => elem.entryId != entryId);
         await credentials.replaceOne({_id: ObjectID(user._id)}, user);
