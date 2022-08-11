@@ -340,7 +340,8 @@ const Search = ({ navigation }) => {
                         // display list of entries under the Add criteria button
                         let entries = [];
                         for (let i = response.data.length - 1; i >= 0; i--) {
-                            entries = [...entries, <Entry data={response.data[i]} onPress={() => {
+                            let currEntry = {type: 'submitted', field: response.data[i]};
+                            entries = [...entries, <Entry data={currEntry} onPress={() => {
                                 navigation.navigate('DataEntry', {data: response.data[i], search: true});
                             }}/>];
                         }

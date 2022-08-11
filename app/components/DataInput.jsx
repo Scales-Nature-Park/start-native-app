@@ -314,21 +314,12 @@ const DataInput = ({route, navigation}) => {
         return data;
     };
 
-    const SubmitData = async (second = undefined) => {
-        // validate network connection
-        if (!netInfo.isConnected) {
-            Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
-            return;
-        }
-
-        photoIds = [];
-        dispatch({type: 'progress', progress: {display: true, progress: dataInput.progress.progress}});
-        
-        // create image forms for each photo and upload them to the server and the retrieve
-        // the entry ids into the database to be linked to this data entry
-        if (dataInput.photos && dataInput.photos.length > 0) {
+    const UploadPhotos = async (images, photoIds, second = undefined) => {
+        try {
+            // create image forms for each photo and upload them to the server and the retrieve
+            // the entry ids into the database to be linked to this data entry
             let i = 0;
-            for (let photo of dataInput.photos) {
+            for (let photo of images) {
                 i++
                 let imageForm = createFormData(photo);
                                 
@@ -347,31 +338,59 @@ const DataInput = ({route, navigation}) => {
     
                 // if image upload fails, try it again. give network error alert if on second attempt
                 if(!imageForm) {
-                    if (second) Alert.alert('Error', 'Failed to upload images.');
-                    else SubmitData(true);
-                    return;
+                    if (second) {
+                        Alert.alert('Error', 'Failed to upload images.');
+                        return undefined;
+                    }
+                    else return await UploadPhotos(images, photoIds, true);
                 }
-                photoIds = (photoId) ? [...photoIds, photoId.data] : [...photoIds];
+                photoIds = (photoId) ? (typeof photoIds == 'object') ? [...photoIds, photoId.data] : [photoId.data] : [...photoIds];
             }
+        } catch (error) {
+            Alert.alert('ERROR', error?.message || error);
+            return undefined;
         }
         
-        // upload the data entry to the database 
-        axios({
-            method: 'post',
-            url: url + '/dataEntry',
-            data: {
-                accountId,
-                photoIds,
-                "day": dataInput.currDay,
-                "month": dataInput.currMonth,
-                "year": dataInput.currYear,
-                "hours": dataInput.hours,
-                "mins": dataInput.mins,
-                "category": dataInput.category,
-                "inputFields": dataInput.states,
-                "comment": dataInput.comment
+        return photoIds;
+    }
+
+    const SubmitData = async () => {
+        // validate network connection
+        if (!netInfo.isConnected) {
+            Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
+            return;
+        }
+
+        photoIds = [];
+        dispatch({type: 'progress', progress: {display: true, progress: dataInput.progress.progress}});
+        
+        if (dataInput.photos && dataInput.photos.length > 0) {
+            photoIds = await UploadPhotos(dataInput.photos, photoIds);
+            if (!photoIds) {
+                dispatch({type: 'progress', progress: {progress: 0, display: false}});
+                return;
             }
-        }).then(response => {
+        } 
+        
+        // upload the data entry to the database 
+        try {
+            await axios({
+                method: 'post',
+                url: url + '/dataEntry',
+                data: {
+                    accountId,
+                    photoIds,
+                    "day": dataInput.currDay,
+                    "month": dataInput.currMonth,
+                    "year": dataInput.currYear,
+                    "hours": dataInput.hours,
+                    "mins": dataInput.mins,
+                    "category": dataInput.category,
+                    "inputFields": dataInput.states,
+                    "comment": dataInput.comment
+                }
+            }); 
+
             dispatch({type: 'progress', progress: {progress: 0, display: false}});
             Alert.alert(
                 'Successful Data Entry', 
@@ -383,11 +402,12 @@ const DataInput = ({route, navigation}) => {
                 ],
                 {cancelable: false}
             );
-        }).catch(error => {
-            dispatch({type: 'progress', progress: {progress: 0, display: false}});
-            Alert.alert('ERROR', error?.response?.data || error.message);
             return;
-        });
+        } catch(err) {
+            dispatch({type: 'progress', progress: {progress: 0, display: false}});
+            Alert.alert('ERROR', err?.response?.data || err?.message || err);
+            return;
+        }
     }
 
     const changeState = (field, item) => {
