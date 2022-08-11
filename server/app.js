@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // DB client
-const { MongoClient, Binary } = require('mongodb');
+const { MongoClient } = require('mongodb');
 const { ObjectID } = require('bson');
 const uri = process.env.MONGODB;
 const client = new MongoClient(uri);
