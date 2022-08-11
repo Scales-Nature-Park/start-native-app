@@ -330,6 +330,40 @@ app.patch('/user/entry', async (req, res) => {
 });
 
 /**
+ * Post a duplicate document endpoint that takes in an array of document ids and 
+ * a collection name then creates duplicate documents in the same collection and 
+ * responds with their ids. It responds with an error message if that process fails.
+ */
+app.post('/duplicate', async (req, res) => {
+    try {
+        let { collectionName, docIds } = req.body;
+        if (!collectionName || !docIds?.length) return res.status(400).send('Invalid parameters specified.');
+        
+        // load the specified collection name in the START-Project database
+        let db = client.db('START-Project');
+        let collection = db.collection(collectionName);
+        
+        // search for each document using its id and insert it 
+        // as a new document if found 
+        let newIds = [];
+        for (let id of docIds) {
+            // seperate the id from the document elements to generate new id upon insertion
+            let { _id, ...doc } = await collection.findOne({_id: ObjectID(id)});
+            if (!doc) return res.status(400).send('Could not find some or all the documents with the specified ids.');
+            
+
+            let newDoc = await collection.insertOne(doc);
+            if (!newDoc?.insertedId) return res.status(500).send('Failed to duplicate your documents, please try again later.');
+            newIds.push(newDoc?.insertedId);
+        }
+
+        return res.status(200).send(newIds);
+    } catch(err) {
+        return res.status(500).send(err);
+    }
+});
+
+/**
  * Image Upload endpoint that stores a passed in image from the request into
  * the database and responds with the ObjectID.
  */

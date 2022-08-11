@@ -49,7 +49,21 @@ const Entry = ({data, allEntries, onPress, setRerender, onShareDelete}) => {
 
         try {
             // upload all the photos and retrieve their photoids
-            let tempPhotoIds = (data?.field?.photoIds?.length) ? [...data.field.photoIds] : [];
+            let tempPhotoIds = []
+            if(data?.field?.photoIds?.length) {
+                tempPhotoIds = [...data.field.photoIds];
+                let response = await axios({
+                    method: 'post',
+                    url: url  + '/duplicate',
+                    data: {
+                        collectionName: 'images',
+                        docIds: [...tempPhotoIds]
+                    }
+                });
+                
+                tempPhotoIds = [...response.data];
+            } 
+
             if (data?.field?.photos?.length) {
                 tempPhotoIds = await UploadPhotos(data.field.photos, tempPhotoIds);
                 if (!tempPhotoIds) return;
