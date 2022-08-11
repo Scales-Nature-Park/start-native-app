@@ -8,6 +8,7 @@ import { url, UserContext } from '../utils/Storage';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { entryStyles } from '../styles/EntryStyles';
 import { useNetInfo } from '@react-native-community/netinfo';
+import { UploadPhotos } from '../utils/ImageUpload';
 
 Feather.loadFont();
 
@@ -40,26 +41,37 @@ const Entry = ({data, allEntries, onPress, setRerender, onShareDelete}) => {
         });
     }
 
-    const onShare = () => {
+    const onShare = async () => {
         if (!netInfo?.isConnected) {
             Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.')
             return;
         }
 
-        axios({
-            method: 'patch',
-            url: url + '/user/shares',
-            data: {
-                username: target,
-                data: {...data.field, entryId: uuid.v4()},
+        try {
+            // upload all the photos and retrieve their photoids
+            let tempPhotoIds = (data?.field?.photoIds?.length) ? [...data.field.photoIds] : [];
+            if (data?.field?.photos?.length) {
+                tempPhotoIds = await UploadPhotos(data.field.photos, tempPhotoIds);
+                if (!tempPhotoIds) return;
             }
-        }).then(() => {
+            
+            // replace photo ids with the new ones and undefine photos to avoid 
+            // multiple source duplicate photos on same device 
+            await axios({
+                method: 'patch',
+                url: url + '/user/shares',
+                data: {
+                    username: target,
+                    data: {...data.field, photos: undefined, photoIds: tempPhotoIds || undefined, entryId: uuid.v4()},
+                }
+            });
+
             Alert.alert('Success', `Sent the data entry to ${target}.`);
             setShare(false);
-        }).catch(e => {
-            Alert.alert('ERROR', e?.response?.data || e?.message);
+        } catch(e) {
+            Alert.alert('ERROR', e?.response?.data || e?.message || e);
             setShare(false);
-        });
+        }
     }
 
     return (
