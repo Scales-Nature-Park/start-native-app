@@ -3,6 +3,7 @@ import storage from '../utils/Storage';
 import Dialog from 'react-native-dialog';
 import axios from 'axios';
 import uuid from 'react-native-uuid';
+import RNFS from 'react-native-fs';
 import React, { useState, useContext } from 'react';
 import { url, UserContext } from '../utils/Storage';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
@@ -18,7 +19,7 @@ const Entry = ({data, allEntries, onPress, setRerender, onShareDelete}) => {
     const netInfo = useNetInfo();
     const user = useContext(UserContext);
     
-    const onDelete = () => {
+    const onDelete = async () => {
         if (data?.type == 'shared') {
             if (!netInfo?.isConnected) {
                 Alert.alert('Network Error', 'You need an internet connection to delete shared data entries. Please check your connection and try again later.')
@@ -27,6 +28,16 @@ const Entry = ({data, allEntries, onPress, setRerender, onShareDelete}) => {
 
             onShareDelete(data?.field, user, setRerender);
             return;
+        }
+
+        if (data?.field?.photos?.length) {
+            for (let photo of data.field.photos) {
+                if (!photo.download) continue;
+                
+                try {
+                    await RNFS.unlink(photo.uri)
+                } catch (err) {}
+            }
         }
 
         storage.save({
