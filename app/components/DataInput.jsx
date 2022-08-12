@@ -8,7 +8,7 @@ import styles from '../styles/DataStyles';
 import Feather from 'react-native-vector-icons/Feather';
 import Geolocation from 'react-native-geolocation-service';
 import * as Progress from 'react-native-progress';
-import { UploadPhotos } from '../utils/ImageUpload';
+import { UploadPhotos, DownloadPhoto } from '../utils/ImageUpload';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import { openPicker } from 'react-native-image-crop-picker';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -240,7 +240,9 @@ const DataInput = ({route, navigation}) => {
     let photoIds = (paramData && paramData.photoIds && !dataInput.photos) ? [...paramData.photoIds] : null;
     if (photoIds && photoIds.length > 0 && !dataInput.photos) {
         tempPhotos = [];
-        for (let id of photoIds) (!tempPhotos.includes({uri: url + '/image/' + id})) ? tempPhotos.push({uri: url + '/image/' + id}) : null;
+        for (let id of photoIds) {
+            if (!tempPhotos.includes({uri: url + '/image/' + id})) tempPhotos.push({uri: url + '/image/' + id});
+        }
     } 
 
     if (tempPhotos && !dataInput.photos) dispatch({type: 'photos', photos: tempPhotos});
@@ -794,12 +796,21 @@ const DataInput = ({route, navigation}) => {
     );
 }
 
-const SaveDataEntry = (dataObj, navigation, params) => {
+const SaveDataEntry = async (dataObj, navigation, params) => {
+    if (dataObj?.photos?.length) {
+        // download remote photos from database so that deleting the original shared
+        // entry won't get rid of our images locally 
+        for (let photo of dataObj.photos) {
+            if (photo.uri.includes('file://')) continue;
+            await DownloadPhoto(photo);
+        }
+    }
+
     // try loading the entries local storage
     storage.load({
         key: 'entries'
     }).then((retEntries) => {
-        // append this entry to stored entries
+        // append this entry to stored entries  
         let updatedEntries = [...retEntries.fields];
         updatedEntries.push(dataObj); 
 

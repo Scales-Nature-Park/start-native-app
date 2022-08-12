@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { url } from './Storage';
-import { Platform, Alert } from 'react-native';
+import RNFetchBlob from 'rn-fetch-blob';
+import { Platform, Alert, PermissionsAndroid } from 'react-native';
 
 const createFormData = (photo) => {
     if (!photo) return;
@@ -8,7 +9,7 @@ const createFormData = (photo) => {
     
     data.append('photo', {
       name: photo.uri,
-      type: photo.mime,
+      type: photo.mime || 'image/jpeg',
       uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
     });
 
@@ -55,4 +56,17 @@ const UploadPhotos = async (images, photoIds, second = undefined) => {
     return photoIds;
 }
 
-export { UploadPhotos };
+const DownloadPhoto = async (image) => {
+    try {      
+        // fetch the image from the server and download it to local app storage
+        let res = await RNFetchBlob.config({fileCache: true, appendExt : 'jpg'}).fetch('GET', image.uri)
+        let path = 'file://' + res.path();
+
+        image.uri = path;
+        image.download = true;
+    } catch (err) {
+        Alert.alert('ERROR', 'Failed to download your photos. Please try again later.');
+    }
+}
+
+export { UploadPhotos, DownloadPhoto };
