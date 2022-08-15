@@ -1,8 +1,8 @@
 import Entry from './Entry';
 import useSyncState from '../utils/SyncState';
-import axios from 'axios';
 import React, { useState, useContext, useLayoutEffect } from 'react';
 import storage, { UserContext, url } from '../utils/Storage';
+import { onShareDelete } from '../utils/Fields';
 import { styles } from '../styles/EntryStyles';
 import {
   View,
@@ -13,24 +13,6 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-
-const onShareDelete = (field, user, setRerender) => {
-  axios({
-    method: 'patch',
-    url: url + '/user/entry',
-    data: {
-      entryId: field?.entryId,
-      username: user?.userInfo?.username
-    }
-  }).then(() => {
-    // update user context to reflect the deletion success on screen
-    let sharedEntries = (user?.userInfo?.sharedEntries?.length) ? user?.userInfo?.sharedEntries?.filter(elem => elem.entryId != field?.entryId) : [];
-    user.setUserInfo({id: user?.userInfo?.id, username: user?.userInfo?.username, sharedEntries});
-    setRerender(true);
-  }).catch(err => {
-    Alert.alert('ERROR', err?.response?.data || err?.message);
-  });
-}
 
 const PrevEntries = ({ navigation }) => {
   const entryElems = useSyncState(undefined);

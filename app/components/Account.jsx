@@ -1,7 +1,7 @@
 import axios from 'axios';
 import styles from '../styles/AccountStyles';
 import React, { useState, useContext, useLayoutEffect } from 'react';
-import { AuthenticateCredentials, DeleteUser } from '../utils/Credentials';
+import { UpdatePassword, DeleteUser } from '../utils/Credentials';
 import { url, UserContext } from '../utils/Storage';
 import { useNetInfo } from "@react-native-community/netinfo";
 import {
@@ -92,7 +92,7 @@ const Account = ({ navigation }) => {
                 </View>
             
                 <TouchableOpacity style={styles.loginBtn}
-                onPress = {() => AuthenticateCredentials(netInfo, accountId, username, currPass, password, password2)}>
+                onPress = {() => UpdatePassword(netInfo, accountId, username, currPass, password, password2)}>
                     <Text style={styles.loginText}>UPDATE PASSWORD</Text>
                 </TouchableOpacity>
 

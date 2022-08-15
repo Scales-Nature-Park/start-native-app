@@ -1,8 +1,11 @@
 import axios from 'axios';
+import uuid from 'react-native-uuid';
+import RNFS from 'react-native-fs';
 import storage, { url, ArrayEquals } from './Storage';
+import { UploadPhotos } from './ImageUpload';
 import { Alert } from 'react-native';
 
-const dataFields = require('./fields.json');
+const dataFields = require('./json/fields.json');
 
 /**
  * Asynchronous function that fetches data fields from the server and compares
@@ -56,4 +59,102 @@ const FetchFields = async () => {
   } catch (err) {}
 };
 
-export { FetchFields };
+const onDelete = async (netInfo, data, setRerender, user, allEntries) => {
+  if (data?.type == 'shared') {
+      if (!netInfo?.isConnected) {
+          Alert.alert('Network Error', 'You need an internet connection to delete shared data entries. Please check your connection and try again later.')
+          return;
+      }
+
+      onShareDelete(data?.field, user, setRerender);
+      return;
+  }
+
+  if (data?.field?.photos?.length) {
+      for (let photo of data.field.photos) {
+          if (!photo.download) continue;
+          
+          try {
+              await RNFS.unlink(photo.uri)
+          } catch (err) {}
+      }
+  }
+
+  storage.save({
+      key: 'entries',
+      data: {
+          fields: allEntries.filter(elem => elem !== data.field)
+      }
+  }).then(response => {
+      setRerender(true);
+  }).catch(err => {
+      Alert.alert('ERROR', 'Failed to delete entry. Please try again later.');
+  });
+}
+
+const onShare = async (netInfo, target, data, setShare) => {
+  if (!netInfo?.isConnected) {
+      Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.')
+      return;
+  }
+
+  try {
+      // upload all the photos and retrieve their photoids
+      let tempPhotoIds = []
+      if(data?.field?.photoIds?.length) {
+          tempPhotoIds = [...data.field.photoIds];
+          let response = await axios({
+              method: 'post',
+              url: url  + '/duplicate',
+              data: {
+                  collectionName: 'images',
+                  docIds: [...tempPhotoIds]
+              }
+          });
+          
+          tempPhotoIds = [...response.data];
+      } 
+
+      if (data?.field?.photos?.length) {
+          tempPhotoIds = await UploadPhotos(data.field.photos, tempPhotoIds);
+          if (!tempPhotoIds) return;
+      }
+      
+      // replace photo ids with the new ones and undefine photos to avoid 
+      // multiple source duplicate photos on same device 
+      await axios({
+          method: 'patch',
+          url: url + '/user/shares',
+          data: {
+              username: target,
+              data: {...data.field, photos: undefined, photoIds: tempPhotoIds || undefined, entryId: uuid.v4()},
+          }
+      });
+
+      Alert.alert('Success', `Sent the data entry to ${target}.`);
+      setShare(false);
+  } catch(e) {
+      Alert.alert('ERROR', e?.response?.data || e?.message || e);
+      setShare(false);
+  }
+}
+
+const onShareDelete = (field, user, setRerender) => {
+  axios({
+    method: 'patch',
+    url: url + '/user/entry',
+    data: {
+      entryId: field?.entryId,
+      username: user?.userInfo?.username
+    }
+  }).then(() => {
+    // update user context to reflect the deletion success on screen
+    let sharedEntries = (user?.userInfo?.sharedEntries?.length) ? user?.userInfo?.sharedEntries?.filter(elem => elem.entryId != field?.entryId) : [];
+    user.setUserInfo({id: user?.userInfo?.id, username: user?.userInfo?.username, sharedEntries});
+    setRerender(true);
+  }).catch(err => {
+    Alert.alert('ERROR', err?.response?.data || err?.message);
+  });
+};
+
+export { FetchFields, onShare, onDelete, onShareDelete };

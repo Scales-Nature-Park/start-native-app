@@ -28,7 +28,7 @@ import {
 import { useContext } from 'react';
 
 Feather.loadFont();
-const scalesColors = require('../utils/colors.json');
+const scalesColors = require('../utils/json/colors.json');
 
 //To bypass condition match ie: will display no matter the parent value if the condition is 'Any'
 const conditionBypass = 'Any';
@@ -214,7 +214,7 @@ const DataInput = ({route, navigation}) => {
     let photos = (paramData && paramData.photos) ? [...paramData.photos] : null;
     let dark = true;
     let progress = {display: false, progress: 0};
-    let dataFields = require('../utils/fields.json');
+    let dataFields = require('../utils/json/fields.json');
     let loadedFields = false;
 
     const [dataInput, dispatch] = useReducer(Reducer, {currDay, currMonth, currYear, hours, mins, category, comment, states: [], valid, photos, dark, progress});

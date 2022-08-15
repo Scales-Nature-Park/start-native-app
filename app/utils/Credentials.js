@@ -2,7 +2,32 @@ import axios from 'axios';
 import { url } from './Storage';
 import { Alert } from 'react-native';
 
-const AuthenticateCredentials = (netInfo, accountId, username, currPass, password, password2) => {
+const AuthenticateCredentials = (netInfo, username, password, navigation, user) => {
+    // validate network connection
+    if (!netInfo?.isConnected) {
+      Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
+      return;
+    }
+
+    axios({
+      method: 'get',
+      url: url + '/signin',
+      params: {
+        username,
+        password
+      }
+    }).then(response => {
+      if (!response?.data) throw 'Invalid credentials. Please verify you have entered the correct username and password.';
+
+      user.setUserInfo({id: response?.data?.id || '', username: username || '', sharedEntries: (response?.data?.sharedEntries) ? [...response?.data?.sharedEntries] : []});
+      navigation.navigate('Home');
+    }).catch(error => {
+      Alert.alert('ERROR', error.response.data || error.message);
+      return;
+    });
+};
+
+const UpdatePassword = (netInfo, accountId, username, currPass, password, password2) => {
     // validate network connection
     if (!netInfo.isConnected) {
         Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
@@ -39,14 +64,14 @@ const AuthenticateCredentials = (netInfo, accountId, username, currPass, passwor
             password: currPass
         }
     }).then(response => {
-        UpdatePassword(currPass, password, accountId);
+        RequestUpdate(currPass, password, accountId);
     }).catch(error => {
         Alert.alert('ERROR', error?.response?.data || error.message);
         return;
     });
 };
 
-const UpdatePassword = (currPass, password, accountId) => {
+const RequestUpdate = (currPass, password, accountId) => {
     axios({
         method: 'put',
         url: url + '/password/' + accountId,
@@ -104,4 +129,4 @@ const DeleteUser = (netInfo, accountId, navigation) => {
     ]);
 };
 
-export { AuthenticateCredentials, DeleteUser };
+export { AuthenticateCredentials, UpdatePassword, DeleteUser };

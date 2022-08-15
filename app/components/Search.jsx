@@ -18,8 +18,8 @@ import {
 import { url, ArrayEquals } from '../utils/Storage';
 import { useNetInfo } from "@react-native-community/netinfo";
 
-const scalesColors = require('../utils/colors.json');
-const searchFields = require('../utils/search.json');
+const scalesColors = require('../utils/json/colors.json');
+const searchFields = require('../utils/json/search.json');
 
 const Search = ({ navigation }) => {
     const netInfo = useNetInfo();
