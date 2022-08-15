@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { url } from './Storage';
 import RNFetchBlob from 'rn-fetch-blob';
-import { Platform, Alert, PermissionsAndroid } from 'react-native';
+import { url } from './Storage';
+import { Platform, Alert } from 'react-native';
 
 const createFormData = (photo) => {
     if (!photo) return;
