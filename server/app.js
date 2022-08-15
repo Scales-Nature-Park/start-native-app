@@ -441,7 +441,7 @@ app.post('/imageUpload', async (req, res) => {
  * Get endpoint that retrieves an image file from the uploads folder with the same
  * name as the images document that corresponds to the request photoId parameter.
  */
-app.get('/image/:photoId', (req, res) => {
+app.get('/image/:photoId', async (req, res) => {
     let params = req.params;
     if(!params.photoId) return res.status(400).send('No image ID was sepcified.');
     
@@ -458,17 +458,19 @@ app.get('/image/:photoId', (req, res) => {
                 if (err) return res.status(500).send(err);
                 
                 // search for file with the name were looking for
-                file = files.filter((curr) => curr == name);
-                (file.length > 0) ? file = file[0] : undefined;
+                file = files.filter(curr => curr == name);
+                file = (file.length > 0) ? file[0] : undefined;
                 
-                if(!file) res.status(404).send('Could not find a file with the name: ', name);
-                else return res.status(200).sendFile(path.join(__dirname + '/uploads/' + file));
+                if(!file) 
+                return res.status(404).send('Could not find a file with the name: ', name);
+
+                return res.status(200).sendFile(path.join(__dirname + '/uploads/' + file));
             });
         }
 
         // search an image document using the passed in photoid
-        images.find({_id: ObjectID(params.photoId)}).toArray((err, searchRes) => {
-            if (err) return res.status(400).send(err.message);
+        try {
+            let searchRes = await images.find({_id: ObjectID(params.photoId)}).toArray();
             if (searchRes.length == 0) return res.status(404).send('Could not find an image with the specified ID.');
             
             // Execute this branch when the image is physically stored in the database
@@ -487,9 +489,11 @@ app.get('/image/:photoId', (req, res) => {
             // Oversized images will likely be the ones to enter this branch > MONGOLIMIT
             // unless someone manually deleted image data from the database for some reason 
             else ServerImageFetch(searchRes[0]);
-        });
-    } catch(err) {
-        return res.status(500).send(err);
+        } catch (err) {
+            return res.status(400).send(err);
+        }
+    } catch(error) {
+        return res.status(500).send(error);
     }
 });
 
