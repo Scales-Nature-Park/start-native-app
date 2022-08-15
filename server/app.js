@@ -43,7 +43,7 @@ DBConnect();
  * with existing documents in the database and sends 
  * a success response if they exist.
  */
-app.get('/signin', (req, res) => {
+app.get('/signin', async (req, res) => {
     if (!req.query || !req.query.username || !req.query.password)
     return res.status(400).send('Invalid credentials. Please verify you have entered the correct username and password.');
     
@@ -58,14 +58,16 @@ app.get('/signin', (req, res) => {
         let results = credentials.find({username, password});
     
         // retrieve the array of the account and respond with the id
-        results.toArray().then(response => {
-            if (response.length <= 0) 
+        try {
+            results = await results.toArray();
+
+            if (results.length <= 0) 
             return res.status(500).send('Invalid credentials. Please verify you have entered the correct username and password.');
 
-            return res.status(200).send({id: response[0]._id, sharedEntries: response[0].sharedEntries || []});
-        }).catch(err => {
-            return res.status(500).send(err.message);
-        });
+            return res.status(200).send({id: results[0]._id, sharedEntries: results[0].sharedEntries || []});
+        } catch(err) {
+            return res.status(500).send(err);
+        }
     } catch (error) {
         return res.status(400).send(error);
     }
@@ -76,7 +78,7 @@ app.get('/signin', (req, res) => {
  * with existing documents in the database and sends 
  * a success response if they exist.
  */
- app.get('/admin-signin', (req, res) => {
+ app.get('/admin-signin', async (req, res) => {
     if (!req.query || !req.query.username || !req.query.password)
     return res.status(400).send('Invalid credentials. Please verify you have entered the correct username and password.');
     
@@ -91,14 +93,16 @@ app.get('/signin', (req, res) => {
         let results = credentials.find({"username": username, "password": password});
         
         // retrieve the array of the account and respond with the id
-        results.toArray().then(response => {
-            if (response.length <= 0) 
+        try {
+            results = await results.toArray();
+
+            if (results.length <= 0) 
             return res.status(500).send('Invalid credentials. Please verify you have entered the correct username and password.');
 
-            return res.status(200).send(response[0]._id);
-        }).catch(err => {
-            return res.status(500).send(err.message);
-        });
+            return res.status(200).send(results[0]._id);
+        } catch(err) {
+            return res.status(500).send(err);
+        }
     } catch (error) {
         return res.status(400).send(error);
     }
@@ -110,7 +114,7 @@ app.get('/signin', (req, res) => {
  * a fail response if they exist, create a new document for
  * them otherwise.
  */
-app.post('/signup', (req, res) => {
+app.post('/signup', async (req, res) => {
     if (!req.body || !req.body.username || !req.body.password)
     return res.status(400).send('Username and password were not sent to the server.');
 
@@ -126,23 +130,25 @@ app.post('/signup', (req, res) => {
 
         // retrieve the array of the account and respond with the fail
         // if it has any elements
-        results.toArray().then(response => {
-            if (response.length > 0) {
+        try {
+            results = await results.toArray(); 
+            if (results.length > 0) {
                 throw 'An account already exists with this username. Try to login or use a different username.';
             }
             
             // insert a new document with the username and password
-            credentials.insertOne({
-                username,
-                password
-            }).then(insertRes => {
+            try {
+                await credentials.insertOne({
+                    username,
+                    password
+                });
                 return res.status(200).send('');
-            }).catch(insertError => {
-                return res.status(500).send(insertError);
-            });
-        }).catch(err => {
+            } catch (e) {
+                return res.status(400).send(e);
+            }
+        } catch(err) {
             return res.status(400).send(err);
-        });
+        }
     } catch (error) {
         return res.status(500).send(error);
     }
@@ -153,25 +159,27 @@ app.post('/signup', (req, res) => {
  * user data from the credentials collection in our START-Project database.
  * It responds with an array of usernames or an error message if it fails.
  */
-app.get('/username', (req, res) => {
+app.get('/username', async (req, res) => {
     try {
         // load the credentials collection from the START-Project db
         let db = client.db('START-Project');
         let credentials = db.collection('credentials');
 
-        // respond with an array of all usernames
-        credentials.find({}).toArray((err, searchRes) => {
-            if (err) return res.status(400).send(err.message);
+        // respond with an array of all usernames and their ids
+        try {
+            let results = await credentials.find({}).toArray(); 
             
             let users = [];
-            for (let user of searchRes) {
-                let {username, _id} = user;
+            for (let user of results) {
+                let { username, _id } = user;
                 users.push({username, _id});
             }
             return res.status(200).send(users);
-        });
-    } catch(err) {
-        res.status(500).send(err);
+        } catch (err) {
+            return res.status(400).send(err);
+        }
+    } catch(error) {
+        res.status(500).send(error);
     }
 });
 
@@ -181,9 +189,9 @@ app.get('/username', (req, res) => {
  * It responds with the username if the database query is successful, or an 
  * error otherwise. 
  */
-app.get('/username/:userId', (req, res) => {
+app.get('/username/:userId', async (req, res) => {
     const params = req.params;
-    if(!params.userId) return res.status(404).send('No user ID was sepcified.');
+    if (!params.userId) return res.status(404).send('No user ID was sepcified.');
     
     try {
         // load the credentials collection from the START-Project db
@@ -191,14 +199,18 @@ app.get('/username/:userId', (req, res) => {
         let credentials = db.collection('credentials');
 
         // search for a credentials document using the passed in userid
-        credentials.find({_id: ObjectID(params.userId)}).toArray((err, searchRes) => {
-            if (err) return res.status(400).send(err.message);
+        try {
+            let searchRes = await credentials.find({_id: ObjectID(params.userId)}).toArray();
             
-            if (searchRes.length == 0) return res.status(404).send('Could not find a user with the specified ID.');
-            else return res.status(200).send(searchRes[0].username);
-        });
-    } catch(err) {
-        return res.status(500).send(err);
+            if (searchRes.length == 0) 
+            return res.status(404).send('Could not find a user with the specified ID.');
+            
+            return res.status(200).send(searchRes[0].username);
+        } catch(err) {
+            return res.status(400).send(err);
+        }
+    } catch(error) {
+        return res.status(500).send(error);
     }
 });
 
@@ -209,7 +221,7 @@ app.get('/username/:userId', (req, res) => {
  * It responds with a success message or an error message if any of the
  * queries failed.
  */
-app.put('/password/:userid', (req, res) => {
+app.put('/password/:userid', async (req, res) => {
     try {
         const params = {...req.params, ...req.body};
         if (!params.userid || (!params.currentPassword && !params.admin) || !params.newPassword)
@@ -221,25 +233,30 @@ app.put('/password/:userid', (req, res) => {
 
         // search for a credentials document using the passed in userid
         if (!params.admin) {
-            credentials.find({_id: ObjectID(params.userid)}).toArray((err, searchRes) => {
-                if (err) return res.status(400).send(err.message);
+            try {
+                let searchRes = await credentials.find({_id: ObjectID(params.userid)}).toArray();
                 if (searchRes.length == 0) return res.status(404).send('Could not find a user with the specified ID.');
                 if (searchRes[0].password !== params.currentPassword) return res.status(403).send('Invalid current password.');
-            });
+            } catch (err) {
+                return res.status(400).send(err.message);
+            }
         }
         
         // update the password now that we know the credentials are valid
-        credentials.updateOne({_id: ObjectID(params.userid)}, 
-        {
-            $set: {
-                password: params.newPassword
-            }
-        }, (err, response) => {
-            if (err) return res.status(400).send(err.message);
+        try {
+            await credentials.updateOne({_id: ObjectID(params.userid)}, 
+            {
+                $set: {
+                    password: params.newPassword
+                }
+            });
+            
             return res.status(200).send('Successful update.');
-        });
-    } catch(err) {
-        res.status(500).send(err);
+        } catch (err) {
+            return res.status(400).send(err);
+        }
+    } catch(error) {
+        return res.status(500).send(error);
     }
 });
 
@@ -250,7 +267,7 @@ app.put('/password/:userid', (req, res) => {
  * in our START-Project database. Returns a success message or an error
  * message if the query fails or a user id isn't provided 
  */
-app.delete('/user/:userid', (req, res) => {
+app.delete('/user/:userid', async (req, res) => {
     const params = req.params;
     if (!params.userid) return res.status(400).send('Failed to retrieve your user information');
 
@@ -260,11 +277,17 @@ app.delete('/user/:userid', (req, res) => {
         let credentials = db.collection('credentials');
         
         // delete the first document that matches the passed in id (there is only 1)
-        credentials.deleteOne({_id: ObjectID(params.userid)}, (err, response) => {
-            if (err) return res.status(400).send(err.message);
-            if (!response?.deletedCount) return res.status(500).send('Could not perform delete operation. Please try again at a later time.');
+        try {
+            let response = await credentials.deleteOne({_id: ObjectID(params.userid)}); 
+
+            // check if the document was actually deleted
+            if (!response?.deletedCount) 
+            return res.status(500).send('Could not perform delete operation. Please try again at a later time.');
+            
             return res.status(200).send('Successfully deleted your account.');
-        });
+        } catch(err) {
+            return res.status(400).send(err);
+        }
     } catch (error) {
         res.status(500).send(error);
     }
@@ -294,8 +317,8 @@ app.patch('/user/shares', async (req, res) => {
         await credentials.replaceOne({_id: ObjectID(user._id)}, user);
 
         return res.status(200).send('');
-    } catch (err) {
-        return res.status(500).send(err);
+    } catch (error) {
+        return res.status(500).send(error);
     }
 });
 
@@ -336,8 +359,8 @@ app.patch('/user/entry', async (req, res) => {
         await credentials.replaceOne({_id: ObjectID(user._id)}, user);
 
         return res.status(200).send('');
-    } catch (err) {
-        return res.status(500).send(err);
+    } catch (error) {
+        return res.status(500).send(error);
     }
 });
 
@@ -401,14 +424,16 @@ app.post('/imageUpload', async (req, res) => {
             // failure to store oversized image results in error response
             if(err && image.size > MONGOLIMIT) return res.status(500).send(err);
         });
-
-        images.insertOne((image.size <= MONGOLIMIT) ? image : {name, mimetype, size}).then(response => {
+        
+        // upload image to the database if its smaller than MONGOLIMIT, otherwise just name and metadata 
+        try {
+            let response = await images.insertOne((image.size <= MONGOLIMIT) ? image : {name, mimetype, size});
             return res.status(200).send(response.insertedId);
-        }).catch(err => {
+        } catch(err) {
             return res.status(400).send(err);
-        });
-    } catch(err) {
-        res.status(500).send(err);
+        }
+    } catch(error) {
+        return res.status(500).send(error);
     }
 });
 
@@ -462,10 +487,9 @@ app.get('/image/:photoId', (req, res) => {
             // Oversized images will likely be the ones to enter this branch > MONGOLIMIT
             // unless someone manually deleted image data from the database for some reason 
             else ServerImageFetch(searchRes[0]);
-
         });
     } catch(err) {
-        res.status(500).send(err);
+        return res.status(500).send(err);
     }
 });
 
@@ -474,19 +498,21 @@ app.get('/image/:photoId', (req, res) => {
  * on the fields collection in the START-Project database. Returns an array of all the 
  * categories if the query was successful, an error otherwise.
  */
-app.get('/fields', (req, res) => {
+app.get('/fields', async (req, res) => {
     try {
         // load the fields collection from the START-Project db
         let db = client.db('START-Project');
         let fields = db.collection('fields');
 
         // return all field documents in response
-        fields.find({}).toArray((err, searchRes) => {
-            if (err) return res.status(400).send(err.message);
-            return res.send(searchRes);
-        });
-    } catch(err) {
-        res.status(500).send(err);
+        try {
+            let searchRes = await fields.find({}).toArray(); 
+            return res.status(200).send(searchRes);
+        } catch(err) {
+            return res.status(400).send(err);
+        }
+    } catch(error) {
+        return res.status(500).send(error);
     }
 });
 
@@ -496,7 +522,7 @@ app.get('/fields', (req, res) => {
  * pushes the new fields to the collection. It responds with a success message or
  * an error message on failure.
  */
-app.put('/addFields', (req, res) => {
+app.put('/addFields', async (req, res) => {
     if (!req?.body?.fields) return res.status(400).send('Failed to push new release due to insufficient fields.');
 
     try {
@@ -505,15 +531,13 @@ app.put('/addFields', (req, res) => {
         let fields = db.collection('fields');
         
         // delete old fields then insert the new ones
-        fields.deleteMany({}).then(() => {
-            req.body.fields.forEach(element => {
-                element._id = ObjectID(element._id);
-            });
-
-            fields.insertMany(req.body.fields).then(() => {
-                return res.status(200).send('Successfuly pushed the new release version.');
-            });
+        await fields.deleteMany({});
+        req.body.fields.forEach(element => {
+            element._id = ObjectID(element._id);
         });
+
+        await fields.insertMany(req.body.fields);
+        return res.status(200).send('Successfuly pushed the new release version.');
     } catch (err) {
         res.status(500).send(err);
     }
@@ -524,7 +548,7 @@ app.put('/addFields', (req, res) => {
  * collection in the START-Project database. Returns a success or fail
  * based on the database response.
  */
-app.post('/dataEntry', (req, res) => {
+app.post('/dataEntry', async (req, res) => {
     const data = req.body;
     if (!data) return res.status(400).send('Failed to retrieve entered data.');
 
@@ -543,12 +567,13 @@ app.post('/dataEntry', (req, res) => {
             if (data.inputFields[i].dataValidation && data.inputFields[i].dataValidation.isNumber) 
             data.inputFields[i].value = Number(data.inputFields[i].value);
         }
-
-        reptiles.insertOne(data).then(response => {
+        
+        try {
+            await reptiles.insertOne(data);
             return res.status(200).send('');
-        }).catch(err  => {
+        } catch(err) {
             return res.status(400).send(err);
-        });
+        }
     } catch(error) {
         return res.status(500).send(error);
     }
@@ -560,7 +585,7 @@ app.post('/dataEntry', (req, res) => {
  * in our START-Project database. Returns a success message or an error
  * message if the query fails or an entry id isn't provided 
  */
-app.delete('/entry/:entryId', (req, res) => {
+app.delete('/entry/:entryId', async (req, res) => {
     if (!req?.params?.entryId) return res.status(400).send('Failed to delete data entry due to unprovided entry id.');
 
     try {
@@ -569,11 +594,16 @@ app.delete('/entry/:entryId', (req, res) => {
         let reptiles = db.collection('reptiles');
         
         // delete the first document that matches the passed in id (there is only 1)
-        reptiles.deleteOne({_id: ObjectID(req.params.entryId)}, (err, response) => {
-            if (err) return res.status(400).send(err.message);
-            if (!response?.deletedCount) return res.status(500).send('Could not perform delete operation. Please try again at a later time.');
+        try {
+            let response = await reptiles.deleteOne({_id: ObjectID(req.params.entryId)});
+            
+            if (!response?.deletedCount) 
+            return res.status(500).send('Could not perform delete operation. Please try again at a later time.');
+
             return res.status(200).send('Successfully deleted entry.');
-        });
+        } catch(err) {
+            return res.status(400).send(err);
+        }
     } catch (error) {
         res.status(500).send(error);
     }
@@ -584,7 +614,7 @@ app.delete('/entry/:entryId', (req, res) => {
  * START-Project database for the values specified in the selections 
  * and states. 
  */
-app.get('/search', (req, res) => {
+app.get('/search', async (req, res) => {
     let params = req.query;
     if (!params) return res.status(500).send('Could not find valid criteria.');
 
@@ -635,11 +665,12 @@ app.get('/search', (req, res) => {
         let db = client.db('START-Project');
         let reptiles = db.collection('reptiles');
         
-        reptiles.find(queryObj).toArray((err, searchRes) => {
-            if (err) return res.status(400).send(err.message);
-            
+        try {
+            let searchRes = await reptiles.find(queryObj).toArray();
             return res.status(200).send(searchRes);
-        });
+        } catch(err) {
+            return res.status(400).send(err);
+        }
     } catch(error) {
         return res.status(500).send(error);
     }  
