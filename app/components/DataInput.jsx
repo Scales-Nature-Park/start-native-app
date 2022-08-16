@@ -193,7 +193,7 @@ const DataInput = ({route, navigation}) => {
 
     // render submit button only in online mode, cuz we cant
     // connect to the server offline
-    if (accountId?.trim()) {
+    if (accountId?.trim() && user?.userInfo?.write) {
         buttons.push(
             <TouchableOpacity style={styles.submitBtn}
             onPress={() => {
@@ -350,7 +350,6 @@ const DataInput = ({route, navigation}) => {
                         </TouchableOpacity>
                         
                         {(buttons.length > 0 && dataInput.progress.display) ?
-                        
                         <View style={styles.progress}>
                              <Progress.Circle indeterminate={true} /> 
                         </View> : null}

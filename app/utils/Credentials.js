@@ -3,6 +3,51 @@ import { url } from './Storage';
 import { Alert } from 'react-native';
 
 /**
+ * Functions registers a new user to the database, it takes in username and passwords
+ * makes sure the passwords match and the credentials satisfy preset conditions
+ * then sends a /signup post request to the server to register the user. Navigates
+ * to Login screen on success, otherwise responds with an error message.
+ */
+const RegisterUser = (username, password, password2, navigation, netInfo) => {
+    // validate network connection
+    if (!netInfo.isConnected) {
+      Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
+      return;
+    }
+
+    // validate username and password to be of appropriate sizes
+    if (username.toString().length < 1) {
+      Alert.alert('ERROR', "Username needs to be at least 1 character.");
+      return;
+    }
+    
+    if (password.toString().length < 8) {
+      Alert.alert('ERROR', "Password needs to be at least 8 characters.");
+      return;
+    }
+    
+    // validate both passwords to match
+    if (password.toString() !== password2.toString()) {
+      Alert.alert('ERROR', "Entered passwords don't match.");
+      return;
+    }
+
+    axios({
+      method: 'post',
+      url: url + '/signup',
+      data: {
+        username,
+        password
+      }
+    }).then(response => {
+      navigation.navigate('Login');
+    }).catch(error => {
+      Alert.alert('ERROR', error?.response?.data || error.message);
+      return;
+    });
+};
+
+/**
  * Function takes in username and password and authenticates those credentials
  * by making a get request to the /signin endpoint. Alerts the user with the results
  * accordingly. Responds with an error message if there was a problem signing in
@@ -24,8 +69,15 @@ const AuthenticateCredentials = (netInfo, username, password, navigation, user) 
       }
     }).then(response => {
       if (!response?.data) throw 'Invalid credentials. Please verify you have entered the correct username and password.';
-
-      user.setUserInfo({id: response?.data?.id || '', username: username || '', sharedEntries: (response?.data?.sharedEntries) ? [...response?.data?.sharedEntries] : []});
+    
+      // set user context with response data
+      user.setUserInfo({
+        id: response?.data?.id || '', 
+        username: username || '', 
+        sharedEntries: (response?.data?.sharedEntries) ? [...response?.data?.sharedEntries] : [],
+        write: response?.data?.write,
+        read: response?.data?.read
+      });
       navigation.navigate('Home');
     }).catch(error => {
       Alert.alert('ERROR', error.response.data || error.message);
@@ -152,4 +204,4 @@ const DeleteUser = (netInfo, accountId, navigation) => {
     ]);
 };
 
-export { AuthenticateCredentials, UpdatePassword, DeleteUser };
+export { RegisterUser, AuthenticateCredentials, UpdatePassword, DeleteUser };
