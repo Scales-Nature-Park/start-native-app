@@ -9,7 +9,7 @@ import { useNetInfo } from '@react-native-community/netinfo';
 
 Feather.loadFont();
 
-const Entry = ({data, allEntries, onPress, setRerender, onShareDelete}) => {
+const Entry = ({data, allEntries, onPress, setRerender}) => {
     const [share, setShare] = useState(false);
     const [target, setTarget] = useState('');
     const netInfo = useNetInfo();
