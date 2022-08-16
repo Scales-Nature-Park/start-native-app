@@ -1,17 +1,16 @@
 import useSyncState from '../utils/SyncState';
-import axios from 'axios';
 import Carousel from 'react-native-reanimated-carousel';
 import styles from '../styles/DataStyles';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Progress from 'react-native-progress';
 import React, { useEffect, useLayoutEffect, useReducer, useContext } from 'react';
 import { url, UserContext } from '../utils/Storage';
-import { UploadPhotos } from '../utils/ImageUpload';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { 
     Reducer,
     SaveDataEntry, 
+    SubmitData,
     AutoFillField, 
     ChoosePhoto,
     FetchFields,
@@ -131,62 +130,6 @@ const DataInput = ({route, navigation}) => {
         // dispatch state change if it defers over the current valid state
         if (validStates != dataInput.valid) dispatch({type: 'valid', valid: validStates})
     }); 
-
-    const SubmitData = async () => {
-        // validate network connection
-        if (!netInfo.isConnected) {
-            Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
-            return;
-        }
-
-        photoIds = [];
-        dispatch({type: 'progress', progress: {display: true, progress: dataInput.progress.progress}});
-        
-        if (dataInput.photos && dataInput.photos.length > 0) {
-            photoIds = await UploadPhotos(dataInput.photos, photoIds);
-            if (!photoIds) {
-                dispatch({type: 'progress', progress: {progress: 0, display: false}});
-                return;
-            }
-        } 
-        
-        // upload the data entry to the database 
-        try {
-            await axios({
-                method: 'post',
-                url: url + '/dataEntry',
-                data: {
-                    accountId,
-                    photoIds,
-                    'day': dataInput.currDay,
-                    'month': dataInput.currMonth,
-                    'year': dataInput.currYear,
-                    'hours': dataInput.hours,
-                    'mins': dataInput.mins,
-                    'category': dataInput.category,
-                    'inputFields': dataInput.states,
-                    'comment': dataInput.comment
-                }
-            }); 
-
-            dispatch({type: 'progress', progress: {progress: 0, display: false}});
-            Alert.alert(
-                'Successful Data Entry', 
-                'Your data has been submitted. Return to Home.',
-                [
-                    {text: 'OK', onPress: () => {
-                        navigation.navigate('Home');
-                    }}
-                ],
-                {cancelable: false}
-            );
-            return;
-        } catch(err) {
-            dispatch({type: 'progress', progress: {progress: 0, display: false}});
-            Alert.alert('ERROR', err?.response?.data || err?.message || err);
-            return;
-        }
-    }
     
     let allIndex = -1, catIndex = -1;
     let categoryButtons = [];
@@ -269,11 +212,11 @@ const DataInput = ({route, navigation}) => {
                             },
                             { 
                                 text: "Proceed Anyway", 
-                                onPress: () => SubmitData()
+                                onPress: () => SubmitData(netInfo, accountId, dataInput, dispatch, navigation)
                             }
                         ]
                     );
-                } else SubmitData();
+                } else SubmitData(netInfo, accountId, dataInput, dispatch, navigation);
             }}>
                 <Text style={styles.submitText}>SUBMIT</Text>
             </TouchableOpacity>

@@ -1,12 +1,13 @@
 import React from 'react';
+import axios from 'axios';
 import styles from '../styles/DataStyles';
 import Feather from 'react-native-vector-icons/Feather';
 import Geolocation from 'react-native-geolocation-service';
 import ModalDropdown from 'react-native-modal-dropdown';
-import storage from './Storage';
+import storage, {url} from './Storage';
 import { openPicker } from 'react-native-image-crop-picker';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
-import { DownloadPhoto } from './ImageUpload';
+import { DownloadPhoto, UploadPhotos } from './ImageUpload';
 import { 
     Alert,
     View,
@@ -372,6 +373,62 @@ const SaveDataEntry = async (dataObj, navigation, params) => {
     });
 };
 
+const SubmitData = async (netInfo, accountId, dataInput, dispatch, navigation) => {
+    // validate network connection
+    if (!netInfo.isConnected) {
+        Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
+        return;
+    }
+
+    let photoIds = [];
+    dispatch({type: 'progress', progress: {display: true, progress: dataInput.progress.progress}});
+    
+    if (dataInput.photos && dataInput.photos.length > 0) {
+        photoIds = await UploadPhotos(dataInput.photos, photoIds);
+        if (!photoIds) {
+            dispatch({type: 'progress', progress: {progress: 0, display: false}});
+            return;
+        }
+    } 
+    
+    // upload the data entry to the database 
+    try {
+        await axios({
+            method: 'post',
+            url: url + '/dataEntry',
+            data: {
+                accountId,
+                photoIds,
+                'day': dataInput.currDay,
+                'month': dataInput.currMonth,
+                'year': dataInput.currYear,
+                'hours': dataInput.hours,
+                'mins': dataInput.mins,
+                'category': dataInput.category,
+                'inputFields': dataInput.states,
+                'comment': dataInput.comment
+            }
+        }); 
+
+        dispatch({type: 'progress', progress: {progress: 0, display: false}});
+        Alert.alert(
+            'Successful Data Entry', 
+            'Your data has been submitted. Return to Home.',
+            [
+                {text: 'OK', onPress: () => {
+                    navigation.navigate('Home');
+                }}
+            ],
+            {cancelable: false}
+        );
+        return;
+    } catch(err) {
+        dispatch({type: 'progress', progress: {progress: 0, display: false}});
+        Alert.alert('ERROR', err?.response?.data || err?.message || err);
+        return;
+    }
+};
+
 const Reducer = (state, action) => {
     switch(action.type) {
         /* Update the dark state to the opposite of what it is currently */
@@ -448,4 +505,4 @@ const changeState = (field, item, dataInput, dispatch) => {
     dispatch({type: 'states', states: tempStates});
 };
 
-export { Reducer, SaveDataEntry, AutoFillField, RequestLocation, ChoosePhoto, FetchFields, displayConditionals, displayField };
+export { Reducer, SaveDataEntry, SubmitData, AutoFillField, RequestLocation, ChoosePhoto, FetchFields, displayConditionals, displayField };
