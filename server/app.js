@@ -265,6 +265,41 @@ app.put('/password/:userid', async (req, res) => {
     }
 });
 
+/**
+ * Put request that changes the permissions of a specified user, it takes in a username,
+ * write and read body parameters where write & read are boolean values that specify 
+ * whether the user should have this permission or not. It sets the values in the
+ * user's document in the credentials collection on the START-Project database. 
+ * Responds with an error message otherwise.
+ */
+app.put('/user/permissions', async (req, res) => {
+    try {
+        const { username, read, write } = req.body;
+
+        // load the credentials collection from the START-Project db
+        let db = client.db('START-Project');
+        let credentials = db.collection('credentials');
+
+        // search for a credentials document using the passed in username
+        try {
+            let user = await credentials.findOne({username});
+            
+            if (!user) 
+            return res.status(404).send('Could not find a user with the specified username.');
+            
+            // update read/write permissions
+            user.read = (read !== undefined) ? read : user.read; 
+            user.write = (write !== undefined) ? write : user.write;
+            await credentials.replaceOne({_id: ObjectID(user?._id)}, user);
+
+            return res.status(200).send('');
+        } catch(err) {
+            return res.status(400).send(err);
+        }
+    } catch (error) {
+        return res.status(500).send(error);
+    }
+});
 
 /**
  * Delete user endpoint that takes in a userid parameter and 
@@ -294,7 +329,7 @@ app.delete('/user/:userid', async (req, res) => {
             return res.status(400).send(err);
         }
     } catch (error) {
-        res.status(500).send(error);
+        return res.status(500).send(error);
     }
 });
 
