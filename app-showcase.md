@@ -7,10 +7,10 @@
 - need to auto name photos 
 - banner on photos? like a abanner at bottom with location and capture code data (and anthting else that is important)
 - or watermark the images with important info so that images cna be uniquely modified.
-- have one person start an entry and then be able to transfer the rest of the entry to a different user or even just transfer coordinates
-- colour code entry between saved, quick-saved, as one is data validated and one is not 
-- try to avoid colour blind colours
-- need to have a button to autofill the lat/long (maybe for others as well instead of it automatically doing it allow auto fill to be locked or activated), maybe also have a lat/long history for if the user took multiple coordinates
+- ~~have one person start an entry and then be able to transfer the rest of the entry to a different user or even just transfer coordinates~~
+- ~~colour code entry between saved, quick-saved, as one is data validated and one is not~~ 
+- ~~try to avoid colour blind colours~~
+- ~~need to have a button to autofill the lat/long (maybe for others as well instead of it automatically doing it allow auto fill to be locked or activated), maybe also have a lat/long history for if the user took multiple coordinates~~
 
 
 # fields changed\s

@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "android-release": "react-native run-android --variant=release",
     "ios": "react-native run-ios",
     "start": "react-native start",
-    "android-release": "react-native run-android --variant=release",
+    "build": "cd ../assets/scripts && BundleRelease.bat",
     "test": "jest",
     "lint": "eslint .",
     "windows": "react-native run-windows"

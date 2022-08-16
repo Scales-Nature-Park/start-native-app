@@ -1,25 +1,25 @@
-import React, { useState, useLayoutEffect, useRef } from 'react';
-import ModalDropdown from 'react-native-modal-dropdown';
+import axios from 'axios';
 import uuid from 'react-native-uuid';
 import Entry from './Entry';
 import styles from '../styles/SearchStyles';
+import ModalDropdown from 'react-native-modal-dropdown';
 import useSyncState from '../utils/SyncState';
-import axios from 'axios';
+import React, { useState, useLayoutEffect, useRef } from 'react';
+import { resetCriteria, dropDownSelect, displayField } from '../utils/SearchUtils';
+import { url, ArrayEquals } from '../utils/Storage';
+import { useNetInfo } from "@react-native-community/netinfo";
 import {
     SafeAreaView,
     Text,
     TouchableOpacity,
     View,
-    TextInput,
     ScrollView,
     Image,
     Alert,
 } from 'react-native';
-import { url, ArrayEquals } from '../utils/Storage';
-import { useNetInfo } from "@react-native-community/netinfo";
 
-const scalesColors = require('../utils/colors.json');
-const searchFields = require('../utils/search.json');
+const scalesColors = require('../utils/json/colors.json');
+const searchFields = require('../utils/json/search.json');
 
 const Search = ({ navigation }) => {
     const netInfo = useNetInfo();
@@ -44,154 +44,6 @@ const Search = ({ navigation }) => {
           ),
         });
     });
-    
-    const displayField = (field, fields, index) => {
-        if (field.dropDown) {
-            fields.splice(index, 0,
-                <View style={styles.container}>
-                    <View style={{width: '45%'}}>
-                        <Text style={(dark.value) ? styles.fieldDark : styles.field}>{field.name}:</Text>
-                    </View>
-                    <View style={styles.fieldInput}>
-                        <ModalDropdown 
-                        options={field.values}
-                        showsVerticalScrollIndicator={true}
-                        textStyle={styles.dropText}
-                        style={styles.dropButton}
-                        dropdownTextStyle={styles.dropText}
-                        dropdownStyle={styles.dropDown}
-                        dropdownTextHighlightStyle={styles.dropText}
-                        defaultValue={(states.get().filter((state) => state.name == field.name)?.length > 0) ? states.get().filter((state) => state.name == field.name)[0].value : field.values[0]}
-                        onSelect={(myVal) => {
-                            let tempStates = states.get().slice();
-                            let tempIndex = -1;
-
-                            tempStates.forEach((curr, index) => {
-                                if (curr.name != field.name) return;
-                                curr.value = field.values[myVal];
-                                tempIndex = index;
-                            });
-                            
-                            if(tempIndex == -1) tempStates.push(
-                                {"name": field.name, "value": field.values[myVal]}
-                            );
-                            if (!ArrayEquals(states.get(), tempStates)) states.set(tempStates);
-                        }}
-                        />
-                    </View>
-                </ View>
-            );
-        } else {
-            fields.splice(index, 0,
-                <View style={styles.entryLine}>
-                    <View style={{width: '45%'}}>
-                        <Text style={(dark.value) ? styles.fieldDark : styles.field}>{field.name}:</Text>
-                    </View>
-                    <View style={styles.fieldInput}>
-                        <TextInput
-                            style={styles.TextInput}
-                            placeholder={'Enter ' + field.name}
-                            placeholderTextColor='#000000'
-                            defaultValue={(states.get().filter((state) => state.name == field.name)?.length > 0) ? states.get().filter((state) => state.name == field.name)[0].value : ''}
-                            onChangeText={(value) => {
-                                let tempStates = states.get().slice();
-                                let tempIndex = -1;
-
-                                tempStates.forEach((curr, index) => {
-                                    if (curr.name != field.name) return;
-                                    curr.value = value;
-                                    tempIndex = index;
-                                });
-                                
-                                if(tempIndex == -1) tempStates.push(
-                                    {"name": field.name, "value": value}
-                                );
-                                if (!ArrayEquals(states.get(), tempStates)) states.set(tempStates);
-                            }}
-                        />
-                    </View>
-                </View>
-            );
-        }
-
-        return fields;
-    }
-
-    const resetCriteriaDrops = (tempCriteria = criteria) => {
-        let tempElements = criteriaElements.get();
-        for (let i = 0; i < tempElements.length; i++) {
-            if (!tempElements[i].key) continue;
-            
-            let currSelection = selections.get().filter((sel) => sel.key == tempElements[i].key);
-            if (currSelection.length == 0) continue;
-            else currSelection = currSelection[0];
-
-            tempElements[i] = 
-            <ModalDropdown 
-                key={tempElements[i].key}
-                options={[currSelection.value, ...tempCriteria]}
-                showsVerticalScrollIndicator={true}
-                textStyle={styles.dropText}
-                style={styles.dropButton}
-                dropdownTextStyle={styles.dropText}
-                isFullWidth={true}
-                dropdownStyle={styles.dropDown}
-                dropdownTextHighlightStyle={styles.dropText}
-                value={currSelection.value}
-                defaultValue={currSelection.value}
-                defaultIndex={0}
-                onSelect={(index, elem) => dropDownSelect(elem, tempElements[i].key, modfSearchFields)}
-            />
-        }
-        criteriaElements.set(tempElements);
-    }
-
-    const resetCriteria = (modfSearchFields, override = false) => {
-        // add criteria to dropdown of selected category 
-        let tempCriteria = criteria.splice();
-        for (let i = 0; i < modfSearchFields.length; i++) {
-            for (let field of modfSearchFields[i].ConditionalCriteria) {
-                // let existingSelection = selections.get().filter((element) => element.value == field.name);
-                // if (existingSelection.length == 0) 
-                tempCriteria.push(field.name);
-            }
-        }
-        if (!ArrayEquals(criteria, tempCriteria) || override) setCriteria(tempCriteria);
-        return tempCriteria;
-    }
-
-    const dropDownSelect = (element, compId, modfSearchFields) => {
-        let tempSelections = selections.get().slice();
-        let tempIndex = -1;
-
-        tempSelections.forEach((curr, index) => {
-            if (curr.key == compId) tempIndex = index;
-        });
-        
-        // add a new selection for the dropdown if its not found in selections
-        if(tempIndex == -1) {
-            tempIndex = tempSelections.length;
-            tempSelections.push(
-                {"key": compId}
-            );
-        }
-
-        tempSelections[tempIndex].prevFields = (tempSelections[tempIndex].Subfields) ? tempSelections[tempIndex].Subfields.length : 1;
-        tempSelections[tempIndex].value = element;
-        tempSelections[tempIndex].displayed = false;
-
-        // get the subfields of the selected field and add it to the selection
-        for (let i = 0; i < modfSearchFields.length; i++) {
-            for (let field of modfSearchFields[i].ConditionalCriteria) {
-                if (element == field.name)   
-                tempSelections[tempIndex].Subfields = field.Subfields;
-            }
-        }
-        selections.set(tempSelections);
-        if (compId && ref?.current?._reactInternals?.alternate?.key && compId != ref?.current?._reactInternals?.alternate?.key) 
-            ref?.current?.props?.onSelect(0, ref.current.state.buttonText);
-        // resetCriteriaDrops(resetCriteria(modfSearchFields));
-    }
 
     // get the indeces of the all category and the selected
     // categpry objects in searchFields
@@ -216,7 +68,7 @@ const Search = ({ navigation }) => {
 
     let modfSearchFields = [];
     if (allIndex == -1 && catIndex == -1) {
-        alert("Invalid fields specified.");
+        Alert.alert('ERROR', 'Invalid fields specified.');
         return (<View></View>);
     } 
     
@@ -250,17 +102,17 @@ const Search = ({ navigation }) => {
 
         // display criteria with no subfields
         if (!tempSelections[tempIndex].Subfields) {
-            tempFields = displayField({"name": tempSelections[tempIndex].value, value: ''}, tempFields, j + 1);
+            tempFields = displayField({"name": tempSelections[tempIndex].value, value: ''}, tempFields, j + 1, states, dark);
             continue;
         } 
         
         for (let subField of tempSelections[tempIndex].Subfields) {
-            tempFields = displayField(subField, tempFields, j + 1);
+            tempFields = displayField(subField, tempFields, j + 1, states, dark);
         }
     }
     if (!ArrayEquals(tempFields, criteriaElements.get()) || dark.change) criteriaElements.set(tempFields);
-
-    resetCriteria(modfSearchFields);
+    
+    resetCriteria(modfSearchFields, criteria, setCriteria);
     if (dark.change) {
         ref?.current?.props?.onSelect(0, ref.current.state.buttonText);
         setDark({value: dark.value, change: false});
@@ -300,7 +152,7 @@ const Search = ({ navigation }) => {
                                 dropdownTextHighlightStyle={styles.dropText}
                                 defaultValue={criteria[0]}
                                 defaultIndex={0}
-                                onSelect={(index, element) => dropDownSelect(element, compId, modfSearchFields)}
+                                onSelect={(index, element) => dropDownSelect(element, compId, modfSearchFields, selections, ref)}
                             />
                         ]
                     );
@@ -312,7 +164,6 @@ const Search = ({ navigation }) => {
                     
                     Subfields = (Subfields.length > 0) ? Subfields[0].Subfields : undefined;
                     selections.set([...selections.get(), {"key": compId, "value": criteria[0], "displayed": false, Subfields, prevFields: (Subfields) ? Subfields.length : 1}]);
-                    // resetCriteriaDrops(resetCriteria(modfSearchFields));
                 }}>
                     <Text style={styles.emptyText}>ADD CRITERIA</Text>
                 </TouchableOpacity>

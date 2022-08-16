@@ -2,7 +2,7 @@ import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext } from 'react';
 
-const url = 'https://start-data-server.herokuapp.com';
+const url = 'http://10.0.0.227:5000';
 
 const UserContext = createContext();
 
@@ -13,6 +13,10 @@ const storage = new Storage({
   enableCache: true,
 });
 
+/**
+ * Function for checking whether to arrays are equal or not, it returns true if they're
+ * equal, false otherwise.
+ */
 const ArrayEquals = (array1, array2, json = false) => {
   if (!array1 || !array2) return false;
 

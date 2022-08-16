@@ -1,7 +1,7 @@
-import React, { useState, useLayoutEffect, useContext } from 'react';
-import axios from 'axios';
 import styles from '../styles/LoginStyles';
-import { url, UserContext } from '../utils/Storage';
+import React, { useState, useLayoutEffect, useContext } from 'react';
+import { AuthenticateCredentials } from '../utils/Credentials';
+import { UserContext } from '../utils/Storage';
 import { useNetInfo } from "@react-native-community/netinfo";
 import {
     StatusBar,
@@ -12,7 +12,6 @@ import {
     ScrollView,
     SafeAreaView,
     Image,
-    Alert,
 } from 'react-native';
 
 const LoginForm = ({ navigation }) => {
@@ -34,31 +33,6 @@ const LoginForm = ({ navigation }) => {
           ),
         });
     });
-
-    const AuthenticateCredentials = (username, password) => {
-      // validate network connection
-      if (!netInfo.isConnected) {
-        Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
-        return;
-      }
-
-      axios({
-        method: 'get',
-        url: url + '/signin',
-        params: {
-          username,
-          password
-        }
-      }).then(response => {
-        if (!response?.data) throw 'Invalid credentials. Please verify you have entered the correct username and password.';
-
-        user.setUserInfo({id: response?.data?.id || '', username: username || '', sharedEntries: (response?.data?.sharedEntries) ? [...response?.data?.sharedEntries] : []});
-        navigation.navigate('Home');
-      }).catch(error => {
-        Alert.alert('ERROR', error.response.data || error.message);
-        return;
-      });
-    };
 
     return (
       <SafeAreaView style={(dark) ? styles.safeAreaDark : styles.safeArea}>
@@ -89,7 +63,7 @@ const LoginForm = ({ navigation }) => {
             </TouchableOpacity>
         
             <TouchableOpacity style={styles.loginBtn}
-            onPress = {() => AuthenticateCredentials(username, password)}>
+            onPress = {() => AuthenticateCredentials(netInfo, username, password, navigation, user)}>
                 <Text style={styles.loginText}>LOGIN</Text>
             </TouchableOpacity>
 
