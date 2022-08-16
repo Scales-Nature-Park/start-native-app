@@ -33,19 +33,20 @@ const Home = ({ navigation }) => {
                 onPress= {() => navigation.navigate('DataEntry')}>
                     <Text style={styles.buttonText}>Data Entry</Text>
                 </TouchableOpacity>
-
+                
+                {user?.userInfo?.read ? 
                 <TouchableOpacity style={styles.buttonView}
                 onPress= {() => navigation.navigate('Search')}>
                     <Text style={styles.buttonText}>Search</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> : null}
 
                 <TouchableOpacity style= {styles.buttonView}
                 onPress= {() => navigation.navigate('PrevEntries')}>
                     <Text style={styles.buttonText}>Saved Entries</Text>
                 </TouchableOpacity>
                 
-                {(user?.userInfo?.id) ? 
-                <TouchableOpacity style= {styles.buttonView}
+                {user?.userInfo?.id ? 
+                <TouchableOpacity style={styles.buttonView}
                 onPress= {() => navigation.navigate('Account')}>
                     <Text style={styles.buttonText}>Account</Text>
                 </TouchableOpacity> : null}

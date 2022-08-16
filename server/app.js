@@ -64,7 +64,12 @@ app.get('/signin', async (req, res) => {
             if (results.length <= 0) 
             return res.status(500).send('Invalid credentials. Please verify you have entered the correct username and password.');
 
-            return res.status(200).send({id: results[0]._id, sharedEntries: results[0].sharedEntries || []});
+            return res.status(200).send({
+                id: results[0]._id, 
+                sharedEntries: results[0].sharedEntries || [],
+                read: results[0].read || false,
+                write: results[0].write || false
+            });
         } catch(err) {
             return res.status(500).send(err);
         }
