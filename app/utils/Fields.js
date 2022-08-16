@@ -59,6 +59,13 @@ const FetchFields = async () => {
   } catch (err) {}
 };
 
+/**
+ * Asynchronous function callback for pressing the delete (x) button on an entry
+ * in the Saved Entries screen. It deletes any saved images to local storage that are
+ * linked to that entry and filters the entries document in local storage to delete 
+ * the entry data. If the entry is shared it checks internet connection and calls
+ * onShareDelete.
+ */
 const onDelete = async (netInfo, data, setRerender, user, allEntries) => {
   if (data?.type == 'shared') {
       if (!netInfo?.isConnected) {
@@ -92,6 +99,14 @@ const onDelete = async (netInfo, data, setRerender, user, allEntries) => {
   });
 }
 
+/**
+ * Asynchronous function callback for sharing an entry with a user. It checks for 
+ * an internet connection, duplicates any images linked to the entry by sending
+ * a post request to the /duplicate endpoint in the server then adds the entry
+ * with the duplicate images to the sharedEntries list linked to the current signed in
+ * user's document in the database. The reason we duplicate the images is so we can 
+ * delete old shared entries when reshared without affecting the new shared entry.
+ */
 const onShare = async (netInfo, target, data, setShare) => {
   if (!netInfo?.isConnected) {
       Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.')
@@ -139,6 +154,10 @@ const onShare = async (netInfo, target, data, setShare) => {
   }
 }
 
+/**
+ * Function for deleting a shared entry. It makes a patch request to the server to
+ * update the shared entries linked to the signed in user. 
+ */
 const onShareDelete = (field, user, setRerender) => {
   axios({
     method: 'patch',

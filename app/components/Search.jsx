@@ -68,7 +68,7 @@ const Search = ({ navigation }) => {
 
     let modfSearchFields = [];
     if (allIndex == -1 && catIndex == -1) {
-        alert("Invalid fields specified.");
+        Alert.alert('ERROR', 'Invalid fields specified.');
         return (<View></View>);
     } 
     
@@ -111,7 +111,7 @@ const Search = ({ navigation }) => {
         }
     }
     if (!ArrayEquals(tempFields, criteriaElements.get()) || dark.change) criteriaElements.set(tempFields);
-
+    
     resetCriteria(modfSearchFields, criteria, setCriteria);
     if (dark.change) {
         ref?.current?.props?.onSelect(0, ref.current.state.buttonText);
@@ -164,7 +164,6 @@ const Search = ({ navigation }) => {
                     
                     Subfields = (Subfields.length > 0) ? Subfields[0].Subfields : undefined;
                     selections.set([...selections.get(), {"key": compId, "value": criteria[0], "displayed": false, Subfields, prevFields: (Subfields) ? Subfields.length : 1}]);
-                    // resetCriteriaDrops(resetCriteria(modfSearchFields));
                 }}>
                     <Text style={styles.emptyText}>ADD CRITERIA</Text>
                 </TouchableOpacity>

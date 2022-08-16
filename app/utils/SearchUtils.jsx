@@ -4,49 +4,27 @@ import styles from '../styles/SearchStyles';
 import { ArrayEquals } from './Storage';
 import { View, Text, TextInput } from 'react-native';
 
+/**
+ * This functions sets the criteria list state to have all the names of the 
+ * choosable search criteria values in the dropdowns
+ */
 const resetCriteria = (modfSearchFields, criteria, setCriteria, override = false,) => {
     // add criteria to dropdown of selected category 
     let tempCriteria = criteria.splice();
+
     for (let i = 0; i < modfSearchFields.length; i++) {
         for (let field of modfSearchFields[i].ConditionalCriteria) {
-            // let existingSelection = selections.get().filter((element) => element.value == field.name);
-            // if (existingSelection.length == 0) 
             tempCriteria.push(field.name);
         }
     }
     if (!ArrayEquals(criteria, tempCriteria) || override) setCriteria(tempCriteria);
     return tempCriteria;
-}
+};
 
-const resetCriteriaDrops = (criteria, criteriaElements, selections, ref, tempCriteria = criteria) => {
-    let tempElements = criteriaElements.get();
-    for (let i = 0; i < tempElements.length; i++) {
-        if (!tempElements[i].key) continue;
-        
-        let currSelection = selections.get().filter(sel => sel.key == tempElements[i].key);
-        if (currSelection.length == 0) continue;
-        else currSelection = currSelection[0];
-
-        tempElements[i] = 
-        <ModalDropdown 
-            key={tempElements[i].key}
-            options={[currSelection.value, ...tempCriteria]}
-            showsVerticalScrollIndicator={true}
-            textStyle={styles.dropText}
-            style={styles.dropButton}
-            dropdownTextStyle={styles.dropText}
-            isFullWidth={true}
-            dropdownStyle={styles.dropDown}
-            dropdownTextHighlightStyle={styles.dropText}
-            value={currSelection.value}
-            defaultValue={currSelection.value}
-            defaultIndex={0}
-            onSelect={(index, elem) => dropDownSelect(elem, tempElements[i].key, modfSearchFields, selections, ref)}
-        />
-    }
-    criteriaElements.set(tempElements);
-}
-
+/**
+ * This function is a callback for a criteria dropdown selection. Once a dropdown value
+ * is selected it updates the passed in selections sync state with data about the event.
+ */
 const dropDownSelect = (element, compId, modfSearchFields, selections, ref) => {
     let tempSelections = selections.get().slice();
     let tempIndex = -1;
@@ -77,9 +55,14 @@ const dropDownSelect = (element, compId, modfSearchFields, selections, ref) => {
     selections.set(tempSelections);
     if (compId && ref?.current?._reactInternals?.alternate?.key && compId != ref?.current?._reactInternals?.alternate?.key) 
         ref?.current?.props?.onSelect(0, ref.current.state.buttonText);
-    // resetCriteriaDrops(resetCriteria(modfSearchFields));
-}
+};
 
+/**
+ * This function adds a jsx element to a list of fields at a specified index.
+ * It takes in a field object that specifies meta data about the desired element to
+ * be added to the fields list. The elements take user input which updates the passed 
+ * in sync state (states).
+ */
 const displayField = (field, fields, index, states, dark) => {
     if (field.dropDown) {
         fields.splice(index, 0,
@@ -150,6 +133,6 @@ const displayField = (field, fields, index, states, dark) => {
     }
 
     return fields;
-}
+};
 
 export { resetCriteria, dropDownSelect, displayField };

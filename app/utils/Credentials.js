@@ -2,6 +2,12 @@ import axios from 'axios';
 import { url } from './Storage';
 import { Alert } from 'react-native';
 
+/**
+ * Function takes in username and password and authenticates those credentials
+ * by making a get request to the /signin endpoint. Alerts the user with the results
+ * accordingly. Responds with an error message if there was a problem signing in
+ * or navigates to Home screen.
+ */
 const AuthenticateCredentials = (netInfo, username, password, navigation, user) => {
     // validate network connection
     if (!netInfo?.isConnected) {
@@ -27,6 +33,13 @@ const AuthenticateCredentials = (netInfo, username, password, navigation, user) 
     });
 };
 
+/**
+ * Function for updating a signed in user's password, it takes in the current and 
+ * new passwords, validates them against password validity criteria, authenticates
+ * the current password with what's on the database then sends a put request
+ * to the server to update the password.
+ * @returns 
+ */
 const UpdatePassword = (netInfo, accountId, username, currPass, password, password2) => {
     // validate network connection
     if (!netInfo.isConnected) {
@@ -71,6 +84,11 @@ const UpdatePassword = (netInfo, accountId, username, currPass, password, passwo
     });
 };
 
+/**
+ * Update password helper function that takes in the new and old password, accountId 
+ * and sends a put request to the /password/:accountId endpoint. Alerts the user
+ * accordingly.
+ */
 const RequestUpdate = (currPass, password, accountId) => {
     axios({
         method: 'put',
@@ -88,6 +106,11 @@ const RequestUpdate = (currPass, password, accountId) => {
     });
 };
 
+/**
+ * Delete a user account callback function that takes in an accountId and sends
+ * a delete request to the /user/:accountId server endpoint then alerts the user
+ * accordingly based on the server response 
+ */
 const DeleteUser = (netInfo, accountId, navigation) => {
     // validate network connection
     if (!netInfo?.isConnected) {
@@ -121,7 +144,7 @@ const DeleteUser = (netInfo, accountId, navigation) => {
                       }
                   ]);
               }).catch(error => {
-                  Alert.alert('ERROR', error.response.data);
+                  Alert.alert('ERROR', error?.response?.data || error?.message || error);
                   return;
               });
             }

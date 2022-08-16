@@ -13,6 +13,10 @@ const storage = new Storage({
   enableCache: true,
 });
 
+/**
+ * Function for checking whether to arrays are equal or not, it returns true if they're
+ * equal, false otherwise.
+ */
 const ArrayEquals = (array1, array2, json = false) => {
   if (!array1 || !array2) return false;
 

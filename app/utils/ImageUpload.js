@@ -3,6 +3,10 @@ import RNFetchBlob from 'rn-fetch-blob';
 import { url } from './Storage';
 import { Platform, Alert } from 'react-native';
 
+/**
+ * Creates an html form from an image object and returns the form for uploading 
+ * the image to the server.
+ */
 const createFormData = (photo) => {
     if (!photo) return;
     const data = new FormData();
@@ -16,6 +20,11 @@ const createFormData = (photo) => {
     return data;
 }
 
+/**
+ * Asynchronous function that takes in a list of images and uploads them to the server
+ * retrieving their list of ids in the database and appending them to the photoIds
+ * list
+ */
 const UploadPhotos = async (images, photoIds, second = undefined) => {
     try {
         // create image forms for each photo and upload them to the server and the retrieve
@@ -56,6 +65,11 @@ const UploadPhotos = async (images, photoIds, second = undefined) => {
     return photoIds;
 }
 
+/**
+ * Asynchronous function that retrieves an image object with a uri element that links
+ * to the image (server link) and downloads the image to local storage then updates the 
+ * image uri element to point to the local version of the image
+ */
 const DownloadPhoto = async (image) => {
     try {      
         // fetch the image from the server and download it to local app storage

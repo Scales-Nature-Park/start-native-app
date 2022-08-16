@@ -4,7 +4,7 @@ import styles from '../styles/DataStyles';
 import Feather from 'react-native-vector-icons/Feather';
 import Geolocation from 'react-native-geolocation-service';
 import ModalDropdown from 'react-native-modal-dropdown';
-import storage, {url} from './Storage';
+import storage, { url } from './Storage';
 import { openPicker } from 'react-native-image-crop-picker';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import { DownloadPhoto, UploadPhotos } from './ImageUpload';
@@ -23,8 +23,13 @@ const months = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', '
 //To bypass condition match ie: will display no matter the parent value if the condition is 'Any'
 const conditionBypass = 'Any';
 
-// recursive function that display conditional fields of a field
-// and their conditionals
+/** 
+ * Recursive function that displays conditional fields of a field and their 
+ * conditionals. It takes in the parent field and loops over all the its conditional
+ * fields if the condition string or list of strings match the parent field's state
+ * value then that conditional field is displayed with its conditional fields and/or 
+ * autoFill if applicable.
+*/
 const displayConditionals = (jsObj, displayField, fields, states, autoFill, meta, dataInput, dispatch, initialFields, params) => {
     let state = states.filter(element => element.name.toLowerCase() == jsObj.name.toLowerCase())[0];
     if(!state) return;
@@ -70,6 +75,11 @@ const displayConditionals = (jsObj, displayField, fields, states, autoFill, meta
     }
 };
 
+/**
+ * Function fetches a list of fields from local storage and sets the state if 
+ * successful then empties the states element in the reducer. This helps prevents
+ * saving states of fields that come from older versions of the fields list.
+ */
 const FetchFields = (state, dispatch) => {
     storage.load({key: 'fields'}).then(fields => { 
         state.set({loadedFields: true, dataFields: [...fields]});
@@ -77,6 +87,10 @@ const FetchFields = (state, dispatch) => {
     }).catch(() => {});
 };
 
+/**
+ * Asynchronous function that requests access of the user's geolocation on android 
+ * devices. Returns true if granted permission, false otherwise
+ */
 const RequestLocation = async () => {
     try {
         const granted = await PermissionsAndroid.request(
@@ -89,6 +103,10 @@ const RequestLocation = async () => {
     return false;
 };
 
+/**
+ * Function for prompting the user to select images from their device, it adds
+ * the images to the photos element of dataInput reducer.
+ */
 const ChoosePhoto = (dataInput, dispatch) => {
     let tempPhotos = (dataInput.photos) ? [...dataInput.photos] : [];
 
@@ -107,6 +125,11 @@ const ChoosePhoto = (dataInput, dispatch) => {
     }).catch(err => {});
 };
 
+/**
+ * Function for autofilling a data input field based on the values of other fields
+ * it  fetches the state values of the dependancy fields and computes the value of
+ * the target field using the function definition passed in the object. 
+ */
 const AutoFillField = (field, tempStates, state, meta) => {
     if (!field.autoFill) return;
     
@@ -138,6 +161,14 @@ const AutoFillField = (field, tempStates, state, meta) => {
     }
 };
 
+/**
+ * This function adds a jsx element to a list of fields. It takes in a field object 
+ * that specifies meta data about the desired element to be added to the fields list.
+ * It fills the input element with default values if a matching field exists 
+ * in the initialFields argument.
+ * The elements take user input which updates the passed in dataInput reducer 
+ * using the dispatch parameter. 
+ */
 const displayField = (field, fields, dataInput, dispatch, initialFields, params) => {
     if (field.name.toLowerCase() == 'date') {
         fields.push(
@@ -316,6 +347,12 @@ const displayField = (field, fields, dataInput, dispatch, initialFields, params)
     }
 };
 
+/**
+ * Function saves a data entry to local storage, it first checks if any of the 
+ * images are remote images stored on the server/database, if so downloads them 
+ * retrieving their local uris. It then appends the entry to the list of entries
+ * on local storage.
+ */
 const SaveDataEntry = async (dataObj, navigation, params) => {
     if (dataObj?.photos?.length) {
         // download remote photos from database so that deleting the original shared
@@ -373,6 +410,12 @@ const SaveDataEntry = async (dataObj, navigation, params) => {
     });
 };
 
+/**
+ * Asynchronous function for submitting a data entry to the server, it first uploads
+ * any images to the server and retrieves their ids. It then submits a post request
+ * to the /dataentry endpoint with the data and navigates the user to home with a success
+ * message if successful, error message and stays on same screen otherwise.
+ */
 const SubmitData = async (netInfo, accountId, dataInput, dispatch, navigation) => {
     // validate network connection
     if (!netInfo.isConnected) {
@@ -429,6 +472,11 @@ const SubmitData = async (netInfo, accountId, dataInput, dispatch, navigation) =
     }
 };
 
+/**
+ * Dispatch function for the main dataInput fields reducer used for storing the states
+ * of all the fields in the data entry screen. Consists of a switch statement that 
+ * executes based on the type of action.
+ */
 const Reducer = (state, action) => {
     switch(action.type) {
         /* Update the dark state to the opposite of what it is currently */
@@ -485,6 +533,11 @@ const Reducer = (state, action) => {
     }
 };
 
+/**
+ * Wrapper function that dispatches reducer state update with new state value of 
+ * a specific object in the states list element (dataInput.states). If found, element
+ * is updated, otherwise a new state is added to the list with the value.
+ */
 const changeState = (field, item, dataInput, dispatch) => {
     if (!item) return; 
     let tempStates = dataInput?.states?.slice();
