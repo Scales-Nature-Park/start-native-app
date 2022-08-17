@@ -8,7 +8,7 @@ import { Alert } from 'react-native';
  * accordingly. Responds with an error message if there was a problem signing in
  * or navigates to Dashboard.
  */
-const AuthenticateCredentials = (setScreen, username, password) => {
+const AuthenticateCredentials = (setScreen, username, password, id) => {
     setScreen({val: 'Dashboard', params: {username, id}});
 
     // axios({

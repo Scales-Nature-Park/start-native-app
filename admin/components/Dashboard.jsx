@@ -10,6 +10,7 @@ import {
   AddCategory,
   UpdatePassword,
   DeleteAccount, 
+  GiveUserPerm,
   FetchStats
 } from '../utils/DashUtils'
 import {
@@ -41,6 +42,8 @@ const Dashboard = ({ params, setScreen }) => {
       stats.set({...stats.get(), fields: fields.data, fetchedFields: true});
     }).catch(err => {});
   }
+
+  console.log(stats.get().accounts);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -87,12 +90,20 @@ const Dashboard = ({ params, setScreen }) => {
               </View>
               <View style={styles.margin} />
               
-              {stats.get()?.accounts?.map((acc) => 
+              {stats.get()?.accounts?.map(acc => 
                 <View style={styles.accountContainer}>
                   <View style={styles.accountContent}>
                     <View style={styles.accountName}>
                       <Text>{acc.username}</Text>
                     </View>
+                    <TouchableOpacity onPress={() => GiveUserPerm(acc._id, stats, !acc.read || false, true)} style={styles.updateButton}>
+                      {acc.read ? <Text>Revoke Read Permission</Text> : 
+                      <Text>Give Read Permission</Text>}
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => GiveUserPerm(acc._id, stats, !acc.write || false, false)} style={styles.updateButton}>
+                      {acc.write ? <Text>Revoke Write Permission</Text> :
+                      <Text>Give Write Permission</Text>}
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => UpdatePassword(acc._id, stats, scrollRef)} style={styles.updateButton}>
                       <Text>Update Password</Text>
                     </TouchableOpacity>
