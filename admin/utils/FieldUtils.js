@@ -28,10 +28,12 @@ const onDelete = (name, category, stats) => {
             text: 'Confirm',
             onPress: () => {
                 try {
+                    // make a copy of stats and filter out the required field by name
                     let tempStats = {...stats.get()};
                     let filteredFields = tempStats.fields.find(obj => obj.Category == category.name);
                     filteredFields.conditionalFields = filteredFields.conditionalFields.filter(field => field.name != name);
                     
+                    // save updates to local state
                     stats.set(tempStats);
                 } catch (err) {
                     Alert.alert('ERROR', err.message);
