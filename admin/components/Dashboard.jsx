@@ -189,7 +189,6 @@ const Dashboard = ({ params, setScreen }) => {
   const snake = require('../assets/snake.png');
   const lizard = require('../assets/lizard.png');
 
-
   FetchStats(stats);
   
   // set fields to the latest updated data fields in the database

@@ -1,6 +1,6 @@
 import { StatusBar, StyleSheet, Dimensions } from "react-native";
 
-const scalesColors = require('../utils/colors.json');
+const scalesColors = require('../utils/json/colors.json');
 
 const styles = StyleSheet.create({
     safeAreaDark: {
