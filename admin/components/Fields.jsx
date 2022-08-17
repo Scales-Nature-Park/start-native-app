@@ -1,8 +1,7 @@
 import React from 'react';
-import Prompt from './Prompt';
 import styles from '../styles/DashStyles';
 import { AppendField, onDelete, onEdit } from '../utils/FieldUtils';
-import { Text, Alert, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 
 const Fields = ({ params, setScreen }) => {
     // use json/fields.json if no fields were passed as a parameter

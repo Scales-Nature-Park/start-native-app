@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import styles from '../styles/LoginStyles';
-import { url } from '../utils/SyncState';
+import { AuthenticateCredentials } from '../utils/Credentials';
 import {
     Text,
     View,
@@ -10,31 +9,12 @@ import {
     ScrollView,
     SafeAreaView,
     Image,
-    Alert,
 } from 'react-native';
 
 const LoginForm = ({ params, setScreen }) => {
     const [username, setUser] = useState('');
     const [password, setPassword] = useState('');
     const [id, setID] = useState('');
-
-    const AuthenticateCredentials = () => {
-      setScreen({val: 'Dashboard', params: {username, id}});
-
-      // axios({
-      //   method: 'get',
-      //   url: url + '/admin-signin',
-      //   params: {
-      //     "username": username,
-      //     "password": password
-      //   }
-      // }).then(response => {
-      //   setScreen({val: 'Dashboard', params: {username, id}});
-      // }).catch(error => {
-      //   Alert.alert('ERROR', error?.response?.data || error.message);
-      //   return;
-      // });
-    };
     
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -47,7 +27,7 @@ const LoginForm = ({ params, setScreen }) => {
                   style={styles.TextInput}
                   placeholder="Username"
                   placeholderTextColor="#000000"
-                  onChangeText={(username) => setUser(username)}
+                  onChangeText={username => setUser(username)}
                 />
             </View>
 
@@ -57,12 +37,12 @@ const LoginForm = ({ params, setScreen }) => {
                   placeholder="Password"
                   placeholderTextColor="#000000"
                   secureTextEntry={true}
-                  onChangeText={(password) => setPassword(password)}
+                  onChangeText={password => setPassword(password)}
                 />
             </View>
         
             <TouchableOpacity style={styles.loginBtn}
-            onPress = {() => AuthenticateCredentials()}>
+            onPress = {() => AuthenticateCredentials(setScreen, username, password)}>
                 <Text style={styles.loginText}>LOGIN</Text>
             </TouchableOpacity>
         </View>
