@@ -43,8 +43,6 @@ const Dashboard = ({ params, setScreen }) => {
     }).catch(err => {});
   }
 
-  console.log(stats.get().accounts);
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView nestedScrollEnabled={true} style={{height: layout.height}}>
@@ -96,20 +94,27 @@ const Dashboard = ({ params, setScreen }) => {
                     <View style={styles.accountName}>
                       <Text>{acc.username}</Text>
                     </View>
-                    <TouchableOpacity onPress={() => GiveUserPerm(acc._id, stats, !acc.read || false, true)} style={styles.updateButton}>
-                      {acc.read ? <Text>Revoke Read Permission</Text> : 
-                      <Text>Give Read Permission</Text>}
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => GiveUserPerm(acc._id, stats, !acc.write || false, false)} style={styles.updateButton}>
-                      {acc.write ? <Text>Revoke Write Permission</Text> :
-                      <Text>Give Write Permission</Text>}
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => UpdatePassword(acc._id, stats, scrollRef)} style={styles.updateButton}>
-                      <Text>Update Password</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => DeleteAccount(acc._id, stats)} style={styles.deleteButton}>
-                      <Text>Delete Account</Text>
-                    </TouchableOpacity>
+                    <View style={styles.buttonContainer}>
+                      <View style={styles.permContainer}>
+                        <TouchableOpacity onPress={() => GiveUserPerm(acc._id, stats, !acc.read || false, true)} style={!acc.read ? styles.updateButton : styles.deleteButton}>
+                          {acc.read ? <Text>Revoke Read Permission</Text> : 
+                          <Text>Give Read Permission</Text>}
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => GiveUserPerm(acc._id, stats, !acc.write || false, false)} style={!acc.write ? styles.updateButton : styles.deleteButton}>
+                          {acc.write ? <Text>Revoke Write Permission</Text> :
+                          <Text>Give Write Permission</Text>}
+                        </TouchableOpacity>
+                      </View>
+
+                      <View style={styles.permContainer}>
+                        <TouchableOpacity onPress={() => UpdatePassword(acc._id, stats, scrollRef)} style={styles.updateButton}>
+                          <Text>Update Password</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => DeleteAccount(acc._id, stats)} style={styles.deleteButton}>
+                          <Text>Delete Account</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
                   </View> 
                 </View>
               )}
