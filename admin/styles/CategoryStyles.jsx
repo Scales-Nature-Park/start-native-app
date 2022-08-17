@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-const scalesColors = require('../utils/colors.json');
+const scalesColors = require('../utils/json/colors.json');
 
 const categoryStyles = StyleSheet.create({
     container: {

@@ -4,6 +4,13 @@ import styles from '../styles/DataStyles';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Progress from 'react-native-progress';
 import { url } from '../utils/SyncState';
+import { 
+    FetchFields, 
+    displayField, 
+    displayConditionals, 
+    SubmitData,
+    DeleteEntry 
+} from '../utils/InputUtils';
 import {
     Text,
     View,
@@ -17,32 +24,7 @@ import {
 import { useNetInfo } from "@react-native-community/netinfo";
 
 Feather.loadFont();
-const scalesColors = require('../utils/colors.json');
-
-// recursive function that display conditional fields of a field
-// and their conditionals
-const displayConditionals = (jsObj, displayField, fields, states) => {
-    let state = states.filter((element) => element.name.toLowerCase() == jsObj.name.toLowerCase())[0];
-    if(!state) return;
-
-    if (jsObj.conditionalFields) {
-        for (let field of jsObj.conditionalFields) {
-            if (state.value != field.condition) continue;
-
-            displayField(field, fields);
-            displayConditionals(field, displayField, fields, states);
-        }
-    }
-}
-
-const FetchFields = (setFields) => {
-    axios({
-        method: 'get',
-        url: url + '/fields'
-    }).then(response => {
-        setFields(response.data);
-    }).catch(error => {});
-};
+const scalesColors = require('../utils/json/colors.json');
 
 const DataInput = ({ params, setScreen }) => {
     const id = (params?.id) ? params?.id : '';
@@ -55,18 +37,18 @@ const DataInput = ({ params, setScreen }) => {
 
     const initialFields = (params && params?.inputFields) ? [...params?.inputFields] : []; 
         
-    const [currDay, setDay] = useState('0'.repeat(2 - day.toString().length) + day);
+    const [currDay, setDay] = useState(day.toString().length <= 2 ? '0'.repeat(2 - day.toString().length) + day : day);
     const [currMonth, setMonth] = useState(month);
     const [currYear, setYear] = useState(year);
-    const [hours, setHours] = useState('0'.repeat(2 - currHours.toString().length) + currHours);
-    const [mins, setMins] = useState('0'.repeat(2 - currMins.toString().length) + currMins);
+    const [hours, setHours] = useState(currHours.toString().length <= 2 ? '0'.repeat(2 - currHours.toString().length) + currHours : currHours);
+    const [mins, setMins] = useState(currMins.toString().length <= 2 ? '0'.repeat(2 - currMins.toString().length) + currMins : currMins);
 
     const [category, setCategory] = useState((params && params?.category) ? params?.category : 'Turtle');
     const [comment, setComment] = useState((params && params?.comment) ? params?.comment : '');
     const [states, setStates] = useState(initialFields);
     const [valid, setValid] = useState(false);
     const [photos, setPhotos] = useState((params && params?.photos) ? [...params?.photos] : null);
-    const [dataFields, setFields] = useState(require('../utils/fields.json'));
+    const [dataFields, setFields] = useState(require('../utils/json/fields.json'));
     const [progress, setProgress] = useState({display: false, progress: 0});
     const netInfo = useNetInfo();
     
@@ -90,7 +72,7 @@ const DataInput = ({ params, setScreen }) => {
             
             // validate the data after states are set
             let validateData = new Function(state.dataValidation.arguments, state.dataValidation.body);
-            let value = (state.dataValidation.isNumber && state.value.toString().trim() != '') ? Number(state.value) : state.value;
+            let value = (state?.dataValidation?.isNumber && state?.value?.toString()?.trim() != '') ? Number(state.value) : state.value;
             let response = validateData(value);
             
             // 1 wrong field will cause valid states to be false
@@ -117,179 +99,6 @@ const DataInput = ({ params, setScreen }) => {
         
         setValid(validStates);
     });
-
-    const SubmitData = async (entryId = undefined) => {
-        // validate network connection
-        if (!netInfo.isConnected) {
-            Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
-            return;
-        }
-        
-        try {
-            // upload the data entry to the database 
-            await axios({
-                method: 'post',
-                url: url + '/dataEntry',
-                data: {
-                    "id": id,
-                    photoIds,
-                    "day": currDay,
-                    "month": currMonth,
-                    "year": currYear,
-                    "hours": hours,
-                    "mins": mins,
-                    "category": category,
-                    "inputFields": states,
-                    "comment": comment
-                }
-            });
-
-            // delete the old entry 
-            await axios({
-                method: 'delete',
-                url: url + '/entry/' + entryId
-            });
-
-            Alert.alert(
-                'Successful Data Entry', 
-                'Data Entry has been updated. Return to Dashboard.',
-                [
-                    {text: "OK", onPress: () => {
-                        setScreen({val: 'Dashboard', params: {username: params.username}})
-                    }}
-                ],
-                {cancelable: false}
-            );
-            
-        } catch(err) {
-            setProgress({progress: 0, display: false});
-            Alert.alert('ERROR', err?.response?.data || error?.message);
-            return;
-        }
-    }
-
-    const DeleteEntry = (entryId) => {
-        axios({
-            method: 'delete',
-            url: url + '/entry/' + entryId
-        }).then(response => {
-            Alert.alert('Entry Deleted', response.data, [{
-                text: 'Ok',
-                onPress: () => {
-                    setScreen({val: 'Dashboard', params: {username: params.username}})
-                }
-            }]);
-
-        }).catch(err => {
-            Alert.alert('ERROR', err?.response?.data || err?.message);
-        });
-    };
-
-    const displayField = (field, fields) => {
-        if (field.name.toLowerCase() == 'date') {
-            fields.push(
-                <View style={styles.container1}>
-                    <View style={styles.inputView}>
-                        <TextInput
-                        style={styles.TextInput}
-                        defaultValue={day.toString()}
-                        placeholder={'DD'}
-                        placeholderTextColor='#000000'
-                        onChangeText={(currDay) => setDay(currDay)}
-                        />
-                    </View>
-    
-                    <View style={styles.inputView}>
-                        <TextInput
-                        style={styles.TextInput}
-                        defaultValue={month.toString()}
-                        placeholder={'Month'}
-                        placeholderTextColor='#000000'
-                        onChangeText={(currMonth) => setMonth(currMonth)}
-                        />
-                    </View>
-    
-                    <View style={styles.inputView}>
-                        <TextInput
-                        style={styles.TextInput}
-                        defaultValue={year.toString()}
-                        placeholder={'YYYY'}
-                        placeholderTextColor='#000000'
-                        onChangeText={(currYear) => setYear(currYear)}
-                        />
-                    </View>
-                </ View>
-            );
-            return;
-        } else if (field.name.toLowerCase() == 'time') {
-            fields.push(
-                <View style={styles.container1}>
-                    <Text style={styles.timeFieldDark}>Time: </Text>
-                    <View style={styles.inputView}>
-                        <TextInput
-                        style={styles.TextInput}
-                        placeholder={'HH'}
-                        defaultValue={hours.toString()}
-                        placeholderTextColor='#000000'
-                        onChangeText={(inHours) => {
-                                if (inHours.trim() == '') setHours(currHours);
-                                else setHours(inHours);
-                            }
-                        }
-                        />
-                    </View>
-    
-                    <Text style={styles.timeFieldDark}>:</Text>
-    
-                    <View style={styles.inputView}>
-                        <TextInput
-                        style={styles.TextInput}
-                        defaultValue={mins.toString()}
-                        placeholder={'MM'}
-                        placeholderTextColor='#000000'
-                        onChangeText={(inMins) => {
-                                if (inMins.trim() == '') setMins(currMins);
-                                else setMins(inMins);
-                            }
-                        }
-                        />
-                    </View>
-                </ View>
-            );
-            return;
-        }
-        
-        fields.push(
-            <View style={styles.container1}>
-                <View style={{width: '45%'}}>
-                    <Text style={styles.fieldDark}>{field.name}:</Text>
-                </View>
-                <View style={styles.fieldInput}>
-                    <TextInput
-                        style={styles.TextInput}
-                        placeholder={(params && params?.inputFields.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? params?.inputFields.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : 'Enter ' + field.name}
-                        value={(states.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0]) ? states.filter((element) => element.name.toLowerCase() == field.name.toLowerCase())[0].value.toString() : ''}
-                        placeholderTextColor='#000000'
-                        onChangeText={(value) => {
-                            let tempStates = states.slice();
-                            let tempIndex = -1;
-
-                            tempStates.forEach((curr, index) => {
-                                if (curr.name.toLowerCase() != field.name.toLowerCase()) return;
-                                curr.value = value.toString();
-                                tempIndex = index;
-                            });
-                            
-                            if(tempIndex == -1) tempStates.push(
-                                {"name": field.name.toLowerCase(), "value": value, "dataValidation": field.dataValidation}
-                            );
-                            setStates(tempStates);
-                        }}
-                    />
-                </View>
-            </View>
-        );
-    }
     
     let allIndex = -1, catIndex = -1;
     let categoryButtons = [];
@@ -312,7 +121,7 @@ const DataInput = ({ params, setScreen }) => {
 
     let modfDataFields = [];
     if (allIndex == -1 && catIndex == -1) {
-        alert("Invalid fields specified.");
+        Alert.alert('ERROR', 'Invalid fields specified.');
         return (<View></View>);
     } 
     
@@ -321,11 +130,16 @@ const DataInput = ({ params, setScreen }) => {
 
     let fields = [];
 
-    // loop through all the fields in the fields.json file
+    // loop through all the fields in the json/fields.json file
     // and display them with theire conditional fields
     for (let i = 0; i < modfDataFields.length; i++) {
+        let utils = {
+            day, month, year, hours, mins,
+            setDay, setMonth, setYear, setHours, setMins
+        };
+
         for (let field of modfDataFields[i].conditionalFields) {
-            displayField(field, fields);                 
+            displayField(field, fields, params, utils, states, setStates);                 
             if (field.name.toLowerCase() == 'date' || field.name.toLowerCase() == 'time') continue;  
 
             // set a state for the fields in the sates list
@@ -338,7 +152,8 @@ const DataInput = ({ params, setScreen }) => {
                 setStates([...states, state]);
             }
             
-            if (field.conditionalFields) displayConditionals(field, displayField, fields, states);
+            if (field.conditionalFields) 
+            displayConditionals(field, displayField, fields, states, {params, utils, states, setStates});
         }
     }
 
@@ -393,12 +208,23 @@ const DataInput = ({ params, setScreen }) => {
                         </View> : null}
                     
                         <TouchableOpacity style={styles.submitBtn}
-                        onPress={() => SubmitData(params._id)}>
+                        onPress={() => SubmitData(netInfo, {
+                            id, 
+                            photoIds, 
+                            currDay, 
+                            currMonth,
+                            currYear,
+                            hours,
+                            mins,
+                            category,
+                            states,
+                            comment
+                        }, setScreen, setProgress, params, params._id)}>
                             <Text style={styles.submitText}>UPDATE ENTRY</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity style={styles.deleteBtn}
-                        onPress={() => DeleteEntry(params._id)}>
+                        onPress={() => DeleteEntry(setScreen, params)}>
                             <Text style={styles.submitText}>DELETE ENTRY</Text>
                         </TouchableOpacity>
                     </View>

@@ -6,7 +6,7 @@ import { Text, Alert } from 'react-native';
 
 const Categories = ({ params, setScreen }) => {
     let categories = [];
-    if (!params?.stats?.get()?.fields) params?.stats?.set({...params?.stats?.get(), fields: require('../utils/fields.json')});
+    if (!params?.stats?.get()?.fields) params?.stats?.set({...params?.stats?.get(), fields: require('../utils/json/fields.json')});
 
     const onDelete = (name) => {
         Alert.alert('Confirm Delete', 'Are you sure you want to delete category?', [

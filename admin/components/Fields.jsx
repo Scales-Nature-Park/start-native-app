@@ -19,8 +19,8 @@ const AppendField = (field, fields, parent = undefined) => {
 }
 
 const Fields = ({ params, setScreen }) => {
-    // use fields.json if no fields were passed as a parameter
-    if (!params?.stats?.get()?.fields) params?.stats?.set({...params?.stats?.get(), fields: require('../utils/fields.json')});
+    // use json/fields.json if no fields were passed as a parameter
+    if (!params?.stats?.get()?.fields) params?.stats?.set({...params?.stats?.get(), fields: require('../utils/json/fields.json')});
 
     const onDelete = (name, category) => {
         Alert.alert('Confirm Delete', `Are you sure you want to delete field? 

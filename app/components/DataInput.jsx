@@ -48,11 +48,11 @@ const DataInput = ({route, navigation}) => {
     const initialFields = (paramData && paramData.inputFields) ? JSON.parse(JSON.stringify(paramData.inputFields)) : []; 
     const netInfo = useNetInfo();
 
-    let currDay = '0'.repeat(2 - day.toString().length) + day;
+    let currDay = day.toString().length <= 2 ? '0'.repeat(2 - day.toString().length) + day : day;
     let currMonth = month
     let currYear = year;
-    let hours = '0'.repeat(2 - currHours.toString().length) + currHours;
-    let mins = '0'.repeat(2 - currMins.toString().length) + currMins;
+    let hours = currHours.toString().length <= 2 ? '0'.repeat(2 - currHours.toString().length) + currHours : currHours;
+    let mins = currMins.toString().length <= 2 ? '0'.repeat(2 - currMins.toString().length) + currMins : currMins;
 
     let category = (paramData && paramData.category) ? paramData.category : 'Turtle';
     let comment = (paramData && paramData.comment) ? paramData.comment : '';
