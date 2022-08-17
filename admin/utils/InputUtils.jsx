@@ -161,7 +161,6 @@ const SubmitData = async (netInfo, dataInput, setScreen, setProgress, params, en
         Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
         return;
     }
-    setProgress({progress: 0, display: true});
     
     try {
 
@@ -201,7 +200,6 @@ const SubmitData = async (netInfo, dataInput, setScreen, setProgress, params, en
         );
         
     } catch(err) {
-        setProgress({progress: 0, display: false});
         Alert.alert('ERROR', err?.response?.data || error?.message);
         return;
     }
