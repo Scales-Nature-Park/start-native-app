@@ -42,7 +42,7 @@ const LoginForm = ({ params, setScreen }) => {
             </View>
         
             <TouchableOpacity style={styles.loginBtn}
-            onPress = {() => AuthenticateCredentials(setScreen, username, password)}>
+            onPress = {() => AuthenticateCredentials(setScreen, username, password, id)}>
                 <Text style={styles.loginText}>LOGIN</Text>
             </TouchableOpacity>
         </View>

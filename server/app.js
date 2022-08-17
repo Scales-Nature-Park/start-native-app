@@ -176,8 +176,8 @@ app.get('/username', async (req, res) => {
             
             let users = [];
             for (let user of results) {
-                let { username, _id } = user;
-                users.push({username, _id});
+                let { username, _id, write, read } = user;
+                users.push({username, _id, write, read});
             }
             return res.status(200).send(users);
         } catch (err) {
@@ -266,7 +266,7 @@ app.put('/password/:userid', async (req, res) => {
 });
 
 /**
- * Put request that changes the permissions of a specified user, it takes in a username,
+ * Put request that changes the permissions of a specified user, it takes in an account id
  * write and read body parameters where write & read are boolean values that specify 
  * whether the user should have this permission or not. It sets the values in the
  * user's document in the credentials collection on the START-Project database. 
@@ -274,18 +274,18 @@ app.put('/password/:userid', async (req, res) => {
  */
 app.put('/user/permissions', async (req, res) => {
     try {
-        const { username, read, write } = req.body;
+        const { accountId, read, write } = req.body;
 
         // load the credentials collection from the START-Project db
         let db = client.db('START-Project');
         let credentials = db.collection('credentials');
 
-        // search for a credentials document using the passed in username
+        // search for a credentials document using the passed in account id
         try {
-            let user = await credentials.findOne({username});
+            let user = await credentials.findOne({_id: ObjectID(accountId)});
             
             if (!user) 
-            return res.status(404).send('Could not find a user with the specified username.');
+            return res.status(404).send('Could not find a user with the specified account id.');
             
             // update read/write permissions
             user.read = (read !== undefined) ? read : user.read; 

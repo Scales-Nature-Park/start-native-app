@@ -198,4 +198,39 @@ const DeleteAccount = (id, stats) => {
     ]);
 };
 
-export { PushRelease, AddCategory, FetchStats, UpdatePassword, DeleteAccount, ArrayEquals };
+/**
+ * Give/revoke read/write permission buttons callback function. It takes in a read
+ * boolean which specifies whether the call was from the read permission button or
+ * write and a value boolean specifying whether the user should have access to the
+ * privilege or not. It sends a put request to the server at /user/permissions with
+ * the passed in accountId and alerts the user if there was any errors.
+ */
+const GiveUserPerm = (accountId, stats, value, read) => {
+    // setup request body based on type on read boolean parameter
+    // true read means that were updating the read permission
+    let data = {
+      accountId,
+      read: read ? value : undefined,
+      write: read ? undefined : value
+    };
+
+    axios({
+      method: 'put',
+      url: url + '/user/permissions',
+      data
+    }).then(() => {
+      FetchStats(stats);
+    }).catch(err => {
+      Alert.alert('ERROR', err?.response?.data || err?.message || err);
+    })
+};
+
+export { 
+  PushRelease, 
+  AddCategory, 
+  FetchStats, 
+  UpdatePassword, 
+  DeleteAccount, 
+  GiveUserPerm, 
+  ArrayEquals 
+};
