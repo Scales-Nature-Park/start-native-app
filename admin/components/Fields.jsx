@@ -30,10 +30,10 @@ const Fields = ({ params, setScreen }) => {
                         <View style={styles.accountName}>
                             <Text>{field.name}</Text>
                         </View>
-                        <TouchableOpacity onPress={() => onEdit(field.name)} style={styles.updateButton}>
+                        <TouchableOpacity onPress={() => onEdit(field.name)} style={styles.updateFieldButton}>
                             <Text>Edit Field</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => onDelete(field.name, category, params.stats)} style={styles.deleteButton}>
+                        <TouchableOpacity onPress={() => onDelete(field.name, category, params.stats)} style={styles.deleteFieldButton}>
                             <Text>Delete Field</Text>
                         </TouchableOpacity>
                         </View>

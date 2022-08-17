@@ -209,6 +209,7 @@ const styles = StyleSheet.create({
     accountContent: {
       flexDirection: 'row',
       justifyContent: 'space-evenly',
+      height: '100%'
     },
 
     accountName: {
@@ -217,10 +218,30 @@ const styles = StyleSheet.create({
       width: '40%'
     },
 
+    updateFieldButton: {
+      backgroundColor: scalesColors.DeepGreen,
+      height: '65%',
+      width: '25%',
+      borderRadius: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      alignSelf: 'center'
+    },
+    
+    deleteFieldButton: {
+      backgroundColor: '#850d23',
+      width: '25%',
+      height: '65%',
+      borderRadius: 10,
+      alignItems: 'center',
+      alignSelf: 'center',
+      justifyContent: 'center',
+    },
+
     updateButton: {
       backgroundColor: scalesColors.DeepGreen,
-      height: '100%',
-      width: '25%',
+      height: '40%',
+      width: '80%',
       borderRadius: 10,
       alignItems: 'center',
       justifyContent: 'center',
@@ -228,11 +249,27 @@ const styles = StyleSheet.create({
     
     deleteButton: {
       backgroundColor: '#850d23',
-      height: '100%',
-      width: '25%',
+      width: '80%',
+      height: '40%',
       borderRadius: 10,
       alignItems: 'center',
       justifyContent: 'center',
+    },
+
+    permContainer: {
+      flex: 1,
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'space-evenly',
+      height: '100%',
+      width: '50%'
+    },
+
+    buttonContainer: {
+      width: '60%',
+      height: '100%',
+      flex: 1,
+      flexDirection: 'row',
     },
 });
 
