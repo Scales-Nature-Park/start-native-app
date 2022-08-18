@@ -2,7 +2,7 @@ import styles from '../styles/LoginStyles';
 import React, { useState, useLayoutEffect, useContext } from 'react';
 import { AuthenticateCredentials } from '../utils/Credentials';
 import { UserContext } from '../utils/Storage';
-import { useNetInfo } from "@react-native-community/netinfo";
+import { useNetInfo } from '@react-native-community/netinfo';
 import {
     StatusBar,
     Text,
