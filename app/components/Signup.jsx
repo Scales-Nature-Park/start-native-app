@@ -11,7 +11,6 @@ import {
     TouchableOpacity,
     SafeAreaView,
     ScrollView,
-    Alert,
 } from 'react-native';
 
 const Signup = ({ navigation }) => {
@@ -41,20 +40,20 @@ const Signup = ({ navigation }) => {
             <StatusBar style="auto" />
             <View style={styles.inputView}>
                 <TextInput
-                style={styles.TextInput}
-                placeholder="Username"
-                placeholderTextColor="#000000"
-                onChangeText={(username) => setUser(username)}
+                    style={styles.TextInput}
+                    placeholder="Username"
+                    placeholderTextColor="#000000"
+                    onChangeText={username => setUser(username)}
                 />
             </View>
         
             <View style={styles.inputView}>
                 <TextInput
-                style={styles.TextInput}
-                placeholder="Password"
-                placeholderTextColor="#000000"
-                secureTextEntry={true}
-                onChangeText={(password) => setPassword(password)}
+                    style={styles.TextInput}
+                    placeholder="Password"
+                    placeholderTextColor="#000000"
+                    secureTextEntry={true}
+                    onChangeText={password => setPassword(password)}
                 />
             </View>
 
@@ -64,12 +63,12 @@ const Signup = ({ navigation }) => {
                 placeholder="Verify Password"
                 placeholderTextColor="#000000"
                 secureTextEntry={true}
-                onChangeText = {(pass) => setPassword2(pass)}
+                onChangeText = {pass => setPassword2(pass)}
                 />
             </View>
         
             <TouchableOpacity style={styles.loginBtn}
-            onPress = {() => RegisterUser(username, password, password2)}>
+            onPress = {() => RegisterUser(username, password, password2, navigation, netInfo)}>
                 <Text style={styles.loginText}>REGISTER</Text>
             </TouchableOpacity>
         </View>

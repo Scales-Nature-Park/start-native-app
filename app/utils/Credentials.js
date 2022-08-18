@@ -10,7 +10,7 @@ import { Alert } from 'react-native';
  */
 const RegisterUser = (username, password, password2, navigation, netInfo) => {
     // validate network connection
-    if (!netInfo.isConnected) {
+    if (!netInfo?.isConnected) {
       Alert.alert('Network Error', 'It seems that you are not connected to the internet. Please check your connection and try again later.');
       return;
     }
@@ -90,7 +90,6 @@ const AuthenticateCredentials = (netInfo, username, password, navigation, user) 
  * new passwords, validates them against password validity criteria, authenticates
  * the current password with what's on the database then sends a put request
  * to the server to update the password.
- * @returns 
  */
 const UpdatePassword = (netInfo, accountId, username, currPass, password, password2) => {
     // validate network connection

@@ -12,6 +12,7 @@ import {
     ScrollView,
     SafeAreaView,
     Image,
+    Alert,
 } from 'react-native';
 
 const LoginForm = ({ navigation }) => {
@@ -59,7 +60,9 @@ const LoginForm = ({ navigation }) => {
             </View>
         
             <TouchableOpacity>
-                <Text style={(dark) ? styles.forgotDark : styles.forgot}>Forgot Password?</Text>
+                <Text style={(dark) ? styles.forgotDark : styles.forgot} onPress={() => Alert.alert('Forgotten Passwords', 'Please contact a senior staff member or a developer to change your password.')}>
+                  Forgot Password?
+                </Text>
             </TouchableOpacity>
         
             <TouchableOpacity style={styles.loginBtn}

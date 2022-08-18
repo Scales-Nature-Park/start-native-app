@@ -169,7 +169,7 @@ const onShareDelete = (field, user, setRerender) => {
   }).then(() => {
     // update user context to reflect the deletion success on screen
     let sharedEntries = (user?.userInfo?.sharedEntries?.length) ? user?.userInfo?.sharedEntries?.filter(elem => elem.entryId != field?.entryId) : [];
-    user.setUserInfo({id: user?.userInfo?.id, username: user?.userInfo?.username, sharedEntries});
+    user.setUserInfo({...user?.userInfo, sharedEntries});
     setRerender(true);
   }).catch(err => {
     Alert.alert('ERROR', err?.response?.data || err?.message);
