@@ -18,6 +18,31 @@ const AppendField = (field, fields, parent = undefined) => {
 }
 
 /**
+ * Recursive function that goes through a field's conditionals to find a 
+ * specific field with the given name and deletes it from the array.
+ * It returns true if the conditonal field was found and stops checking other
+ * conditional fields once the field is found and deleted. Returns false if the field
+ * wasn't found.
+ */
+const FilterConditionals = (field, name) => {
+    if (!field?.conditionalFields?.length) return false;
+    
+    // filter the field's conditional fields
+    if (field.conditionalFields.filter(field => field.name == name)?.length) {
+        field.conditionalFields = field.conditionalFields.filter(field => field.name != name);
+        return true;
+    }
+
+    // go deeper if not found in the current conditional fields
+    for (let conditional of field?.conditionalFields) {
+        // dont check further siblings and their children if already found 
+        if (FilterConditionals(conditional, name)) return true;
+    }
+
+    return false;
+}
+
+/**
  * Delete field button callback function that deletes the field from the fields element
  * in the stats state. Alerts user if any error was encountered
  */
@@ -31,7 +56,7 @@ const onDelete = (name, category, stats) => {
                     // make a copy of stats and filter out the required field by name
                     let tempStats = {...stats.get()};
                     let filteredFields = tempStats.fields.find(obj => obj.Category == category.name);
-                    filteredFields.conditionalFields = filteredFields.conditionalFields.filter(field => field.name != name);
+                    FilterConditionals(filteredFields, name);
                     
                     // save updates to local state
                     stats.set(tempStats);
