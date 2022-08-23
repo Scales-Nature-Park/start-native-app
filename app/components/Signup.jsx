@@ -59,11 +59,11 @@ const Signup = ({ navigation }) => {
 
             <View style={styles.inputView}>
                 <TextInput
-                style={styles.TextInput}
-                placeholder="Verify Password"
-                placeholderTextColor="#000000"
-                secureTextEntry={true}
-                onChangeText = {pass => setPassword2(pass)}
+                    style={styles.TextInput}
+                    placeholder="Verify Password"
+                    placeholderTextColor="#000000"
+                    secureTextEntry={true}
+                    onChangeText = {pass => setPassword2(pass)}
                 />
             </View>
         

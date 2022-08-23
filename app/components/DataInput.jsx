@@ -64,9 +64,9 @@ const DataInput = ({route, navigation}) => {
     let loadedFields = false;
 
     const [dataInput, dispatch] = useReducer(Reducer, {currDay, currMonth, currYear, hours, mins, category, comment, states: [], valid, photos, dark, progress});
-    const fieldState = useSyncState({loadedFields, dataFields: [...dataFields]});
+    const fieldState = useSyncState({loadedFields, dataFields: []});
 
-    if (!fieldState.get().loadedFields) FetchFields(fieldState, dispatch);
+    if (!fieldState.get().loadedFields) FetchFields(fieldState, dispatch, dataFields);
     
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -151,10 +151,7 @@ const DataInput = ({route, navigation}) => {
     });
 
     let modfDataFields = [];
-    if (allIndex == -1 && catIndex == -1) {
-        Alert.alert('ERROR', 'Invalid fields specified.');
-        return (<View></View>);
-    } 
+    if (allIndex == -1 && catIndex == -1) return <View></View>;
     
     if (allIndex != -1) modfDataFields.push(fieldState.get().dataFields[allIndex]);
     if (catIndex != -1) modfDataFields.push(fieldState.get().dataFields[catIndex]);
@@ -168,15 +165,15 @@ const DataInput = ({route, navigation}) => {
         for (let field of modfDataFields[i].conditionalFields) {
             displayField(field, fields, dataInput, dispatch, initialFields, {day, month, year, hours, mins});                 
             if (field.name.toLowerCase() == 'date' || field.name.toLowerCase() == 'time') continue;  
-
+            
             // set a state for the fields in the sates list
             let state = tempStates.filter(element => element.name.toLowerCase() == field.name.toLowerCase())[0];
-
+            
             if (!state) {
                 // get initial value passed as in paramData
                 state = initialFields?.filter(elem => elem.name.toLowerCase() == field.name.toLowerCase())[0];
                 state = {'name': field.name.toLowerCase(), 'value': (state) ? state.value : '', 'dataValidation': field.dataValidation};
-                   
+                
                 tempStates = [...tempStates, state];
                 meta.editedStates = true;
             }

@@ -78,13 +78,26 @@ const displayConditionals = (jsObj, displayField, fields, states, autoFill, meta
 /**
  * Function fetches a list of fields from local storage and sets the state if 
  * successful then empties the states element in the reducer. This helps prevents
- * saving states of fields that come from older versions of the fields list.
+ * saving states of fields that come from older versions of the fields list. If
+ * fields are not found from local storage it uses the passed in backup array.
  */
-const FetchFields = (state, dispatch) => {
-    storage.load({key: 'fields'}).then(fields => { 
+const FetchFields = async (state, dispatch, backup) => {
+    try {
+        let fields = await storage.load({key: 'fields'}); 
         state.set({loadedFields: true, dataFields: [...fields]});
-        dispatch({type: 'states', states: []});
-    }).catch(() => {});
+    } catch (err) {
+        // use fields.json backup array as data fields if could not load from storage
+        if (typeof backup !== 'undefined') 
+        state.set({loadedFields: true, dataFields: [...backup]});
+        
+        // alert user that we could not load fields from all sources 
+        else {
+            state.set({loadedFields: true, dataFields: []});
+            Alert.alert('ERROR', 'Could not load data fields. Please return to home screen and try again later.');
+        }
+    }
+
+    dispatch({type: 'states', states: []});
 };
 
 /**
@@ -296,7 +309,7 @@ const displayField = (field, fields, dataInput, dispatch, initialFields, params)
                     clearOnFocus={true}
                     closeOnBlur={false}
                     closeOnSubmit={true}
-                    initialValue={{ id: initId.toString() }}
+                    initialValue={initId.toString()}
                     showClear={true}
                     onClear={() => changeState(field, {title: ''}, dataInput, dispatch)}
                     onSelectItem={item => changeState(field, item, dataInput, dispatch)}
@@ -539,14 +552,14 @@ const Reducer = (state, action) => {
  * is updated, otherwise a new state is added to the list with the value.
  */
 const changeState = (field, item, dataInput, dispatch) => {
-    if (!item) return; 
-    let tempStates = dataInput?.states?.slice();
+    if (!item || dataInput?.states?.length <= 0) return; 
+    let tempStates = [...dataInput?.states];
     let tempIndex = -1;
     
     // search for an existing state with the current field name and update its value
-    tempStates.forEach((curr, index) => {
+    dataInput.states.forEach((curr, index) => {
         if (curr.name.toLowerCase() != field.name.toLowerCase()) return;
-        curr.value = item.title;
+        tempStates[index].value = item.title;
         tempIndex = index;
     });
     
