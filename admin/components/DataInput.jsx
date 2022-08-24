@@ -178,7 +178,7 @@ const DataInput = ({ params, setScreen }) => {
                             category,
                             inputFields: states,
                             comment
-                        })}>
+                        }])}>
                         <Text>Export Entry</Text>
                     </TouchableOpacity>
                 </View>

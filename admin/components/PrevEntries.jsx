@@ -3,7 +3,7 @@ import Entry from './Entry';
 import axios from 'axios';
 import useSyncState, { url } from '../utils/SyncState';
 import { styles } from '../styles/EntryStyles';
-import { Text } from 'react-native';
+import { Text, Alert } from 'react-native';
 
 const PrevEntries = ({ params, setScreen }) => {
   const entryElems = useSyncState([]);

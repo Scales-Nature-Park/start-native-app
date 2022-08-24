@@ -9,6 +9,7 @@ const sanitize = require('mongo-sanitize');
 const bodyParser = require('body-parser');  
 const fileUpload = require('express-fileupload');
 const jsonexport = require('jsonexport');
+require('dotenv').config();
 
 const app = express();
 
@@ -24,6 +25,38 @@ const uri = process.env.MONGODB;
 const client = new MongoClient(uri);
 const port = process.env.PORT || 5000;
 const MONGOLIMIT = 15728640; // let the limit be 1 MB less than actual limit to be safe
+
+// Google client
+const { google } = require('googleapis');
+const { JWT } = require('google-auth-library');
+const GOOGLE_URL = 'https://www.googleapis.com/drive/v3';
+
+// google cloud service account credentials
+const GoogleCreds = {
+    email: process.env.CLIENT_EMAIL,
+    key: process.env.PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    scopes: ['https://www.googleapis.com/auth/drive.metadata.readonly', 'https://www.googleapis.com/auth/drive']
+}
+
+/**
+ * Async function that attempts fetching a JSON Web Token for google drive API.
+ */
+async function FetchJWT () {
+    try {
+        let jwtClient = new google.auth.JWT(
+            GoogleCreds.email,
+            null,
+            GoogleCreds.key,
+            ["https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata"],
+            null
+        );
+        
+        return jwtClient;
+    } catch (err) { 
+        console.log(err);
+        return undefined; 
+    }
+}
 
 /**
  * Async function that attempts connecting to the database.
@@ -679,8 +712,23 @@ app.post('/export', async (req, res) => {
 
         // write the csv file
         fs.writeFileSync('entry.csv', csvData);
+        
+        // Upload the csv file to google drive //
+
+        // initialize drive client
+        const token = await FetchJWT();
+        let drive = google.drive({ version: 'v3', auth: token });
+
+        drive.files.list({
+            auth: token,
+        }, (err, files) => {
+            if (err) throw err;
+            console.log(files.data);
+        });
+        
         return res.status(200).send('');
     } catch (error) {
+        console.log(error);
         return res.status(500).send(error);
     }
 });
