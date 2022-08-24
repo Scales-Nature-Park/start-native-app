@@ -55,11 +55,18 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
 
-    sideButtons: {
+    sideButton: {
         position: 'absolute',
         width: '15%',
         alignItems: 'center',
         marginTop: 20,
+    },
+
+    exportButton: {
+        position: 'absolute',
+        width: '15%',
+        alignItems: 'center',
+        marginTop: 80
     },
 
     dash: {
@@ -69,6 +76,15 @@ const styles = StyleSheet.create({
         height: 45,
         borderRadius: 10,
         backgroundColor: '#0b4c7d',
+    },
+
+    dash2: {
+        width: '70%',
+        alignItems:'center',
+        justifyContent: 'center',
+        height: 45,
+        borderRadius: 10,
+        backgroundColor: '#357382',
     },
 
     buttonView: {

@@ -227,4 +227,18 @@ const DeleteEntry = (setScreen, params) => {
     });
 };
 
-export { FetchFields, displayConditionals, displayField, SubmitData, DeleteEntry };
+const ExportEntry = async (data) => {
+    try {
+        let response = await axios({
+            method: 'post',
+            url: url + '/export',
+            data
+        });
+
+        return response;
+    } catch (e) {
+        // saving error
+    }  
+};
+
+export { FetchFields, displayConditionals, displayField, SubmitData, DeleteEntry, ExportEntry };

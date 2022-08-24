@@ -9,7 +9,8 @@ import {
     displayField, 
     displayConditionals, 
     SubmitData,
-    DeleteEntry 
+    DeleteEntry,
+    ExportEntry
 } from '../utils/InputUtils';
 import {
     Text,
@@ -21,7 +22,7 @@ import {
     Alert,
     Image,
 } from 'react-native';
-import { useNetInfo } from "@react-native-community/netinfo";
+import { useNetInfo } from '@react-native-community/netinfo';
 
 Feather.loadFont();
 const scalesColors = require('../utils/json/colors.json');
@@ -160,9 +161,25 @@ const DataInput = ({ params, setScreen }) => {
     return (
         <SafeAreaView style={styles.safeAreaDark}>
             <ScrollView>
-                <View style={styles.sideButtons}>
+                <View style={styles.sideButton}>
                     <TouchableOpacity style={styles.dash} onPress={() => setScreen({val: 'Dashboard', params: {}})}>
                         <Text>Back to Dashboard</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={styles.exportButton}>
+                    <TouchableOpacity style={styles.dash2} onPress={() => ExportEntry([{
+                            photoIds, 
+                            day: currDay, 
+                            month: currMonth,
+                            year: currYear,
+                            hours,
+                            mins,
+                            category,
+                            inputFields: states,
+                            comment
+                        })}>
+                        <Text>Export Entry</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.mainView}>

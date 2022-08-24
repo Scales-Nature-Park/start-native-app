@@ -8,6 +8,7 @@ const path = require('path');
 const sanitize = require('mongo-sanitize');
 const bodyParser = require('body-parser');  
 const fileUpload = require('express-fileupload');
+const jsonexport = require('jsonexport');
 
 const app = express();
 
@@ -649,7 +650,38 @@ app.delete('/entry/:entryId', async (req, res) => {
             return res.status(400).send(err);
         }
     } catch (error) {
-        res.status(500).send(error);
+        return res.status(500).send(error);
+    }
+});
+
+/**
+ * Export data entries post endpoint that takes in an array of json data entries,
+ * parses that request body data into csv format and exports it to a csv file in the
+ * current directory. Responds with an error message if failed.  
+ */
+app.post('/export', async (req, res) => {
+    try {
+        let [...entries] = req.body;
+        
+        // loop through all entries and append inputFields into to the entry
+        // json fields on the top level of the entry
+        let i = 0;
+        for (let { inputFields, ...entry } of entries) {
+            for (let field of inputFields) {
+                entry[field.name] = field.value;
+            }
+            
+            entries[i++] = entry;
+        }
+        
+        // parse json into csv format
+        const csvData = await jsonexport(entries, { fillTopRow: true });
+
+        // write the csv file
+        fs.writeFileSync('entry.csv', csvData);
+        return res.status(200).send('');
+    } catch (error) {
+        return res.status(500).send(error);
     }
 });
 
