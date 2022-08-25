@@ -695,6 +695,7 @@ app.delete('/entry/:entryId', async (req, res) => {
 app.post('/export', async (req, res) => {
     try {
         let [...entries] = req.body;
+        let photoIds = [];
         
         // loop through all entries and append inputFields into to the entry
         // json fields on the top level of the entry
@@ -704,6 +705,7 @@ app.post('/export', async (req, res) => {
                 entry[field.name] = field.value;
             }
             
+            if (entry.photoIds?.length) photoIds = [...photoIds, ...entry.photoIds];
             entries[i++] = entry;
         }
         
@@ -711,20 +713,79 @@ app.post('/export', async (req, res) => {
         const csvData = await jsonexport(entries, { fillTopRow: true });
 
         // write the csv file
-        fs.writeFileSync('entry.csv', csvData);
-        
-        // Upload the csv file to google drive //
+        fs.writeFileSync('entries.csv', csvData);
 
         // initialize drive client
         const token = await FetchJWT();
         let drive = google.drive({ version: 'v3', auth: token });
+        
+        // fetch parent folder id 
+        let files =  await drive.files.list({ auth: token });
+        let parentFolder = '';
+        for (let file of files.data.files) {
+            if (file.name.toLowerCase().includes('exported entries')) 
+                parentFolder = file.id;
+        }
 
-        drive.files.list({
-            auth: token,
-        }, (err, files) => {
-            if (err) throw err;
-            console.log(files.data);
+        // Upload the csv file to google drive 
+
+        // initialize metadata and media for upload 
+        let fileMetadata = {
+            title: 'entries.csv',
+            name: 'entries.csv',
+            parents: [parentFolder]
+        };
+        
+        let media = {
+            mimeType: 'text/csv',
+            body: fs.createReadStream('entries.csv'),
+        };
+        
+        // upload the file to drive  
+        await drive.files.create({
+            resource: fileMetadata,
+            media,
+            fields: 'id',
         });
+
+        // delete csv file
+        fs.unlinkSync('entries.csv');
+
+        // load the images collection from the START-Project db
+        let db = client.db('START-Project');
+        let images = db.collection('images');
+        
+        // upload entry images to parent folder
+        for (let photo of photoIds) {
+            let searchRes = await images.findOne({_id: ObjectID(photo)});
+            if (!searchRes || !searchRes.data) continue;
+
+            // attempt to write binary image to a file
+            let buffer = searchRes?.data?.read(0, searchRes.data.length);
+            fs.writeFileSync('pic.jpeg', buffer);
+
+            // initialize metadata and media for upload 
+            let fileMetadata = {
+                title: `${photo}.jpeg`,
+                name: `${photo}.jpeg`,
+                parents: [parentFolder]
+            };
+            
+            let media = {
+                mimeType: 'image/jpeg',
+                body: fs.createReadStream('pic.jpeg'),
+            };
+            
+            // upload the file to drive  
+            await drive.files.create({
+                resource: fileMetadata,
+                media,
+                fields: 'id',
+            });
+            
+            // delete file from local folder
+            fs.unlinkSync('pic.jpeg');
+        }
         
         return res.status(200).send('');
     } catch (error) {
