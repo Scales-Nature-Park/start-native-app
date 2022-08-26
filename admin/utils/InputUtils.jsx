@@ -21,8 +21,10 @@ const FetchFields = (setFields) => {
         method: 'get',
         url: url + '/fields'
     }).then(response => {
-        setFields(response.data);
-    }).catch(error => {});
+        setFields({fields: response.data, fetched: true});
+    }).catch(error => {
+        setFields(prev => { return {...prev, fetched: true}; })
+    });
 };
 
 /** 
@@ -227,6 +229,12 @@ const DeleteEntry = (setScreen, params) => {
     });
 };
 
+/**
+ * Asyncronous function that takes in an array of data entries and sends a request
+ * to the /export endpoint with these entries to export them to a folder of images
+ * and a csv file on google drive. It alerts the user with the link to the folder 
+ * or an error message.
+ */
 const ExportEntry = async (data) => {
     try {
         let response = await axios({
@@ -235,8 +243,6 @@ const ExportEntry = async (data) => {
             data
         });
         Alert.alert('Entry Exported', `Export Link: ${response.data}`);
-
-        return response;
     } catch (e) {
         Alert.alert('ERROR', 'Failed to export current entries, please try again later.');
     }  
