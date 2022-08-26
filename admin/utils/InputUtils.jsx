@@ -227,4 +227,19 @@ const DeleteEntry = (setScreen, params) => {
     });
 };
 
-export { FetchFields, displayConditionals, displayField, SubmitData, DeleteEntry };
+const ExportEntry = async (data) => {
+    try {
+        let response = await axios({
+            method: 'post',
+            url: url + '/export',
+            data
+        });
+        Alert.alert('Entry Exported', `Export Link: ${response.data}`);
+
+        return response;
+    } catch (e) {
+        Alert.alert('ERROR', 'Failed to export current entries, please try again later.');
+    }  
+};
+
+export { FetchFields, displayConditionals, displayField, SubmitData, DeleteEntry, ExportEntry };
