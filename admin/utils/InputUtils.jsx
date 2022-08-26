@@ -248,4 +248,26 @@ const ExportEntry = async (data) => {
     }  
 };
 
-export { FetchFields, displayConditionals, displayField, SubmitData, DeleteEntry, ExportEntry };
+/**
+ * Asyncronous function that attempts to fetch all submitted data entries and sends a 
+ * request to the /export endpoint with these entries to export them to a folder of images
+ * and a csv file on google drive. It alerts the user with the link to the folder 
+ * or an error message.
+ */
+const ExportAll = async () => {
+    try {
+        Alert.alert('Just a Moment', 'Export all entries initiated, please wait while we process your request.'); 
+
+        let entries = await axios({
+            method: 'get',
+            url: url + '/search',
+            params: {}
+        });
+        
+        ExportEntry(entries.data);
+    } catch (e) {
+        Alert.alert('ERROR', 'Failed to export entries, please try again later.');
+    }
+};
+
+export { FetchFields, displayConditionals, displayField, SubmitData, DeleteEntry, ExportEntry, ExportAll };
