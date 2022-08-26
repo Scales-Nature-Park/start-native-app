@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     },
 
     recentsContainer: {
-      maxHeight: '45%' > 600 ? 600 : '45%',
+      maxHeight: 600,
       backgroundColor: scalesColors.secondaryBackground,
       marginLeft: '1.5%',
       alignSelf: 'flex-end',

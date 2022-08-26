@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import styles from '../styles/DataStyles';
 import Feather from 'react-native-vector-icons/Feather';
 import * as Progress from 'react-native-progress';
@@ -49,7 +48,7 @@ const DataInput = ({ params, setScreen }) => {
     const [states, setStates] = useState(initialFields);
     const [valid, setValid] = useState(false);
     const [photos, setPhotos] = useState((params && params?.photos) ? [...params?.photos] : null);
-    const [dataFields, setFields] = useState(require('../utils/json/fields.json'));
+    const [dataFields, setFields] = useState({fetched: false, fields: require('../utils/json/fields.json')});
     const [progress, setProgress] = useState({display: false, progress: 0});
     const netInfo = useNetInfo();
     
@@ -62,7 +61,7 @@ const DataInput = ({ params, setScreen }) => {
         setPhotos(tempPhotos);
     } 
     
-    if (!dataFields) FetchFields(setFields);
+    if (!dataFields.fetched) FetchFields(setFields);
 
     useEffect(() => {
         let validStates = true;
@@ -106,7 +105,7 @@ const DataInput = ({ params, setScreen }) => {
 
     // get the indeces of the all category and the selected
     // categpry objects in dataFields
-    dataFields.forEach((element, index) => {
+    dataFields?.fields?.forEach((element, index) => {
         if (element.Category == "All") {
             allIndex = index;
         } else {
@@ -126,8 +125,8 @@ const DataInput = ({ params, setScreen }) => {
         return (<View></View>);
     } 
     
-    if (allIndex != -1) modfDataFields.push(dataFields[allIndex]);
-    if (catIndex != -1) modfDataFields.push(dataFields[catIndex]);
+    if (allIndex != -1) modfDataFields.push(dataFields.fields[allIndex]);
+    if (catIndex != -1) modfDataFields.push(dataFields.fields[catIndex]);
 
     let fields = [];
 
