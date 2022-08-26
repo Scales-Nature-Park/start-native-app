@@ -1,8 +1,8 @@
 # Features to add
 - Hide Fields, and show them.
-- Need to approve account before actually alowing them access to the accounts
+- ~~Need to approve account before actually alowing them access to the accounts~~
 - Need different permissions for accounts so some can only add data and some can view data  
-- need a way to export images and be able to have those images still inked to boservations (ie. naming them)
+- ~~need a way to export images and be able to have those images still inked to boservations (ie. naming them)~~
 - add seperate fields for different photos (ex: plastron photo, injury photos, etc.) and snak would also be different (eg. dorsal photo)
 - need to auto name photos 
 - banner on photos? like a abanner at bottom with location and capture code data (and anthting else that is important)
