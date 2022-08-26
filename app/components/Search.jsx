@@ -4,6 +4,7 @@ import Entry from './Entry';
 import styles from '../styles/SearchStyles';
 import ModalDropdown from 'react-native-modal-dropdown';
 import useSyncState from '../utils/SyncState';
+import * as Progress from 'react-native-progress';
 import React, { useState, useLayoutEffect, useRef } from 'react';
 import { useToast } from 'react-native-toast-notifications';
 import { resetCriteria, dropDownSelect, displayField, ExportEntry } from '../utils/SearchUtils';
@@ -34,6 +35,7 @@ const Search = ({ navigation }) => {
     const [entries, setEntries] = useState([]);
     const [criteria, setCriteria] = useState([]);
     const [dark, setDark] = useState({value: true, change: false});
+    const [load, setLoad] = useState(false);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -171,9 +173,14 @@ const Search = ({ navigation }) => {
                     <Text style={styles.emptyText}>ADD CRITERIA</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.search} onPress={() => ExportEntry(data, toast)}>
+                <TouchableOpacity style={styles.search} onPress={() => ExportEntry(data, toast, setLoad)}>
                     <Text style={styles.emptyText}>EXPORT</Text>
                 </TouchableOpacity>
+
+                {load && 
+                <View style={styles.load}>
+                    <Progress.Circle indeterminate={true} />
+                </View>}
                 
                 <View style={(entries.length > 0 ) ? styles.searchResults : {}}>
                     {entries}

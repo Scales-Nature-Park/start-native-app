@@ -172,6 +172,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 20,
     },
+
+    load: {
+        marginTop: 25
+    }
 });
 
 export default styles;

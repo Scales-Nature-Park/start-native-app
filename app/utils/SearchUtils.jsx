@@ -142,13 +142,13 @@ const displayField = (field, fields, index, states, dark) => {
  * and a csv file on google drive. It alerts the user with the link to the folder 
  * or an error message.
  */
- const ExportEntry = async (data, toast) => {
+ const ExportEntry = async (data, toast, setLoad) => {
     // verify there is at least one entry
     if (!data || !data.length) {
         Alert.alert('No Entries', 'We could not process your request due to insufficient amount of entries to export.');
         return;
     }
-    toast.show('Exporting Data Entries...', { type: 'success' });
+    setLoad(true);
     
     try {
         // request export from the server
@@ -159,6 +159,7 @@ const displayField = (field, fields, index, states, dark) => {
         });
         
         // notify user with the folder link
+        setLoad(false);
         toast.hideAll();
         toast.show(response.data, { type: 'with_copy_button' });
     } catch (err) {
