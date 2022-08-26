@@ -234,10 +234,11 @@ const ExportEntry = async (data) => {
             url: url + '/export',
             data
         });
+        Alert.alert('Entry Exported', `Export Link: ${response.data}`);
 
         return response;
     } catch (e) {
-        // saving error
+        Alert.alert('ERROR', 'Failed to export current entries, please try again later.');
     }  
 };
 

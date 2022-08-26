@@ -28,8 +28,6 @@ const MONGOLIMIT = 15728640; // let the limit be 1 MB less than actual limit to 
 
 // Google client
 const { google } = require('googleapis');
-const { JWT } = require('google-auth-library');
-const GOOGLE_URL = 'https://www.googleapis.com/drive/v3';
 
 // google cloud service account credentials
 const GoogleCreds = {
@@ -53,9 +51,35 @@ async function FetchJWT () {
         
         return jwtClient;
     } catch (err) { 
-        console.log(err);
         return undefined; 
     }
+}
+
+/**
+ * Asynchronous function that uploads a file to google drive in a passed in parent folder.
+ */
+async function UploadFile(drive, uploadName, localName, parentFolder, type) {
+    // initialize metadata and media for upload 
+    let fileMetadata = {
+        title: uploadName,
+        name: uploadName,
+        parents: [parentFolder]
+    };
+    
+    let media = {
+        mimeType: type,
+        body: fs.createReadStream(localName),
+    };
+    
+    // upload the file to drive  
+    await drive.files.create({
+        resource: fileMetadata,
+        media,
+        fields: 'id',
+    });
+
+    // delete local file
+    fs.unlinkSync(localName);
 }
 
 /**
@@ -727,30 +751,24 @@ app.post('/export', async (req, res) => {
                 parentFolder = file.id;
         }
 
-        // Upload the csv file to google drive 
-
-        // initialize metadata and media for upload 
+        // create a folder for this export 
         let fileMetadata = {
-            title: 'entries.csv',
-            name: 'entries.csv',
+            name: 'Entries',
+            title: 'Entries',
+            mimeType: 'application/vnd.google-apps.folder',
             parents: [parentFolder]
         };
-        
-        let media = {
-            mimeType: 'text/csv',
-            body: fs.createReadStream('entries.csv'),
-        };
-        
-        // upload the file to drive  
-        await drive.files.create({
+
+        let exportFolder = await drive.files.create({
             resource: fileMetadata,
-            media,
             fields: 'id',
         });
 
-        // delete csv file
-        fs.unlinkSync('entries.csv');
+        parentFolder = exportFolder.data.id;
 
+        // Upload the csv file to google drive 
+        await UploadFile(drive, 'entries.csv', 'entries.csv', parentFolder, 'text/csv');
+        
         // load the images collection from the START-Project db
         let db = client.db('START-Project');
         let images = db.collection('images');
@@ -763,33 +781,13 @@ app.post('/export', async (req, res) => {
             // attempt to write binary image to a file
             let buffer = searchRes?.data?.read(0, searchRes.data.length);
             fs.writeFileSync('pic.jpeg', buffer);
-
-            // initialize metadata and media for upload 
-            let fileMetadata = {
-                title: `${photo}.jpeg`,
-                name: `${photo}.jpeg`,
-                parents: [parentFolder]
-            };
             
-            let media = {
-                mimeType: 'image/jpeg',
-                body: fs.createReadStream('pic.jpeg'),
-            };
-            
-            // upload the file to drive  
-            await drive.files.create({
-                resource: fileMetadata,
-                media,
-                fields: 'id',
-            });
-            
-            // delete file from local folder
-            fs.unlinkSync('pic.jpeg');
+            // upload the image
+            await UploadFile(drive, `${photo}.jpeg`, 'pic.jpeg', parentFolder, 'image/jpeg');
         }
         
-        return res.status(200).send('');
+        return res.status(200).send(`https://drive.google.com/drive/folders/${parentFolder}`);
     } catch (error) {
-        console.log(error);
         return res.status(500).send(error);
     }
 });
