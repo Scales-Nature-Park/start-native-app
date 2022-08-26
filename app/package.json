@@ -15,6 +15,7 @@
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
     "@react-native-async-storage/async-storage": "^1.17.5",
+    "@react-native-clipboard/clipboard": "^1.11.0",
     "@react-native-community/geolocation": "^2.1.0",
     "@react-native-community/netinfo": "^9.0.0",
     "@react-navigation/native": "^6.0.10",
@@ -42,6 +43,7 @@
     "react-native-simple-select-button": "^0.0.6",
     "react-native-storage": "^0.2.4",
     "react-native-svg": "^12.3.0",
+    "react-native-toast-notifications": "^3.3.1",
     "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^9.1.0",
     "react-native-windows": "0.68.3",

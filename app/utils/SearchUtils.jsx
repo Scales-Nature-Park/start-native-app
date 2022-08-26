@@ -142,21 +142,27 @@ const displayField = (field, fields, index, states, dark) => {
  * and a csv file on google drive. It alerts the user with the link to the folder 
  * or an error message.
  */
- const ExportEntry = async (data) => {
+ const ExportEntry = async (data, toast) => {
     // verify there is at least one entry
     if (!data || !data.length) {
         Alert.alert('No Entries', 'We could not process your request due to insufficient amount of entries to export.');
         return;
     }
-
+    toast.show('Exporting Data Entries...', { type: 'success' });
+    
     try {
+        // request export from the server
         let response = await axios({
             method: 'post',
             url: url + '/export',
             data
         });
-        Alert.alert('Entry Exported', `Export Link: ${response.data}`);
-    } catch (e) {
+        
+        // notify user with the folder link
+        toast.hideAll();
+        toast.show(response.data, { type: 'with_copy_button' });
+    } catch (err) {
+        toast.show(err, { type: 'danger' });
         Alert.alert('ERROR', 'Failed to export current entries, please try again later.');
     }  
 };
