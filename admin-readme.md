@@ -2,22 +2,12 @@
 A windows desktop application for managing the mobile data entry app.
 
 ## Download and Install 
-#### Pre-requisites
-- Enable developer mode on windows settings.
-    * Navigate to windows settings.
-    * Search Developer Settings.
-    * Turn on `Developer Mode` using the slider.
-
-#### Installation 
 - Navigate to the app's [google drive releases](https://drive.google.com/drive/folders/1H68mM3z6rLNothsX0a08Foxw_v3pFSUH?usp=sharing) master folder.
 - Download the most recent version's folder.
 - Unzip the folder and open it.
-- Right click on the `Install` or `Install.ps1` and click run with powershell.
-- This installation process is command line based so you will be prompted to authorize & accept some installation steps. You can press `a` when prompted (meaning: Yes to All option). 
-
-> You will also be prompted to press enter a few times and / or enable some settings in windows settings. Follow the prompts accordingly.
-
-- Once installed, you can search for admin in windows search and if the above was done correctly, you will be able to launch the app.
+- Double click the `admin_<version number>x64.appx` package file to start installation.
+- You will be prompted to confirm installation, click `Install`.
+- Click `Launch` when the installation is over.
 
 ## How to Use App:
 ### Features
