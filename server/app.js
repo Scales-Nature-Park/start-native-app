@@ -59,27 +59,33 @@ async function FetchJWT () {
  * Asynchronous function that uploads a file to google drive in a passed in parent folder.
  */
 async function UploadFile(drive, uploadName, localName, parentFolder, type) {
-    // initialize metadata and media for upload 
-    let fileMetadata = {
-        title: uploadName,
-        name: uploadName,
-        parents: [parentFolder]
-    };
+    try {
+        // initialize metadata and media for upload 
+        let fileMetadata = {
+            title: uploadName,
+            name: uploadName,
+            parents: [parentFolder]
+        };
+        
+        let media = {
+            mimeType: type,
+            body: fs.createReadStream(localName),
+        };
+        
+        // upload the file to drive  
+        await drive.files.create({
+            resource: fileMetadata,
+            media,
+            fields: 'id',
+        });
     
-    let media = {
-        mimeType: type,
-        body: fs.createReadStream(localName),
-    };
-    
-    // upload the file to drive  
-    await drive.files.create({
-        resource: fileMetadata,
-        media,
-        fields: 'id',
-    });
+        // delete local file
+        fs.unlinkSync(localName);
+    } catch(err) {
+        return false;
+    }
 
-    // delete local file
-    fs.unlinkSync(localName);
+    return true;
 }
 
 /**
@@ -741,22 +747,24 @@ app.post('/export', async (req, res) => {
 
         // initialize drive client
         const token = await FetchJWT();
+        if (!token) throw 'Google authentication failure, please report this error as soon as possible.';
+
         let drive = google.drive({ version: 'v3', auth: token });
         
         // fetch parent folder id 
         let files =  await drive.files.list({ auth: token });
-        let parentFolder = '';
+        let parentFolder = '1fyMUaCbYwN_BpwTtwANkBcfgf4s3iElk';
         for (let file of files.data.files) {
-            if (file.name.toLowerCase().includes('exported entries')) 
+            if (file.name.toLowerCase().includes('exported entries') && file.id) 
                 parentFolder = file.id;
         }
 
         // create a folder for this export 
         let fileMetadata = {
-            name: 'Entries',
             title: 'Entries',
+            name: 'Entries',
             mimeType: 'application/vnd.google-apps.folder',
-            parents: [parentFolder]
+            parents: (parentFolder) ? [parentFolder] : undefined
         };
 
         let exportFolder = await drive.files.create({
@@ -767,12 +775,14 @@ app.post('/export', async (req, res) => {
         parentFolder = exportFolder.data.id;
 
         // Upload the csv file to google drive 
-        await UploadFile(drive, 'entries.csv', 'entries.csv', parentFolder, 'text/csv');
-        
+        let csvUpload = await UploadFile(drive, 'entries.csv', 'entries.csv', parentFolder, 'text/csv');
+        if (!csvUpload) throw 'Failed to upload the data entries csv file due to internal error. Please try again later.';
+
         // load the images collection from the START-Project db
         let db = client.db('START-Project');
         let images = db.collection('images');
         
+
         // upload entry images to parent folder
         for (let photo of photoIds) {
             let searchRes = await images.findOne({_id: ObjectID(photo)});

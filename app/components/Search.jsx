@@ -5,6 +5,7 @@ import styles from '../styles/SearchStyles';
 import ModalDropdown from 'react-native-modal-dropdown';
 import useSyncState from '../utils/SyncState';
 import React, { useState, useLayoutEffect, useRef } from 'react';
+import { useToast } from 'react-native-toast-notifications';
 import { resetCriteria, dropDownSelect, displayField, ExportEntry } from '../utils/SearchUtils';
 import { url, ArrayEquals } from '../utils/Storage';
 import { useNetInfo } from "@react-native-community/netinfo";
@@ -23,6 +24,7 @@ const searchFields = require('../utils/json/search.json');
 
 const Search = ({ navigation }) => {
     const netInfo = useNetInfo();
+    const toast = useToast();
     const ref = useRef(null);
     const states = useSyncState([]);
     const criteriaElements = useSyncState([]);
@@ -169,7 +171,7 @@ const Search = ({ navigation }) => {
                     <Text style={styles.emptyText}>ADD CRITERIA</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.search} onPress={() => ExportEntry(data)}>
+                <TouchableOpacity style={styles.search} onPress={() => ExportEntry(data, toast)}>
                     <Text style={styles.emptyText}>EXPORT</Text>
                 </TouchableOpacity>
                 
@@ -203,7 +205,7 @@ const Search = ({ navigation }) => {
                         }
                         setEntries(entries);
                         setData(response.data);
-                        
+
                         if (entries.length == 0) Alert.alert('Response', 'No entries found that match the specified criteria.');
                     }).catch(error => {
                         Alert.alert('ERROR', error.response.data || error.message);
