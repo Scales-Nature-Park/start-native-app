@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
       flex: 1,
       flexDirection: 'row',
       width: '100%',
-      alignItems: 'center'
+      alignItems: 'center',
     },
 
     headText: {
@@ -123,10 +123,10 @@ const styles = StyleSheet.create({
 
     addButton: {
       backgroundColor: '#0b4c7d',
-      width: '40%',
+      width: '92%',
       alignItems: 'center',
       justifyContent: 'center',
-      marginVertical: 10,
+      marginTop: 10,
       borderRadius: 5,
       height: 40,
       alignSelf: 'center'  

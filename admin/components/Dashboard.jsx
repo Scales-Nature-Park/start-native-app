@@ -5,6 +5,7 @@ import Categories from './Categories';
 import Fields from './Fields';
 import React, { useState, useRef } from 'react';
 import useSyncState, { url } from '../utils/SyncState';
+import { ExportAll } from '../utils/InputUtils';
 import {
   PushRelease,
   AddCategory,
@@ -132,6 +133,9 @@ const Dashboard = ({ params, setScreen }) => {
                 <ScrollView nestedScrollEnabled={true}>
                   <PrevEntries params={{...params, fields:stats?.get()?.fields}} setScreen={setScreen} />
                 </ScrollView>
+                <TouchableOpacity style={styles.addButton} onPress={() => ExportAll()}>
+                  <Text>Export Entries</Text>
+                </TouchableOpacity>
               </View>
 
               <View style={styles.categoryContainer}>
