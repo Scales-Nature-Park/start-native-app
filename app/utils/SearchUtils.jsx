@@ -1,8 +1,9 @@
 import React from 'react';
+import axios from 'axios';
 import ModalDropdown from 'react-native-modal-dropdown';
 import styles from '../styles/SearchStyles';
-import { ArrayEquals } from './Storage';
-import { View, Text, TextInput } from 'react-native';
+import { ArrayEquals, url } from './Storage';
+import { View, Text, TextInput, Alert } from 'react-native';
 
 /**
  * This functions sets the criteria list state to have all the names of the 
@@ -135,4 +136,29 @@ const displayField = (field, fields, index, states, dark) => {
     return fields;
 };
 
-export { resetCriteria, dropDownSelect, displayField };
+/**
+ * Asyncronous function that takes in an array of data entries and sends a request
+ * to the /export endpoint with these entries to export them to a folder of images
+ * and a csv file on google drive. It alerts the user with the link to the folder 
+ * or an error message.
+ */
+ const ExportEntry = async (data) => {
+    // verify there is at least one entry
+    if (!data || !data.length) {
+        Alert.alert('No Entries', 'We could not process your request due to insufficient amount of entries to export.');
+        return;
+    }
+
+    try {
+        let response = await axios({
+            method: 'post',
+            url: url + '/export',
+            data
+        });
+        Alert.alert('Entry Exported', `Export Link: ${response.data}`);
+    } catch (e) {
+        Alert.alert('ERROR', 'Failed to export current entries, please try again later.');
+    }  
+};
+
+export { resetCriteria, dropDownSelect, displayField, ExportEntry };

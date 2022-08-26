@@ -236,6 +236,12 @@ const DeleteEntry = (setScreen, params) => {
  * or an error message.
  */
 const ExportEntry = async (data) => {
+    // verify there is at least one entry
+    if (!data || !data.length) {
+        Alert.alert('No Entries', 'We could not process your request due to insufficient amount of entries to export.');
+        return;
+    }
+    
     try {
         let response = await axios({
             method: 'post',
@@ -263,6 +269,12 @@ const ExportAll = async () => {
             url: url + '/search',
             params: {}
         });
+
+        // verify there is at least one entry
+        if (!entries.data || !entries.data.length) {
+            Alert.alert('No Entries', 'We could not process your request due to insufficient amount of entries to export.');
+            return;
+        }
         
         ExportEntry(entries.data);
     } catch (e) {

@@ -5,7 +5,7 @@ import styles from '../styles/SearchStyles';
 import ModalDropdown from 'react-native-modal-dropdown';
 import useSyncState from '../utils/SyncState';
 import React, { useState, useLayoutEffect, useRef } from 'react';
-import { resetCriteria, dropDownSelect, displayField } from '../utils/SearchUtils';
+import { resetCriteria, dropDownSelect, displayField, ExportEntry } from '../utils/SearchUtils';
 import { url, ArrayEquals } from '../utils/Storage';
 import { useNetInfo } from "@react-native-community/netinfo";
 import {
@@ -27,6 +27,7 @@ const Search = ({ navigation }) => {
     const states = useSyncState([]);
     const criteriaElements = useSyncState([]);
     const selections = useSyncState([]);
+    const [data, setData] = useState([]);
     const [category, setCategory] = useState('Turtle');
     const [entries, setEntries] = useState([]);
     const [criteria, setCriteria] = useState([]);
@@ -46,7 +47,7 @@ const Search = ({ navigation }) => {
     });
 
     // get the indeces of the all category and the selected
-    // categpry objects in searchFields
+    // category objects in searchFields
     let allIndex = -1, catIndex = -1, categoryButtons = [];
     searchFields.forEach((element, index) => {
         if (element.Category == "All") {
@@ -167,6 +168,10 @@ const Search = ({ navigation }) => {
                 }}>
                     <Text style={styles.emptyText}>ADD CRITERIA</Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity style={styles.search} onPress={() => ExportEntry(data)}>
+                    <Text style={styles.emptyText}>EXPORT</Text>
+                </TouchableOpacity>
                 
                 <View style={(entries.length > 0 ) ? styles.searchResults : {}}>
                     {entries}
@@ -197,6 +202,8 @@ const Search = ({ navigation }) => {
                             }}/>];
                         }
                         setEntries(entries);
+                        setData(response.data);
+                        
                         if (entries.length == 0) Alert.alert('Response', 'No entries found that match the specified criteria.');
                     }).catch(error => {
                         Alert.alert('ERROR', error.response.data || error.message);
