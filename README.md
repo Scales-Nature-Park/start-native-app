@@ -1,18 +1,19 @@
-# START Data
-A MERN based full stack mobile application for START project data entry.
+# Data Entry App
+A MERN based data entry system that consists of a mobile data entry app and an administrator windows app for managing user credentials and data entry features.
+
+## Contributing
+Please read our [CONTRIBUTING.md](CONTRIBUTING.md) to learn about our development process, how to propose bug fixes and improvements, and how to join us in the development of this project.
 
 ## Features
-- User login authentication and signup. 
-- Generic data entry form modifiable through a json file [`fields.json`](##fieldsjson-format) where fields can be added or removed without any modifications to the codebase.
-- Image upload with a data entry about a reptile that is displayed every time the entry is shown later through lookup or saved entries on disk.
-- Guest Mode that isn't allowed to submit data to the server but can save to phone disk and access them later on the same device in normal mode for submission.
-- Search functionality based on category and other criteria specified in a json file [`search.json`](##searchjson-format) where fields can be added or removed without any modification to the codebase. 
+- A Generic data entry form modifiable through the `fields` collection in the mongo database.
+- A search functionality that allows users to query data entries based on specified criteria.
+- An export functionality that allows users to export single or groups of data entries into a google drive shareable folder with  
 
 ## Components
 ![Project Chart](./assets/images/projectchart.jpg)
-- React-native based front-end user interface, making axios calls to the server on user data entry submissions and searches. Check [app readme](./app/README.md) for more information.
-- Local Mongo Database storing collections of user login credentials, reptile information and images.
-- Node.js server with express.js endpoints querying the database and responding to the axios calls made by the react-native app. Check [server readme](./server/README.md) for more information.
+- React-native based mobile & windows desktop interfaces, making http requests to the server on user interactions. Check [app readme](./app/README.md) for more information on the mobile app and [admin readme](./admin/README.md) for more information on the admin app.
+- Local Mongo Database storing collections of login credentials, submitted & shared data entries, data entry images and data entry fields.
+- Node.js server with express.js endpoints querying the database and responding to the http requests made by the apps. Check [server readme](./server/README.md).
 
 ## Fields.json Format
 `fields.json` is located at [./app/utils/fields.json](./app/utils/fields.json). It specifies all the fields which the `Data Entry` screen is dependent on. To modify the `fields.json` file a specific format must be followed:
@@ -47,7 +48,7 @@ A MERN based full stack mobile application for START project data entry.
     * isNumber: boolean indicating if the value is a number or not.
 
 ## Search.json Format
-`search.json` is located at [./app/utils/search.json](./app/utils/search.json). It specifies all the search criteria fields which the `Search` screen is dependent on. To modify the `fields.json` file a similar format to `fields.json` must be followed:
+`search.json` is located at [./app/utils/json/search.json](./app/utils/json/search.json). It specifies all the search criteria fields which the `Search` screen is dependent on. To modify the `fields.json` file a similar format to `fields.json` must be followed:
 ```json
 [
     {
@@ -71,3 +72,6 @@ A MERN based full stack mobile application for START project data entry.
 - Similar to the `fields.json` each object added to the main list, its category name is added to the category buttons at the top except the object with name == "All". Conditional criteria under the 'All' category will be displayed no matter which button is selected at the top.
 - For each object added to the conditional criteria lists a new option in the search criteria dropdowns is made with the name element and the Subfields are displayed under the dropdown on selection. 
 - Subfields are not required and if not specified, the screen displays a single "sub field" under the dropdown for the selected field inheriting the name of the parent field.
+
+## License
+This project is MIT licensed, as found in the [LICENSE](./LICENSE).

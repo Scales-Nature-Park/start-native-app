@@ -736,7 +736,7 @@ app.post('/export', async (req, res) => {
         
         // fetch parent folder id 
         let files =  await drive.files.list({ auth: token });
-        let parentFolder = '1fyMUaCbYwN_BpwTtwANkBcfgf4s3iElk';
+        let parentFolder = process.env.PARENT_FOLDER;
         for (let file of files.data.files) {
             if (file.name.toLowerCase().includes('exported entries') && file.id) 
                 parentFolder = file.id;
