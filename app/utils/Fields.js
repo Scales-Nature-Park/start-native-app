@@ -37,25 +37,13 @@ const FetchFields = async () => {
       // use fields.json if local data isn't found
       localFields = [...dataFields];
     }
-
     if (fields == undefined || ArrayEquals(localFields, fields, true)) return;
     
-    // prompt user to download updated fields or skip download for now
-    Alert.alert('New Update', 'A new update is currently available for download.', [
-      {
-        text: 'Remind Me Later',
-        onPress: () => {}
-      },
-      {
-        text: 'Download Now',
-        onPress: () => {
-          storage.save({
-            key: 'fields',
-            data: fields
-          });
-        }
-      }
-    ]);
+    // update local storage with new fields
+    storage.save({
+      key: 'fields',
+      data: fields
+    });
   } catch (err) {}
 };
 
