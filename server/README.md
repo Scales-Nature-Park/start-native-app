@@ -3,6 +3,9 @@ A node.js server connected to a mongo database for the START Project apps.
 
 ## Pre-requisites
 - Download node.js and npm.
+- Create a google cloud platform project and enable the google drive API on it.
+- Create a service account on that project and give it Owner permissions.
+- Create a mongodb deployment / cluster and retrieve its connection link.
 - Downloading mongoCompass will help you track the database changes.
 
 ## Environment Variables

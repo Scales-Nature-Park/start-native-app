@@ -15,7 +15,7 @@ The app is dependant on a node.js server, check [server readme](../server/README
 - Grab the server url and assign it to `url` const in [`./utils/Storage.js`](./utils/Storage.js).
 
 ## Run Debug App
-If you are on Linux/Windows, you will be using android studio or a physical android device to test for android. MacOS has XCode emulator to test for IOS.
+If you are on Linux/Windows, you will be using Android Studio or a physical android device to test for android. MacOS has XCode emulator to test for IOS and Android Studio to test for Android.
 - Install dependancy packages using `npm i`.
 - cd into the app directory from the root of the project in a terminal.
 - Run `npm start` to start metro.
@@ -32,5 +32,5 @@ If you are on Linux/Windows, you will be using android studio or a physical andr
 - cd into [`./android`](./android) and run the following commands:
     * ./gradlew assembleRelease
     * ./gradlew bundleRelease
-- Now you should have a `app-release.aab` file in the following path [`./android/app/build/outputs/bundle/release`](./android/app/build/outputs/bundle/release). This will be used in Google Playstore deployment.
+- Now you should have a set of apk files in the following path [`./android/app/build/outputs/apk/release`](./android/app/build/outputs/apk/release). These files can be uploaded to a shareable link such as google drive and be distributed to users. 
 - To test the release version of the app, delete any previous debug version on your device, physical or emulator and run `npm run android-release` in the [current directory](.).
