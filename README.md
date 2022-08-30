@@ -74,4 +74,4 @@ Please read our [CONTRIBUTING.md](CONTRIBUTING.md) to learn about our developmen
 - Subfields are not required and if not specified, the screen displays a single "sub field" under the dropdown for the selected field inheriting the name of the parent field.
 
 ## License
-This project is MIT licensed, as found in the [LICENSE](./LICENSE).
+This project is MIT licensed, as found in the [LICENSE](./LICENSE) file.
