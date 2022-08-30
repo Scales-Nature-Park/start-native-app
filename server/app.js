@@ -75,6 +75,7 @@ async function UploadFile(drive, uploadName, localName, parentFolder, type) {
         };
         
         // upload the file to drive  
+
         fileId = (await drive.files.create({
             resource: fileMetadata,
             media,
