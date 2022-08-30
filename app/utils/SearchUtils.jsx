@@ -160,10 +160,9 @@ const displayField = (field, fields, index, states, dark) => {
         
         // notify user with the folder link
         setLoad(false);
-        toast.hideAll();
         toast.show(response.data, { type: 'with_copy_button' });
     } catch (err) {
-        toast.show(err, { type: 'danger' });
+        setLoad(false);
         Alert.alert('ERROR', 'Failed to export current entries, please try again later.');
     }  
 };

@@ -59,6 +59,8 @@ async function FetchJWT () {
  * Asynchronous function that uploads a file to google drive in a passed in parent folder.
  */
 async function UploadFile(drive, uploadName, localName, parentFolder, type) {
+    let fileId = ''
+
     try {
         // initialize metadata and media for upload 
         let fileMetadata = {
@@ -73,11 +75,12 @@ async function UploadFile(drive, uploadName, localName, parentFolder, type) {
         };
         
         // upload the file to drive  
-        await drive.files.create({
+
+        fileId = (await drive.files.create({
             resource: fileMetadata,
             media,
             fields: 'id',
-        });
+        }))?.data?.id;
     
         // delete local file
         fs.unlinkSync(localName);
@@ -85,7 +88,7 @@ async function UploadFile(drive, uploadName, localName, parentFolder, type) {
         return false;
     }
 
-    return true;
+    return fileId;
 }
 
 /**
@@ -725,25 +728,6 @@ app.delete('/entry/:entryId', async (req, res) => {
 app.post('/export', async (req, res) => {
     try {
         let [...entries] = req.body;
-        let photoIds = [];
-        
-        // loop through all entries and append inputFields into to the entry
-        // json fields on the top level of the entry
-        let i = 0;
-        for (let { inputFields, ...entry } of entries) {
-            for (let field of inputFields) {
-                entry[field.name] = field.value;
-            }
-            
-            if (entry.photoIds?.length) photoIds = [...photoIds, ...entry.photoIds];
-            entries[i++] = entry;
-        }
-        
-        // parse json into csv format
-        const csvData = await jsonexport(entries, { fillTopRow: true });
-
-        // write the csv file
-        fs.writeFileSync('entries.csv', csvData);
 
         // initialize drive client
         const token = await FetchJWT();
@@ -774,28 +758,58 @@ app.post('/export', async (req, res) => {
 
         parentFolder = exportFolder.data.id;
 
-        // Upload the csv file to google drive 
-        let csvUpload = await UploadFile(drive, 'entries.csv', 'entries.csv', parentFolder, 'text/csv');
-        if (!csvUpload) throw 'Failed to upload the data entries csv file due to internal error. Please try again later.';
-
         // load the images collection from the START-Project db
         let db = client.db('START-Project');
         let images = db.collection('images');
         
-
-        // upload entry images to parent folder
-        for (let photo of photoIds) {
-            let searchRes = await images.findOne({_id: ObjectID(photo)});
-            if (!searchRes || !searchRes.data) continue;
-
-            // attempt to write binary image to a file
-            let buffer = searchRes?.data?.read(0, searchRes.data.length);
-            fs.writeFileSync('pic.jpeg', buffer);
+        // loop through all entries and append inputFields into to the entry
+        // json fields on the top level of the entry
+        let i = 0;
+        for (let { inputFields, photoIds,  ...entry } of entries) {
+            for (let field of inputFields) {
+                entry[field.name] = field.value;
+            }
             
-            // upload the image
-            await UploadFile(drive, `${photo}.jpeg`, 'pic.jpeg', parentFolder, 'image/jpeg');
+            // create image folder and upload all images to it
+            let fileMetadata = {
+                title: 'photos',
+                name: 'photos',
+                mimeType: 'application/vnd.google-apps.folder',
+                parents: (parentFolder) ? [parentFolder] : undefined
+            };
+
+            let exportFolder = await drive.files.create({
+                resource: fileMetadata,
+                fields: 'id',
+            });
+            let link = exportFolder.data.id;
+    
+            if (photoIds?.length && link) {
+                for (let photo of photoIds) {
+                    let searchRes = await images.findOne({_id: ObjectID(photo)});
+                    if (!searchRes || !searchRes.data) continue;
+
+                    // attempt to write binary image to a file
+                    let buffer = searchRes?.data?.read(0, searchRes.data.length);
+                    fs.writeFileSync('pic.jpeg', buffer);
+                    
+                    await UploadFile(drive, `${photo}.jpeg`, 'pic.jpeg', link, 'image/jpeg');
+                }
+            } 
+            entry.photos = (link) ? `https://drive.google.com/drive/folders/${link}` : '';
+            entries[i++] = entry;
         }
         
+        // parse json into csv format
+        const csvData = await jsonexport(entries, { fillTopRow: true });
+
+        // write the csv file
+        fs.writeFileSync('entries.csv', csvData);
+
+        // Upload the csv file to google drive 
+        let csvUpload = await UploadFile(drive, 'entries.csv', 'entries.csv', parentFolder, 'text/csv');
+        if (!csvUpload) throw 'Failed to upload the data entries csv file due to internal error. Please try again later.';
+
         return res.status(200).send(`https://drive.google.com/drive/folders/${parentFolder}`);
     } catch (error) {
         return res.status(500).send(error);
