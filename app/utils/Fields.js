@@ -9,8 +9,7 @@ const dataFields = require('./json/fields.json');
 
 /**
  * Asynchronous function that fetches data fields from the server and compares
- * them with local fields then prompts the user to download the "update" or skip it
- * for now.
+ * them with local fields then saves the fields to local storage.
  */
 const FetchFields = async () => {
   try {

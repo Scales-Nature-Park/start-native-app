@@ -75,7 +75,6 @@ async function UploadFile(drive, uploadName, localName, parentFolder, type) {
         };
         
         // upload the file to drive  
-
         fileId = (await drive.files.create({
             resource: fileMetadata,
             media,
@@ -797,6 +796,7 @@ app.post('/export', async (req, res) => {
                 }
             } 
             entry.photos = (link) ? `https://drive.google.com/drive/folders/${link}` : '';
+            entry.numPhotos = photoIds?.length || 0;
             entries[i++] = entry;
         }
         
