@@ -75,7 +75,6 @@ async function UploadFile(drive, uploadName, localName, parentFolder, type) {
         };
         
         // upload the file to drive  
-
         fileId = (await drive.files.create({
             resource: fileMetadata,
             media,
@@ -737,7 +736,7 @@ app.post('/export', async (req, res) => {
         
         // fetch parent folder id 
         let files =  await drive.files.list({ auth: token });
-        let parentFolder = '1fyMUaCbYwN_BpwTtwANkBcfgf4s3iElk';
+        let parentFolder = process.env.PARENT_FOLDER;
         for (let file of files.data.files) {
             if (file.name.toLowerCase().includes('exported entries') && file.id) 
                 parentFolder = file.id;
@@ -797,6 +796,7 @@ app.post('/export', async (req, res) => {
                 }
             } 
             entry.photos = (link) ? `https://drive.google.com/drive/folders/${link}` : '';
+            entry.numPhotos = photoIds?.length || 0;
             entries[i++] = entry;
         }
         

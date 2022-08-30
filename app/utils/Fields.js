@@ -9,8 +9,7 @@ const dataFields = require('./json/fields.json');
 
 /**
  * Asynchronous function that fetches data fields from the server and compares
- * them with local fields then prompts the user to download the "update" or skip it
- * for now.
+ * them with local fields then saves the fields to local storage.
  */
 const FetchFields = async () => {
   try {
@@ -37,25 +36,13 @@ const FetchFields = async () => {
       // use fields.json if local data isn't found
       localFields = [...dataFields];
     }
-
     if (fields == undefined || ArrayEquals(localFields, fields, true)) return;
     
-    // prompt user to download updated fields or skip download for now
-    Alert.alert('New Update', 'A new update is currently available for download.', [
-      {
-        text: 'Remind Me Later',
-        onPress: () => {}
-      },
-      {
-        text: 'Download Now',
-        onPress: () => {
-          storage.save({
-            key: 'fields',
-            data: fields
-          });
-        }
-      }
-    ]);
+    // update local storage with new fields
+    storage.save({
+      key: 'fields',
+      data: fields
+    });
   } catch (err) {}
 };
 

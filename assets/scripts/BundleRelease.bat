@@ -85,6 +85,7 @@ lib\dist\parse.exe url
 echo Uploaded release bundle successfully on %DATE% at %TIME%.
 
 @REM More housekeeping
-rmdir /s /q %tempBundle%
+@REM rmdir /s /q %tempBundle%
+DEL %scriptPath%\tempFile.txt
 
 timeout /t 100
