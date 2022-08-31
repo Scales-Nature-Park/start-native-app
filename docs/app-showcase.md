@@ -16,13 +16,13 @@
 # fields changed\s
 - specify first scribe in a different way (observer? etc.)
 -  NEED TO BE ABLE TO CHANGE LITERALLY EVERYTHING FROM ADMIN APP
-- ADD DEFAULT VALUES
+- ~~ADD DEFAULT VALUES~~
 - NEED TO BE ABLE TO CANCEL DATA ENTRY EVEN FOR EACH INDIVIDUAL FIELDS
 - INSERT UNITS, AND HAVE HELP MENUS, EVEN ANIMATED ONES OR HAVE EXTRA INSTRUCTIONS FOR EACH MEASURMENT SO YOU CAN GET MORE DETAIL ABOUT THE PROCESS
 - AUTOFILL LAT/LONG AND ALSO UTM
 - ADD TRANMISTTER ATTACHED? FIELD (incase you find a turtle with a transmitter on)
 - make sure fields that are used more often are at the top (order fieklds.json for most used to least used)
-- Add salamander and frog category
+- ~~Add salamander and frog category~~
 - make sure can only select speicies from the taxa at the top (select turtles speicies only if in turtle category)
 - def need a way to be able to have the notch codes available in the app based on location and species etc.
 - have a modeled turtle image that you can select skutes on that would create visually the notch code

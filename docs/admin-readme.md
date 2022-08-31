@@ -25,6 +25,7 @@ The dashboard has many useful functionalities that help manage the mobile app:
 - Display a list of all data entry fields displayed to mobile app users.
 - Ability to delete data fields and save updates.    
 - Display a list of categories and edit category names, delete categories or add new categories.
+- Exporting all data entries into a csv file and a list of image folders into google drive.
 
 #### Data Entry
 Clicking on a data entry from the dashboard directs the user to this screen. This screen adds the following functionalities: 
