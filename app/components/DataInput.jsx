@@ -172,7 +172,11 @@ const DataInput = ({route, navigation}) => {
             if (!state) {
                 // get initial value passed as in paramData
                 state = initialFields?.filter(elem => elem.name.toLowerCase() == field.name.toLowerCase())[0];
-                state = {'name': field.name.toLowerCase(), 'value': (state) ? state.value : '', 'dataValidation': field.dataValidation};
+                state = {
+                    name: field.name.toLowerCase(), 
+                    value: (state) ? state.value : (field.dropDown) ? field.values[field.initId] || '' : field.defaultValue?.toString() || '', 
+                    dataValidation: field.dataValidation
+                };
                 
                 tempStates = [...tempStates, state];
                 meta.editedStates = true;

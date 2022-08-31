@@ -803,6 +803,7 @@
             {
                 "name": "# of Individuals",
                 "dropDown": false,
+                "defaultValue": 1,
                 "dataValidation":  {
                     "isNumber": true,
                     "arguments": "input",

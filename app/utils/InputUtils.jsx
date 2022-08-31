@@ -309,7 +309,7 @@ const displayField = (field, fields, dataInput, dispatch, initialFields, params)
                     clearOnFocus={true}
                     closeOnBlur={false}
                     closeOnSubmit={true}
-                    initialValue={initId.toString()}
+                    initialValue={(initId >= 0) ? initId.toString() : (!initValue) ? field?.initId?.toString() : ''}
                     showClear={true}
                     onClear={() => changeState(field, {title: ''}, dataInput, dispatch)}
                     onSelectItem={item => changeState(field, item, dataInput, dispatch)}
@@ -552,7 +552,7 @@ const Reducer = (state, action) => {
  * is updated, otherwise a new state is added to the list with the value.
  */
 const changeState = (field, item, dataInput, dispatch) => {
-    if (!item || dataInput?.states?.length <= 0) return; 
+    if (!item || dataInput?.states?.length < 0) return; 
     let tempStates = [...dataInput?.states];
     let tempIndex = -1;
     
