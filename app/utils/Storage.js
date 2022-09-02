@@ -2,7 +2,9 @@ import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext } from 'react';
 
-const url = 'https://start-data-server.herokuapp.com';
+const config = require('./json/config.json');
+
+const url = config.server;
 
 const UserContext = createContext();
 
