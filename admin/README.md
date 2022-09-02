@@ -10,7 +10,13 @@ A react-native-windows app that helps manages mobile app credentials, entry data
 The app is dependant on a node.js server, check [server readme](../server/README.md), so we need to make sure the connection route is configured properly and the sever is actually running.  
 
 - Follow server readme to run the server locally on your machine.
-- Grab the server url and assign it to `url` const in [`./utils/SyncState.js`](./utils/SyncState.js).
+- Create a json file in the [./utils/json](./utils/json) folder and name it `config.json`.
+- Grab the server url and assign it to `server` element in the json file.
+```js
+{
+    "server": "http://localhost:5000"
+}
+```
 
 ## Run Debug App 
 - Install dependancy packages using `npm i`.

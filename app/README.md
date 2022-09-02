@@ -12,7 +12,13 @@ A react-native mobile application for the START project.
 The app is dependant on a node.js server, check [server readme](../server/README.md), so we need to make sure the connection route is configured properly and the sever is actually running. 
 
 - Follow server readme to run the server locally on your machine.
-- Grab the server url and assign it to `url` const in [`./utils/Storage.js`](./utils/Storage.js).
+- Create a json file in the [./utils/json](./utils/json) folder and name it `config.json`.
+- Grab the server url and assign it to `server` element in the json file.
+```js
+{
+    "server": "http://localhost:5000"
+}
+```
 
 ## Run Debug App
 If you are on Linux/Windows, you will be using Android Studio or a physical android device to test for android. MacOS has XCode emulator to test for IOS and Android Studio to test for Android.

@@ -51,10 +51,13 @@ The home screen links to 4 main screens:
 ## Permissions
 There are 2 permissions that a user may have:
 
-**Read Permission**: Under this permission you will have access to [Search Screen](#search) and all its functionalities.
-**Write Permission**: Under this permission you will have access to the Submit button in the data entry screen allowing you to submit data to the database.
+#### Read Permission: 
+Under this permission you will have access to [Search Screen](#search) and all its functionalities.
 
-Acquiring those permissions can be requested from a senior staff member who has access to the admin windows app. 
+#### Write Permission: 
+Under this permission you will have access to the Submit button in the data entry screen allowing you to submit data to the database.
+
+> Acquiring those permissions can be requested from a senior staff member who has access to the admin windows app. 
 
 ## Modes
 There are 2 modes for this app:
