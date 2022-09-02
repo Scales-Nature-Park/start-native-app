@@ -1,5 +1,5 @@
 # START App Server
-A node.js server connected to a mongo database for the START Project apps.
+A node.js server connected to a mongo database for the START Project apps.2
 
 ## Pre-requisites
 - Download node.js and npm.
