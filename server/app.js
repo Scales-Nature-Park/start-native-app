@@ -9,7 +9,6 @@ const sanitize = require('mongo-sanitize');
 const bodyParser = require('body-parser');  
 const fileUpload = require('express-fileupload');
 const jsonexport = require('jsonexport');
-require('dotenv').config();
 
 const app = express();
 
