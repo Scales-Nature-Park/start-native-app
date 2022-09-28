@@ -2,7 +2,13 @@ version: '3'
 services: 
   node-server:
     build: .
-    env_file:
-    - ./.env
-    ports: 
-    - 5000:5000
+    ports:
+    - "${PORT}:${PORT}"
+    environment:
+    - "PORT=${PORT}"
+    - "MONGODB=${MONGODB}"
+    - "PARENT_FOLDER=${PARENT_FOLDER}"
+    - "PROJECT_ID=${PROJECT_ID}"
+    - "CLIENT_EMAIL=${CLIENT_EMAIL}"
+    - "PRIVATE_KEY=${PRIVATE_KEY}"
+    restart: always

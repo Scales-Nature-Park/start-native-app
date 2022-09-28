@@ -11,7 +11,8 @@ A node.js server connected to a mongo database for the START Project apps.
 ## Environment Variables
 This server depends on a set of environment variables that helps keep some data private from the codebase. 
 
-- **MONGODB**: Connection link to the deployment's database
+- **PORT**: This is the port number that the server is going to run on. 
+- **MONGODB**: Connection link to the deployment's database.
 - **PARENT_FOLDER**: Destination folder id where exported entries will be uploaded.
 - **PROJECT_ID**: Google Cloud Console project that we use for our API calls. Needs Drive API to be enabled.
 - **CLIENT_EMAIL**: Service account email that the server is going to be impersonating.
