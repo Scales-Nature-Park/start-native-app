@@ -9,7 +9,6 @@ const sanitize = require('mongo-sanitize');
 const bodyParser = require('body-parser');  
 const fileUpload = require('express-fileupload');
 const jsonexport = require('jsonexport');
-require('dotenv').config();
 
 const app = express();
 
@@ -23,7 +22,7 @@ const { MongoClient } = require('mongodb');
 const { ObjectID } = require('bson');
 const uri = process.env.MONGODB;
 const client = new MongoClient(uri);
-const port = process.env.PORT || 5000;
+const port = process.env.PORT;
 const MONGOLIMIT = 15728640; // let the limit be 1 MB less than actual limit to be safe
 
 // Google client
