@@ -3,6 +3,7 @@ A node.js server connected to a mongo database for the START Project apps.
 
 ## Pre-requisites
 - Download node.js and npm.
+- Download docker / docker-compose.
 - Create a google cloud platform project and enable the google drive API on it.
 - Create a service account on that project and give it Owner permissions.
 - Create a mongodb deployment / cluster and retrieve its connection link.
@@ -23,6 +24,10 @@ This server depends on a set of environment variables that helps keep some data 
 - Otherwise, you can setup a local database (recommended for development) as your envvironment variable. Default url: `http:\\localhost:27017`
 - Make sure to invite the service account using its email to parent folder where the exported entries are to be uploaded. 
 
-## Run Server
-- Install dependancy packages using `npm i`.
-- Run dev script using `npm run dev`. 
+## Run Server with Docker
+- Set the environment variables either on your system or in a `.env` file in the same root server `/server` directory as the `docker-compose.yml` file.
+- Run `docker-compose up --build` to start the server using docker image.
+
+## Run Server with npm
+- Run `npm i` to install dependencies.
+- Run `npm run dev` to start the server with live reload. 

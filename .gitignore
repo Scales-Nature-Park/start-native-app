@@ -6,3 +6,4 @@ assets/scripts/lib/__pycache__
 assets/scripts/lib/*.spec
 assets/scripts/*.txt
 .env
+fly.toml
