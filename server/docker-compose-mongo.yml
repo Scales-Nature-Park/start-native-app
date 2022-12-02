@@ -5,6 +5,8 @@ services:
     build: .
     container_name: express
     restart: always
+    depends_on:
+      - mongodb
     ports:
       - ${PORT}:${PORT}
     environment:
@@ -14,3 +16,13 @@ services:
       - PROJECT_ID
       - CLIENT_EMAIL
       - PRIVATE_KEY
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - db:/data/db
+volumes:
+  db:
